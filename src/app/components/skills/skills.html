@@ -1,0 +1,106 @@
+<section
+  class="py-24 bg-[var(--color-background)] transition-colors duration-500 overflow-hidden"
+  aria-labelledby="skills-heading"
+>
+  <div class="max-w-screen-xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
+    <!-- Left Side: Controls -->
+    <div class="space-y-8 lg:order-1">
+      <h2
+        id="skills-heading"
+        class="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] bg-clip-text text-transparent"
+      >
+        Skill Galaxy 🚀
+      </h2>
+      <p class="text-lg text-[var(--color-text-muted)] max-w-md leading-relaxed">
+        Drag & explore the 3D globe, or select a category to spotlight specific technologies. 
+        The globe remains interactive even in focused mode!
+      </p>
+
+      <!-- Category Filters -->
+      <div class="flex flex-wrap gap-3 mt-8">
+        @for (skill of skills(); track skill.category) {
+          <button
+            (click)="filterByCategory(skill.category)"
+            [class]="activeSkill() === skill.category 
+              ? 'px-5 py-2.5 text-sm font-medium rounded-full border-2 transition-all duration-300 transform-gpu hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-background)] bg-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-[var(--color-primary)]/50'
+              : 'px-5 py-2.5 text-sm font-medium rounded-full border-2 transition-all duration-300 transform-gpu hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-background)] bg-[var(--color-card)] text-[var(--color-text)] border-[var(--color-border)] hover:bg-[var(--color-card-hover)] hover:border-[var(--color-primary)]/50'"
+            [attr.aria-pressed]="activeSkill() === skill.category"
+          >
+            {{ skill.category }}
+          </button>
+        }
+
+        <button
+          (click)="clearActiveSkill()"
+          [class]="activeSkill() === null
+            ? 'px-5 py-2.5 text-sm font-medium rounded-full border-2 transition-all duration-300 transform-gpu hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] text-[var(--color-text-muted)] border-[var(--color-border)] hover:border-[var(--color-text-muted)] bg-[var(--color-card-hover)]'
+            : 'px-5 py-2.5 text-sm font-medium rounded-full border-2 transition-all duration-300 transform-gpu hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] text-[var(--color-text-muted)] border-[var(--color-border)] hover:border-[var(--color-text-muted)] bg-[var(--color-card)]'"
+        >
+          {{ activeSkill() ? '↺ Reset View' : '🌌 All' }}
+        </button>
+      </div>
+
+      <!-- Hint Text -->
+      @if (activeSkill() !== null) {
+        <div class="mt-4 p-4 bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/30 rounded-lg">
+          <p class="text-sm text-[var(--color-text-secondary)]">
+            💡 <strong>Tip:</strong> You can still drag to rotate the globe in focused mode!
+          </p>
+        </div>
+      }
+    </div>
+
+    <!-- Right Side: 3D Globe -->
+    <div class="relative w-full h-[500px] flex items-center justify-center lg:order-2">
+      <!-- Glow Effect -->
+      <div
+        class="absolute inset-0 blur-[100px] opacity-20 transition-opacity duration-700"
+        [class.opacity-40]="activeSkill() !== null"
+        [style.background]="activeSkill() !== null 
+          ? 'radial-gradient(circle at 50% 50%, var(--color-primary) 0%, var(--color-accent) 30%, transparent 70%)'
+          : 'radial-gradient(circle at 50% 50%, var(--color-primary) 0%, var(--color-accent) 30%, transparent 70%)'"
+      ></div>
+
+      <!-- 3D Container -->
+      <div
+        #cloudContainer
+        class="relative w-full h-full flex items-center justify-center cursor-grab active:cursor-grabbing"
+        [class.cursor-grabbing]="isDragging()"
+      >
+        @for (skill of skills(); track skill.category) {
+          @for (item of skill.items; track item.name) {
+            <div
+              class="logo-item"
+              [ngStyle]="getLogoStyle(item.name)"
+            >
+              <div class="logo-wrapper">
+                <img
+                  [src]="item.logo"
+                  [alt]="item.name + ' logo'"
+                  class="logo-image"
+                  loading="lazy"
+                  (mouseenter)="hoveredSkill.set(item.name)"
+                  (mouseleave)="hoveredSkill.set(null)"
+                />
+              </div>
+
+              <!-- Tooltip -->
+              @if (hoveredSkill() === item.name && !isDragging()) {
+                <span class="tooltip">
+                  {{ item.name }}
+                </span>
+              }
+            </div>
+          }
+        }
+      </div>
+
+      <!-- Instructions Overlay -->
+      @if (!isDragging() && activeSkill() === null) {
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-[var(--color-card)]/90 backdrop-blur-sm border border-[var(--color-border)] rounded-full text-sm text-[var(--color-text-muted)] pointer-events-none">
+          👆 Drag to explore
+        </div>
+      }
+    </div>
+  </div>
+</section>
