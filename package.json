@@ -1,9 +1,15 @@
 {
   "name": "rishiraj-portfolio",
   "version": "1.1.0",
+  "author": {
+    "name": "rishi-rj-s",
+    "email": "rishirajsajeev@gmail.com"
+  },
+  "description": "The curios portfolio of Rishiraj Sajeev 😁",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "dev":"ng serve --watch",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",

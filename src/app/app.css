@@ -1,6 +1,0 @@
-:host {
-      display: block;
-      min-block-size: 100vh;
-      background-color: var(--color-background);
-      color: var(--color-text);
-    }

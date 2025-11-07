@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-hero',
+  selector: 'app-projects-grid',
   imports: [],
   template: `
     <p>
-      hero works!
+      projects-grid works!
     </p>
   `,
   styles: ``,
 })
-export class Hero {
+export class ProjectsGrid {
 
 }
