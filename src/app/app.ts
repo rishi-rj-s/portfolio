@@ -9,16 +9,12 @@ import { Navbar } from './components/navbar/navbar';
     Navbar
   ],
   template: `
-  <app-navbar />
-  <router-outlet />
-  `,
-  styles: [`
-    :host {
-      display: block;
-      min-block-size: 100vh;
-      background-color: var(--color-background);
-      color: var(--color-text);
-    }
-  `]
+  <div class="relative min-h-screen">
+    <app-navbar />
+    <div class="relative">
+      <router-outlet />
+    </div>
+  </div>
+  `
 })
 export class App {}
