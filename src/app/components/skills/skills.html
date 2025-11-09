@@ -1,106 +1,110 @@
-<section
-  class="py-24 bg-[var(--color-background)] transition-colors duration-500 overflow-hidden"
+<section 
+  id="skills" 
+  class="min-h-screen pt-18 pb-8 md:pb-12 relative overflow-hidden"
   aria-labelledby="skills-heading"
 >
-  <div class="max-w-screen-xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
-    <!-- Left Side: Controls -->
-    <div class="space-y-8 lg:order-1">
-      <h2
-        id="skills-heading"
-        class="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] bg-clip-text text-transparent"
-      >
-        Skill Galaxy 🚀
-      </h2>
-      <p class="text-lg text-[var(--color-text-muted)] max-w-md leading-relaxed">
-        Drag & explore the 3D globe, or select a category to spotlight specific technologies. 
-        The globe remains interactive even in focused mode!
-      </p>
+  <!-- Background Elements -->
+  <div class="absolute inset-0">
+    <div class="absolute top-1/4 left-0 w-72 h-72 bg-[var(--color-primary)] rounded-full mix-blend-multiply filter blur-[128px] opacity-10"></div>
+    <div class="absolute bottom-1/4 right-0 w-72 h-72 bg-[var(--color-accent)] rounded-full mix-blend-multiply filter blur-[128px] opacity-10"></div>
+  </div>
 
-      <!-- Category Filters -->
-      <div class="flex flex-wrap gap-3 mt-8">
-        @for (skill of skills(); track skill.category) {
-          <button
-            (click)="filterByCategory(skill.category)"
-            [class]="activeSkill() === skill.category 
-              ? 'px-5 py-2.5 text-sm font-medium rounded-full border-2 transition-all duration-300 transform-gpu hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-background)] bg-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-[var(--color-primary)]/50'
-              : 'px-5 py-2.5 text-sm font-medium rounded-full border-2 transition-all duration-300 transform-gpu hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-background)] bg-[var(--color-card)] text-[var(--color-text)] border-[var(--color-border)] hover:bg-[var(--color-card-hover)] hover:border-[var(--color-primary)]/50'"
-            [attr.aria-pressed]="activeSkill() === skill.category"
-          >
-            {{ skill.category }}
-          </button>
-        }
-
-        <button
-          (click)="clearActiveSkill()"
-          [class]="activeSkill() === null
-            ? 'px-5 py-2.5 text-sm font-medium rounded-full border-2 transition-all duration-300 transform-gpu hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] text-[var(--color-text-muted)] border-[var(--color-border)] hover:border-[var(--color-text-muted)] bg-[var(--color-card-hover)]'
-            : 'px-5 py-2.5 text-sm font-medium rounded-full border-2 transition-all duration-300 transform-gpu hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] text-[var(--color-text-muted)] border-[var(--color-border)] hover:border-[var(--color-text-muted)] bg-[var(--color-card)]'"
-        >
-          {{ activeSkill() ? '↺ Reset View' : '🌌 All' }}
-        </button>
+  <div class="relative z-10 max-w-7xl mx-auto px-6 w-full">
+    <!-- Section Header -->
+    <div class="text-center mb-6 md:mb-10 animate-fade-in-up md:mt-8 lg:mt-12">
+      <div class="inline-flex items-center space-x-2 px-4 py-2 bg-[var(--color-card)] border border-[var(--color-border)] rounded-full mb-4">
+        <svg class="w-4 h-4 text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        <span class="text-sm font-medium text-[var(--color-text-secondary)]">Technical Expertise</span>
       </div>
+      
+      <h2 id="skills-heading" class="text-3xl md:text-4xl lg:text-5xl font-bold mb-3">
+        <span class="text-gradient">Skills & Technologies</span>
+      </h2>
+      
+      <p class="text-sm md:text-base text-[var(--color-text-muted)] max-w-2xl mx-auto">
+        A comprehensive toolkit of modern technologies and frameworks to build scalable, 
+        production-ready applications.
+      </p>
+    </div>
 
-      <!-- Hint Text -->
-      @if (activeSkill() !== null) {
-        <div class="mt-4 p-4 bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/30 rounded-lg">
-          <p class="text-sm text-[var(--color-text-secondary)]">
-            💡 <strong>Tip:</strong> You can still drag to rotate the globe in focused mode!
+    <!-- Skills Grid -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+      @for (skill of skills(); track skill.category; let i = $index) {
+        <div 
+          class="group relative bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl p-5 md:p-6 hover:border-[var(--color-primary)] transition-all duration-300 hover:shadow-[var(--glow-primary)] hover:-translate-y-1 animate-scale-in"
+          [style.animation-delay.ms]="i * 100"
+        >
+          <!-- Category Header -->
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-3">
+              <div 
+                class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+                [style.background]="'linear-gradient(135deg, ' + skill.color + '20, ' + skill.color + '10)'"
+                [style.border]="'1px solid ' + skill.color + '40'"
+              >
+                <svg class="w-5 h-5" [style.color]="skill.color" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  @switch (skill.category) {
+                    @case ('Frontend') {
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    }
+                    @case ('Backend') {
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/>
+                    }
+                    @case ('Database') {
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/>
+                    }
+                    @case ('DevOps') {
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    }
+                    @default {
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                    }
+                  }
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-lg md:text-xl font-bold text-[var(--color-text)]">{{ skill.category }}</h3>
+              </div>
+            </div>
+            
+            <div class="w-8 h-8 rounded-full bg-[var(--color-card-hover)] flex items-center justify-center group-hover:bg-[var(--color-primary)] transition-colors flex-shrink-0">
+              <span class="text-xs font-bold text-[var(--color-text-muted)] group-hover:text-white">{{ skill.items.length }}</span>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <p class="text-xs md:text-sm text-[var(--color-text-muted)] mb-4 line-clamp-2">
+            {{ skill.description }}
           </p>
+
+          <!-- Skills List -->
+          <div class="flex flex-wrap gap-2">
+            @for (item of skill.items; track item.name) {
+              <div class="group/item flex items-center space-x-2 px-3 py-1.5 bg-[var(--color-card-hover)] border border-[var(--color-border)] rounded-md hover:border-[var(--color-primary)] hover:bg-[var(--color-card)] transition-all duration-300">
+                <img  width="16" height="16" decoding="async" 
+                  [src]="item.logo" 
+                  [alt]="item.name + ' logo'"
+                  class="w-4 h-4 object-contain"
+                  loading="lazy"
+                />
+                <span class="text-xs font-medium text-[var(--color-text)]">{{ item.name }}</span>
+              </div>
+            }
+          </div>
         </div>
       }
     </div>
 
-    <!-- Right Side: 3D Globe -->
-    <div class="relative w-full h-[500px] flex items-center justify-center lg:order-2">
-      <!-- Glow Effect -->
-      <div
-        class="absolute inset-0 blur-[100px] opacity-20 transition-opacity duration-700"
-        [class.opacity-40]="activeSkill() !== null"
-        [style.background]="activeSkill() !== null 
-          ? 'radial-gradient(circle at 50% 50%, var(--color-primary) 0%, var(--color-accent) 30%, transparent 70%)'
-          : 'radial-gradient(circle at 50% 50%, var(--color-primary) 0%, var(--color-accent) 30%, transparent 70%)'"
-      ></div>
-
-      <!-- 3D Container -->
-      <div
-        #cloudContainer
-        class="relative w-full h-full flex items-center justify-center cursor-grab active:cursor-grabbing"
-        [class.cursor-grabbing]="isDragging()"
-      >
-        @for (skill of skills(); track skill.category) {
-          @for (item of skill.items; track item.name) {
-            <div
-              class="logo-item"
-              [ngStyle]="getLogoStyle(item.name)"
-            >
-              <div class="logo-wrapper">
-                <img
-                  [src]="item.logo"
-                  [alt]="item.name + ' logo'"
-                  class="logo-image"
-                  loading="lazy"
-                  (mouseenter)="hoveredSkill.set(item.name)"
-                  (mouseleave)="hoveredSkill.set(null)"
-                />
-              </div>
-
-              <!-- Tooltip -->
-              @if (hoveredSkill() === item.name && !isDragging()) {
-                <span class="tooltip">
-                  {{ item.name }}
-                </span>
-              }
-            </div>
-          }
-        }
+    <!-- Bottom CTA -->
+    <div class="mt-6 md:mt-8 text-center animate-fade-in-up" style="animation-delay: 600ms;">
+      <div class="inline-flex items-center space-x-2 text-[var(--color-text-muted)]">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        <span class="text-sm font-medium">Always learning and expanding my skillset</span>
       </div>
-
-      <!-- Instructions Overlay -->
-      @if (!isDragging() && activeSkill() === null) {
-        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-[var(--color-card)]/90 backdrop-blur-sm border border-[var(--color-border)] rounded-full text-sm text-[var(--color-text-muted)] pointer-events-none">
-          👆 Drag to explore
-        </div>
-      }
     </div>
   </div>
 </section>

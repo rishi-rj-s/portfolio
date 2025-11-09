@@ -1,0 +1,188 @@
+<section id="about" class="relative min-h-screen flex items-center overflow-hidden pt-10 lg:pt-20"
+    aria-labelledby="hero-heading">
+    <!-- Sophisticated Background -->
+    <div class="absolute inset-0 overflow-hidden">
+        <!-- Subtle Grid with Fade -->
+        <div class="absolute inset-0 opacity-[0.03]"
+            style="background-image: linear-gradient(var(--color-border) 1px, transparent 1px), linear-gradient(90deg, var(--color-border) 1px, transparent 1px); background-size: 100px 100px;">
+        </div>
+
+        <!-- Gradient Mesh -->
+        <div class="absolute inset-0 bg-gradient-to-br from-transparent via-[var(--color-primary)]/5 to-transparent">
+        </div>
+
+        <!-- Animated Gradient Orbs - More Subtle -->
+        <div class="absolute top-0 -left-1/4 w-[800px] h-[800px] bg-[var(--color-primary)] rounded-full mix-blend-multiply filter blur-[150px] opacity-10 animate-float">
+        </div>
+        <div class="absolute bottom-0 -right-1/4 w-[600px] h-[600px] bg-[var(--color-accent)] rounded-full mix-blend-multiply filter blur-[150px] opacity-10 animate-float"
+            style="animation-delay: 3s;">
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="relative z-10 w-full max-w-7xl mx-auto px-6 py-16 md:py-0">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <!-- Left: Content -->
+            <div class="space-y-6 md:space-y-8">
+                <!-- Status Badge -->
+                <div class="inline-flex items-center gap-3 px-5 py-2.5 bg-[var(--color-card)] backdrop-blur-xl border border-[var(--color-border)] rounded-full shadow-sm">
+                    <span class="relative flex h-2.5 w-2.5">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-success)] opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[var(--color-success)]"></span>
+                    </span>
+                    <span class="text-sm font-medium text-[var(--color-text-secondary)]">Open to opportunities</span>
+                </div>
+
+                <!-- Main Heading -->
+                <div class="space-y-3 md:space-y-4">
+                    <div class="space-y-1 md:space-y-2">
+                        <p class="text-base md:text-lg font-medium text-[var(--color-text-secondary)] tracking-wide">Hello, I'm</p>
+                        <h1 id="hero-heading" class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight">
+                            <span class="block text-[var(--color-text)] mb-2">Rishiraj Sajeev</span>
+                        </h1>
+                    </div>
+                    <p class="text-xl sm:text-2xl md:text-3xl font-semibold text-gradient bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] bg-clip-text"
+                        style="background-size: 200% 200%; animation: gradient-shift 4s ease infinite;">
+                        Full-Stack Developer
+                    </p>
+                </div>
+
+                <!-- Description -->
+                <p class="text-base md:text-lg text-[var(--color-text-muted)] leading-relaxed max-w-xl">
+                    Building exceptional digital experiences through <span class="text-[var(--color-text-secondary)] font-medium">modern web technologies</span>. 
+                    Specialized in crafting scalable architectures with a focus on performance and user experience.
+                </p>
+
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row flex-wrap gap-4">
+                    <a href="#projects"
+                        class="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] text-white rounded-xl font-semibold shadow-lg hover:shadow-[var(--color-primary)]/30 transition-all duration-300 hover:-translate-y-0.5">
+                        <span>View Projects</span>
+                        <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                    </a>
+
+                    <a href="#contact"
+                        class="inline-flex items-center justify-center gap-3 px-8 py-4 bg-[var(--color-card)] border-2 border-[var(--color-border)] text-[var(--color-text)] rounded-xl font-semibold hover:border-[var(--color-primary)] hover:bg-[var(--color-card-hover)] transition-all duration-300 hover:-translate-y-0.5">
+                        <span>Get in Touch</span>
+                    </a>
+                </div>
+
+                <!-- Social Links -->
+                <div class="flex items-center gap-4">
+                    <span class="text-sm text-[var(--color-text-muted)] font-medium">Connect:</span>
+                    <div class="flex gap-3">
+                        <a href="https://github.com/rishi-rj-s" target="_blank" rel="noopener noreferrer"
+                            class="p-3 bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg hover:border-[var(--color-primary)] hover:bg-[var(--color-card-hover)] hover:-translate-y-1 transition-all duration-300 group"
+                            aria-label="GitHub">
+                            <svg class="w-5 h-5 text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)] transition-colors"
+                                fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                            </svg>
+                        </a>
+
+                        <a href="https://www.linkedin.com/in/rishiraj-sajeev" target="_blank" rel="noopener noreferrer"
+                            class="p-3 bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg hover:border-[var(--color-primary)] hover:bg-[var(--color-card-hover)] hover:-translate-y-1 transition-all duration-300 group"
+                            aria-label="LinkedIn">
+                            <svg class="w-5 h-5 text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)] transition-colors"
+                                fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                            </svg>
+                        </a>
+
+                        <a href="mailto:rishirajsajeev@gmail.com"
+                            class="p-3 bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg hover:border-[var(--color-primary)] hover:bg-[var(--color-card-hover)] hover:-translate-y-1 transition-all duration-300 group"
+                            aria-label="Email">
+                            <svg class="w-5 h-5 text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)] transition-colors"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Skills & Stats -->
+            <div class="space-y-6 md:space-y-8">
+                <!-- Skills Grid -->
+                <div class="space-y-4 md:space-y-6">
+                    <h2 class="text-xl md:text-2xl font-bold text-[var(--color-text)]">Technical Expertise</h2>
+                    
+                    <!-- Frontend -->
+                    <div class="space-y-3">
+                        <h3 class="text-sm font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">Frontend</h3>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="px-4 py-2.5 bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg text-sm font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] hover:shadow-lg transition-all">
+                                Angular
+                            </span>
+                            <span class="px-4 py-2.5 bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg text-sm font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] hover:shadow-lg transition-all">
+                                React
+                            </span>
+                            <span class="px-4 py-2.5 bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg text-sm font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] hover:shadow-lg transition-all">
+                                Vue
+                            </span>
+                            <span class="px-4 py-2.5 bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg text-sm font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] hover:shadow-lg transition-all">
+                                TypeScript
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Backend -->
+                    <div class="space-y-3">
+                        <h3 class="text-sm font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">Backend</h3>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="px-4 py-2.5 bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg text-sm font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] hover:shadow-lg transition-all">
+                                Node.js
+                            </span>
+                            <span class="px-4 py-2.5 bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg text-sm font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] hover:shadow-lg transition-all">
+                                Express
+                            </span>
+                            <span class="px-4 py-2.5 bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg text-sm font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] hover:shadow-lg transition-all">
+                                PostgreSQL
+                            </span>
+                            <span class="px-4 py-2.5 bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg text-sm font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] hover:shadow-lg transition-all">
+                                MongoDB
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- DevOps & Tools -->
+                    <div class="space-y-3">
+                        <h3 class="text-sm font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">DevOps & Tools</h3>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="px-4 py-2.5 bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg text-sm font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-success)] hover:text-[var(--color-success)] hover:shadow-lg transition-all">
+                                Docker
+                            </span>
+                            <span class="px-4 py-2.5 bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg text-sm font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-success)] hover:text-[var(--color-success)] hover:shadow-lg transition-all">
+                                Git
+                            </span>
+                            <span class="px-4 py-2.5 bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg text-sm font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-success)] hover:text-[var(--color-success)] hover:shadow-lg transition-all">
+                                AWS
+                            </span>
+                            <span class="px-4 py-2.5 bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg text-sm font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-success)] hover:text-[var(--color-success)] hover:shadow-lg transition-all">
+                                CI/CD
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-2 gap-4 pt-4">
+                    <div class="p-4 bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl text-center hover:border-[var(--color-primary)] transition-all">
+                        <div class="text-3xl font-bold text-gradient bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] bg-clip-text">4+</div>
+                        <div class="text-xs text-[var(--color-text-muted)] mt-1">Projects</div>
+                    </div>
+                    <div class="p-4 bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl text-center hover:border-[var(--color-primary)] transition-all">
+                        <div class="text-3xl font-bold text-gradient bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] bg-clip-text">2023</div>
+                        <div class="text-xs text-[var(--color-text-muted)] mt-1">Graduate</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
