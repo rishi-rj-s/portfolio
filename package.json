@@ -1,12 +1,12 @@
 {
   "name": "rishiraj-portfolio",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "author": {
     "name": "rishi-rj-s",
     "email": "rishirajsajeev@gmail.com"
   },
   "description": "The curios portfolio of Rishiraj Sajeev 😁",
-  "license":"MIT",
+  "license": "MIT",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
