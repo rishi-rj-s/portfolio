@@ -83,7 +83,7 @@
           <div class="flex flex-wrap gap-2">
             @for (item of skill.items; track item.name) {
               <div class="group/item flex items-center space-x-2 px-3 py-1.5 bg-[var(--color-card-hover)] border border-[var(--color-border)] rounded-md hover:border-[var(--color-primary)] hover:bg-[var(--color-card)] transition-all duration-300">
-                <img 
+                <img  width="16" height="16" decoding="async" 
                   [src]="item.logo" 
                   [alt]="item.name + ' logo'"
                   class="w-4 h-4 object-contain"

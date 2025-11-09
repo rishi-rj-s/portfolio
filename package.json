@@ -6,6 +6,7 @@
     "email": "rishirajsajeev@gmail.com"
   },
   "description": "The curios portfolio of Rishiraj Sajeev 😁",
+  "license":"MIT",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
