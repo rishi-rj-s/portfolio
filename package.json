@@ -1,9 +1,15 @@
 {
   "name": "rishiraj-portfolio",
-  "version": "0.0.0",
+  "version": "1.2.0",
+  "author": {
+    "name": "rishi-rj-s",
+    "email": "rishirajsajeev@gmail.com"
+  },
+  "description": "The curios portfolio of Rishiraj Sajeev 😁",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "dev": "ng serve --watch",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -33,9 +39,8 @@
     "@angular/ssr": "^20.3.9",
     "@tailwindcss/postcss": "^4.1.17",
     "express": "^5.1.0",
-    "postcss": "^8.5.6",
     "rxjs": "~7.8.0",
-    "tailwindcss": "^4.1.17",
+    "tailwindcss": "^4.0.0",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
