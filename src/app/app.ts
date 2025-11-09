@@ -52,4 +52,4 @@ import { Navbar } from './components/navbar/navbar';
     </script>
   `
 })
-export class App {}
+export class App { }

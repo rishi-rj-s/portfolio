@@ -11,7 +11,7 @@
     "ng": "ng",
     "start": "ng serve",
     "dev": "ng serve --watch",
-    "build": "ng build",
+    "build": "node set-env.js && ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:rishiraj-portfolio": "node dist/rishiraj-portfolio/server/server.mjs"
