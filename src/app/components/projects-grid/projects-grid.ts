@@ -1,6 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { AfterViewInit, Component, ElementRef, inject, OnDestroy, PLATFORM_ID, signal, ViewChild } from '@angular/core';
 
 interface Project {
   id: string;
@@ -23,22 +22,15 @@ interface Project {
     CommonModule,
   ],
   templateUrl: './projects-grid.html',
-  styles: [`
-    @keyframes shimmer {
-      0% {
-        background-position: -200% 0;
-      }
-      100% {
-        background-position: 200% 0;
-      }
-    }
-
-    .animate-shimmer {
-      animation: shimmer 3s linear infinite;
-    }
-  `]
+  styleUrl: './projects-grid.css'
 })
-export class ProjectsGrid {
+export class ProjectsGrid implements AfterViewInit, OnDestroy {
+  @ViewChild('projectsCarousel') carouselRef?: ElementRef<HTMLDivElement>;
+
+  private intersectionObserver?: IntersectionObserver;
+  private platformId = inject(PLATFORM_ID);
+  currentIndex = signal(0);
+
   projects = signal<Project[]>([
     {
       id: 'tagtics',
@@ -74,7 +66,7 @@ export class ProjectsGrid {
       subtitle: 'Taxi Booking Prototype',
       description: 'Modular microservice system with Angular-NestJS integration via gRPC and Kafka. Features real-time driver tracking using WebSockets and Redis pub/sub with event-driven communication.',
       challenge: 'Microservice Architecture',
-      impact: 'Inter-service Communication',
+      impact: 'Inter-service comm.',
       tech: ['Angular', 'NestJS', 'gRPC', 'Kafka', 'Redis', 'WebSockets'],
       github: 'https://github.com/eezy-cabs-rrjs/EC-Backend-MR',
       caseStudyRoute: '/case-study/eezy-cabs',
@@ -95,4 +87,72 @@ export class ProjectsGrid {
       image: ''
     }
   ]);
+
+  ngAfterViewInit() {
+    // Only run in browser
+    if (isPlatformBrowser(this.platformId)) {
+      this.setupIntersectionObserver();
+      this.updateIndicators();
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.intersectionObserver) {
+      this.intersectionObserver.disconnect();
+    }
+  }
+
+  private setupIntersectionObserver() {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const options = {
+      root: this.carouselRef?.nativeElement,
+      threshold: 0.6,
+      rootMargin: '0px'
+    };
+
+    this.intersectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const index = parseInt(entry.target.getAttribute('data-index') || '0');
+          this.currentIndex.set(index);
+          this.updateIndicators();
+        }
+      });
+    }, options);
+
+    // Observe all carousel items
+    const items = this.carouselRef?.nativeElement.querySelectorAll('.carousel-item');
+    items?.forEach((item, index) => {
+      item.setAttribute('data-index', index.toString());
+      this.intersectionObserver?.observe(item);
+    });
+  }
+
+  scrollToProject(index: number) {
+    const carousel = this.carouselRef?.nativeElement;
+    const items = carousel?.querySelectorAll('.carousel-item');
+
+    if (items && items[index]) {
+      items[index].scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center'
+      });
+      this.currentIndex.set(index);
+      this.updateIndicators();
+    }
+  }
+
+  private updateIndicators() {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const indicators = document.querySelectorAll('.carousel-indicator');
+    indicators.forEach((indicator, index) => {
+      if (index === this.currentIndex()) {
+        indicator.classList.add('active');
+      } else {
+        indicator.classList.remove('active');
+      }
+    });
+  }
+
 }

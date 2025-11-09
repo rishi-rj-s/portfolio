@@ -14,6 +14,7 @@
   --color-success: #10b981;
   --glow-primary: rgba(59, 130, 246, 0.3);
   --glow-accent: rgba(139, 92, 246, 0.3);
+  --navbar-height: 64px;
 }
 
 /* Dark mode theme - Pure Black */
@@ -35,7 +36,7 @@
 html {
   color-scheme: light dark;
   scroll-behavior: smooth;
-  scroll-padding-top: 80px;
+  scroll-padding-top: var(--navbar-height);
 }
 
 body {
@@ -198,6 +199,23 @@ body {
   box-shadow: 0 0 40px var(--glow-primary), 0 0 80px var(--glow-accent);
 }
 
+/* Section spacing to account for fixed navbar */
+section {
+  scroll-margin-top: var(--navbar-height);
+}
+
+/* Special handling for hero section - full viewport */
+section#about {
+  scroll-margin-top: 0;
+  min-height: 100vh;
+}
+
+/* All other sections account for navbar */
+section:not(#about) {
+  /* Compensate for navbar in min-height calculations */
+  position: relative;
+}
+
 /* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -210,6 +228,9 @@ body {
   }
 }
 
-section:not(#about) {
-  scroll-margin-top: 80px;
+/* Responsive navbar height adjustments */
+@media (max-width: 768px) {
+  :root {
+    --navbar-height: 56px;
+  }
 }

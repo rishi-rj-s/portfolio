@@ -14,7 +14,7 @@ import { RouterLink } from '@angular/router';
       class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
       [class.nav-scrolled]="isScrolled()"
     >
-      <div class="max-w-7xl mx-auto px-6 py-4">
+      <div class="max-w-7xl mx-auto px-2 py-3">
         <div class="flex items-center justify-between">
           <!-- Logo/Brand -->
           <a routerLink="/" class="group flex items-center space-x-3">
