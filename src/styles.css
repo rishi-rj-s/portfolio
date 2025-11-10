@@ -1,3 +1,4 @@
+@import url('https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap');
 @import "tailwindcss";
 
 /* Light mode theme */
@@ -6,7 +7,7 @@
   --color-card: #ffffff;
   --color-card-hover: #f5f5f5;
   --color-border: #e5e7eb;
-  --color-text: #111827;
+  --color-text: #271c11;
   --color-text-muted: #6b7280;
   --color-text-secondary: #374151;
   --color-primary: #3b82f6;
@@ -15,6 +16,7 @@
   --glow-primary: rgba(59, 130, 246, 0.3);
   --glow-accent: rgba(139, 92, 246, 0.3);
   --navbar-height: 64px;
+  --font-sans: 'Clash Display', sans-serif;
 }
 
 /* Dark mode theme - Pure Black */
@@ -43,7 +45,7 @@ body {
   background-color: var(--color-background);
   color: var(--color-text);
   transition: background-color 0.3s ease, color 0.3s ease;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-family: var(--font-sans);
   overflow-x: hidden;
 }
 
@@ -83,6 +85,7 @@ body {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -93,6 +96,7 @@ body {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -103,6 +107,7 @@ body {
     opacity: 0;
     transform: scale(0.9);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -114,6 +119,7 @@ body {
     opacity: 0;
     transform: translateX(-50px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -125,6 +131,7 @@ body {
     opacity: 0;
     transform: translateX(50px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -132,18 +139,24 @@ body {
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-20px);
   }
 }
 
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.5;
   }
@@ -153,15 +166,19 @@ body {
   0% {
     background-position: -1000px 0;
   }
+
   100% {
     background-position: 1000px 0;
   }
 }
 
 @keyframes gradient-shift {
-  0%, 100% {
+
+  0%,
+  100% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
@@ -218,6 +235,7 @@ section:not(#about) {
 
 /* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {

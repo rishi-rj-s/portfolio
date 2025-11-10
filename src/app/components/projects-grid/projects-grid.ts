@@ -11,7 +11,6 @@ interface Project {
   tech: string[];
   github?: string;
   live?: string;
-  caseStudyRoute: string;
   featured: boolean;
   image: string;
 }
@@ -42,9 +41,8 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
       tech: ['React', 'Supabase', 'PostgreSQL', 'REST APIs'],
       github: 'https://github.com/tagtics/tagtics-frontend',
       live: 'https://www.tagtics.online',
-      caseStudyRoute: '/case-study/tagtics',
       featured: true,
-      image: ''
+      image: 'tagtics.png' // Update with your actual filename
     },
     {
       id: 'apply-log',
@@ -56,9 +54,8 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
       tech: ['Vue 3', 'Pinia', 'Supabase', 'PostgreSQL', 'RLS'],
       github: 'https://github.com/rishi-rj-s/job-tracker-frontend',
       live: 'https://apply-log-henna.vercel.app/',
-      caseStudyRoute: '/case-study/apply-log',
       featured: true,
-      image: ''
+      image: 'apply-log.png' // Update with your actual filename
     },
     {
       id: 'eezy-cabs',
@@ -69,9 +66,8 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
       impact: 'Inter-service comm.',
       tech: ['Angular', 'NestJS', 'gRPC', 'Kafka', 'Redis', 'WebSockets'],
       github: 'https://github.com/eezy-cabs-rrjs/EC-Backend-MR',
-      caseStudyRoute: '/case-study/eezy-cabs',
       featured: false,
-      image: ''
+      image: 'eezy-cabs.png' // Update with your actual filename
     },
     {
       id: 'fashion-studio',
@@ -82,17 +78,17 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
       impact: 'Role-Based Access',
       tech: ['Node.js', 'Express', 'MongoDB', 'AWS EC2', 'OAuth'],
       github: 'https://github.com/rishi-rj-s/RSBackend',
-      caseStudyRoute: '/case-study/fashion-studio',
       featured: false,
-      image: ''
+      image: 'fashion-studio.png' // Update with your actual filename
     }
   ]);
 
   ngAfterViewInit() {
-    // Only run in browser
     if (isPlatformBrowser(this.platformId)) {
-      this.setupIntersectionObserver();
-      this.updateIndicators();
+      // Small delay to ensure DOM is fully rendered
+      setTimeout(() => {
+        this.setupIntersectionObserver();
+      }, 100);
     }
   }
 
@@ -103,34 +99,45 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
   }
 
   private setupIntersectionObserver() {
-    if (!isPlatformBrowser(this.platformId)) return;
-    const options = {
-      root: this.carouselRef?.nativeElement,
-      threshold: 0.6,
+    if (!isPlatformBrowser(this.platformId) || !this.carouselRef) return;
+
+    const carousel = this.carouselRef.nativeElement;
+    const items = carousel.querySelectorAll('.carousel-item');
+
+    if (!items || items.length === 0) {
+      console.warn('No carousel items found');
+      return;
+    }
+
+    // IntersectionObserver to track which item is in view
+    const options: IntersectionObserverInit = {
+      root: carousel,
+      threshold: 0.5, // Item is considered "active" when 50% visible
       rootMargin: '0px'
     };
 
     this.intersectionObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          const index = parseInt(entry.target.getAttribute('data-index') || '0');
-          this.currentIndex.set(index);
-          this.updateIndicators();
+          const index = Array.from(items).indexOf(entry.target as Element);
+          if (index !== -1 && index !== this.currentIndex()) {
+            this.currentIndex.set(index);
+          }
         }
       });
     }, options);
 
-    // Observe all carousel items
-    const items = this.carouselRef?.nativeElement.querySelectorAll('.carousel-item');
-    items?.forEach((item, index) => {
-      item.setAttribute('data-index', index.toString());
+    // Observe all items
+    items.forEach(item => {
       this.intersectionObserver?.observe(item);
     });
   }
 
   scrollToProject(index: number) {
-    const carousel = this.carouselRef?.nativeElement;
-    const items = carousel?.querySelectorAll('.carousel-item');
+    if (!isPlatformBrowser(this.platformId) || !this.carouselRef) return;
+
+    const carousel = this.carouselRef.nativeElement;
+    const items = carousel.querySelectorAll('.carousel-item');
 
     if (items && items[index]) {
       items[index].scrollIntoView({
@@ -139,20 +146,6 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
         inline: 'center'
       });
       this.currentIndex.set(index);
-      this.updateIndicators();
     }
   }
-
-  private updateIndicators() {
-    if (!isPlatformBrowser(this.platformId)) return;
-    const indicators = document.querySelectorAll('.carousel-indicator');
-    indicators.forEach((indicator, index) => {
-      if (index === this.currentIndex()) {
-        indicator.classList.add('active');
-      } else {
-        indicator.classList.remove('active');
-      }
-    });
-  }
-
 }

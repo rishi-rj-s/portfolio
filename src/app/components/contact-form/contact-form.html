@@ -10,6 +10,45 @@
         </div>
     </div>
 
+    <!-- Notifications - Fixed to top-right of viewport -->
+    <div class="fixed top-24 right-6 z-[9999] space-y-3 max-w-md">
+        <!-- Global Error Message -->
+        @if (submitError()) {
+        <div
+            class="flex items-start space-x-3 p-4 bg-[var(--color-card)] backdrop-blur-md border border-[var(--color-accent)] rounded-xl shadow-2xl animate-fade-in">
+            <svg class="w-5 h-5 text-[var(--color-accent)] flex-shrink-0 mt-0.5" fill="none"
+                stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div class="flex-1 min-w-0">
+                <p class="text-[var(--color-accent)] font-medium text-sm">{{ submitError() }}</p>
+            </div>
+            <button type="button" (click)="submitError.set(null)"
+                class="text-[var(--color-accent)] hover:text-[var(--color-accent)]/80 transition-colors flex-shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        }
+
+        <!-- Success Message -->
+        @if (submitSuccess()) {
+        <div
+            class="flex items-center space-x-3 p-4 bg-[var(--color-card)] backdrop-blur-md border border-[var(--color-success)] rounded-xl shadow-2xl animate-fade-in">
+            <svg class="w-5 h-5 text-[var(--color-success)] flex-shrink-0" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p class="text-[var(--color-success)] font-medium text-sm flex-1">Message sent successfully! I'll get
+                back to you soon.</p>
+        </div>
+        }
+    </div>
+
     <div class="relative z-10 max-w-6xl mx-auto px-6 w-full">
         <!-- Section Header -->
         <div class="text-center mb-8 md:mb-12 animate-fade-in-up">
@@ -31,91 +70,93 @@
             </p>
         </div>
 
-        <div class="grid lg:grid-cols-2 gap-6 lg:gap-8 items-stretch">
+        <div class="grid lg:grid-cols-2 gap-6 lg:gap-8 lg:items-stretch">
             <!-- Left: Contact Info -->
-            <div class="animate-slide-in-left">
+            <div class="animate-slide-in-left flex">
                 <div
-                    class="bg-[var(--color-card)] border border-[var(--color-border)] rounded-2xl p-6 md:p-7 space-y-6 h-full flex flex-col">
-                    <!-- Intro Text -->
-                    <div class="space-y-2">
-                        <h3 class="text-xl md:text-2xl font-bold text-[var(--color-text)]">Get in Touch</h3>
-                        <p class="text-sm md:text-base text-[var(--color-text-muted)] leading-relaxed">
-                            Feel free to reach out for collaborations, opportunities, or just a friendly chat about
-                            technology and innovation.
-                        </p>
-                    </div>
+                    class="bg-[var(--color-card)] border border-[var(--color-border)] rounded-2xl p-6 md:p-8 w-full flex flex-col justify-between">
+                    <div class="space-y-6">
+                        <!-- Intro Text -->
+                        <div class="space-y-2">
+                            <h3 class="text-2xl md:text-3xl font-bold text-[var(--color-text)]">Get in Touch</h3>
+                            <p class="text-base text-[var(--color-text-muted)] leading-relaxed">
+                                Feel free to reach out for collaborations, opportunities, or just a friendly chat about
+                                technology and innovation.
+                            </p>
+                        </div>
 
-                    <!-- Contact Methods -->
-                    <div class="space-y-3 flex-grow">
-                        <!-- Email -->
-                        <a href="mailto:rishirajsajeev@gmail.com"
-                            class="group flex items-center space-x-3.5 p-4 bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl hover:border-[var(--color-primary)] hover:bg-[var(--color-card-hover)] transition-all duration-300">
-                            <div
-                                class="w-12 h-12 flex items-center justify-center bg-[var(--color-primary)]/10 rounded-lg group-hover:bg-[var(--color-primary)]/20 transition-colors flex-shrink-0">
-                                <svg class="w-5 h-5 text-[var(--color-primary)]" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                </svg>
-                            </div>
-                            <div class="min-w-0">
+                        <!-- Contact Methods -->
+                        <div class="space-y-3">
+                            <!-- Email -->
+                            <a href="mailto:rishirajsajeev@gmail.com"
+                                class="group flex items-center space-x-4 p-4 bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl hover:border-[var(--color-primary)] hover:bg-[var(--color-card-hover)] transition-all duration-300">
                                 <div
-                                    class="text-xs text-[var(--color-text-muted)] font-semibold uppercase tracking-wide mb-1">
-                                    Email</div>
-                                <div class="text-sm md:text-base text-[var(--color-text)] font-medium truncate">
-                                    rishirajsajeev&#64;gmail.com</div>
-                            </div>
-                        </a>
-
-                        <!-- Phone -->
-                        <a href="tel:+917012256686"
-                            class="group flex items-center space-x-3.5 p-4 bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl hover:border-[var(--color-primary)] hover:bg-[var(--color-card-hover)] transition-all duration-300">
-                            <div
-                                class="w-12 h-12 flex items-center justify-center bg-[var(--color-primary)]/10 rounded-lg group-hover:bg-[var(--color-primary)]/20 transition-colors flex-shrink-0">
-                                <svg class="w-5 h-5 text-[var(--color-primary)]" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <div
-                                    class="text-xs text-[var(--color-text-muted)] font-semibold uppercase tracking-wide mb-1">
-                                    Phone</div>
-                                <div class="text-sm md:text-base text-[var(--color-text)] font-medium">+91 7012256686
+                                    class="w-12 h-12 flex items-center justify-center bg-[var(--color-primary)]/10 rounded-lg group-hover:bg-[var(--color-primary)]/20 transition-colors flex-shrink-0">
+                                    <svg class="w-5 h-5 text-[var(--color-primary)]" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
                                 </div>
-                            </div>
-                        </a>
+                                <div class="min-w-0">
+                                    <div
+                                        class="text-xs text-[var(--color-text-muted)] font-semibold uppercase tracking-wide mb-1">
+                                        Email</div>
+                                    <div class="text-base text-[var(--color-text)] font-medium truncate">
+                                        rishirajsajeev&#64;gmail.com</div>
+                                </div>
+                            </a>
 
-                        <!-- Location -->
-                        <div
-                            class="flex items-center space-x-3.5 p-4 bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl">
-                            <div
-                                class="w-12 h-12 flex items-center justify-center bg-[var(--color-primary)]/10 rounded-lg flex-shrink-0">
-                                <svg class="w-5 h-5 text-[var(--color-primary)]" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                            </div>
-                            <div>
+                            <!-- Phone -->
+                            <a href="tel:+917012256686"
+                                class="group flex items-center space-x-4 p-4 bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl hover:border-[var(--color-primary)] hover:bg-[var(--color-card-hover)] transition-all duration-300">
                                 <div
-                                    class="text-xs text-[var(--color-text-muted)] font-semibold uppercase tracking-wide mb-1">
-                                    Location</div>
-                                <div class="text-sm md:text-base text-[var(--color-text)] font-medium">Kerala, India
+                                    class="w-12 h-12 flex items-center justify-center bg-[var(--color-primary)]/10 rounded-lg group-hover:bg-[var(--color-primary)]/20 transition-colors flex-shrink-0">
+                                    <svg class="w-5 h-5 text-[var(--color-primary)]" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div
+                                        class="text-xs text-[var(--color-text-muted)] font-semibold uppercase tracking-wide mb-1">
+                                        Phone</div>
+                                    <div class="text-base text-[var(--color-text)] font-medium">+91 7012256686
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- Location -->
+                            <div
+                                class="flex items-center space-x-4 p-4 bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl">
+                                <div
+                                    class="w-12 h-12 flex items-center justify-center bg-[var(--color-primary)]/10 rounded-lg flex-shrink-0">
+                                    <svg class="w-5 h-5 text-[var(--color-primary)]" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div
+                                        class="text-xs text-[var(--color-text-muted)] font-semibold uppercase tracking-wide mb-1">
+                                        Location</div>
+                                    <div class="text-base text-[var(--color-text)] font-medium">Kerala, India
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Social Links -->
-                    <div class="pt-4 border-t border-[var(--color-border)]">
-                        <p class="text-sm md:text-base font-semibold text-[var(--color-text)] mb-3">Connect with me</p>
+                    <div class="pt-6 border-t border-[var(--color-border)] mt-6">
+                        <p class="text-base font-semibold text-[var(--color-text)] mb-4">Connect with me</p>
                         <div class="flex gap-3">
                             <a href="https://github.com/rishi-rj-s" target="_blank" rel="noopener noreferrer"
-                                class="w-12 h-12 flex items-center justify-center bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg hover:border-[var(--color-primary)] hover:bg-[var(--color-card-hover)] transition-all duration-300 group"
+                                class="w-12 h-12 flex items-center justify-center bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl hover:border-[var(--color-primary)] hover:bg-[var(--color-card-hover)] transition-all duration-300 group"
                                 aria-label="GitHub">
                                 <svg class="w-5 h-5 text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)] transition-colors"
                                     fill="currentColor" viewBox="0 0 24 24">
@@ -126,7 +167,7 @@
 
                             <a href="https://www.linkedin.com/in/rishiraj-sajeev" target="_blank"
                                 rel="noopener noreferrer"
-                                class="w-12 h-12 flex items-center justify-center bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg hover:border-[var(--color-primary)] hover:bg-[var(--color-card-hover)] transition-all duration-300 group"
+                                class="w-12 h-12 flex items-center justify-center bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl hover:border-[var(--color-primary)] hover:bg-[var(--color-card-hover)] transition-all duration-300 group"
                                 aria-label="LinkedIn">
                                 <svg class="w-5 h-5 text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)] transition-colors"
                                     fill="currentColor" viewBox="0 0 24 24">
@@ -136,7 +177,7 @@
                             </a>
 
                             <a href="https://x.com/rishi_rj_s" target="_blank" rel="noopener noreferrer"
-                                class="w-12 h-12 flex items-center justify-center bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg hover:border-[var(--color-primary)] hover:bg-[var(--color-card-hover)] transition-all duration-300 group"
+                                class="w-12 h-12 flex items-center justify-center bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl hover:border-[var(--color-primary)] hover:bg-[var(--color-card-hover)] transition-all duration-300 group"
                                 aria-label="X (Twitter)">
                                 <svg class="w-4.5 h-4.5 text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)] transition-colors"
                                     fill="currentColor" viewBox="0 0 24 24">
@@ -147,7 +188,7 @@
 
                             <a href="https://www.instagram.com/riiiiiiiiiiiiishiiiiiiiiiiiii" target="_blank"
                                 rel="noopener noreferrer"
-                                class="w-12 h-12 flex items-center justify-center bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg hover:border-[var(--color-primary)] hover:bg-[var(--color-card-hover)] transition-all duration-300 group"
+                                class="w-12 h-12 flex items-center justify-center bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl hover:border-[var(--color-primary)] hover:bg-[var(--color-card-hover)] transition-all duration-300 group"
                                 aria-label="Instagram">
                                 <svg class="w-5 h-5 text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)] transition-colors"
                                     fill="currentColor" viewBox="0 0 24 24">
@@ -161,36 +202,39 @@
             </div>
 
             <!-- Right: Contact Form -->
-            <div class="animate-slide-in-right">
+            <div class="animate-slide-in-right flex">
                 <form (ngSubmit)="handleSubmit()"
-                    class="bg-[var(--color-card)] border border-[var(--color-border)] rounded-2xl p-6 md:p-7 space-y-5 h-full flex flex-col">
+                    class="bg-[var(--color-card)] border border-[var(--color-border)] rounded-2xl p-6 md:p-8 space-y-5 w-full">
 
-                    <!-- Name -->
-                    <div>
-                        <label for="name" class="block text-sm font-semibold text-[var(--color-text)] mb-2">
-                            Name <span class="text-[var(--color-accent)]">*</span>
-                        </label>
-                        <input type="text" id="name" name="name" [(ngModel)]="formData.name"
-                            [ngClass]="{'border-[var(--color-accent)]': showErrors() && !isFieldValid('name')}"
-                            class="w-full px-4 py-3 bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all text-sm"
-                            placeholder="John Doe" required />
-                        @if (showErrors() && !isFieldValid('name')) {
-                        <p class="mt-2 text-sm text-[var(--color-accent)]">Name is required</p>
-                        }
-                    </div>
+                    <!-- Name & Email Row -->
+                    <div class="grid md:grid-cols-2 gap-5">
+                        <!-- Name -->
+                        <div>
+                            <label for="name" class="block text-sm font-semibold text-[var(--color-text)] mb-2">
+                                Name <span class="text-[var(--color-accent)]">*</span>
+                            </label>
+                            <input type="text" id="name" name="name" [(ngModel)]="formData.name"
+                                [ngClass]="{'border-[var(--color-accent)]': showErrors() && !isFieldValid('name')}"
+                                class="w-full px-4 py-3 bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all text-sm"
+                                placeholder="John Doe" required />
+                            @if (showErrors() && !isFieldValid('name')) {
+                            <p class="mt-2 text-xs text-[var(--color-accent)]">Name is required</p>
+                            }
+                        </div>
 
-                    <!-- Email -->
-                    <div>
-                        <label for="email" class="block text-sm font-semibold text-[var(--color-text)] mb-2">
-                            Email <span class="text-[var(--color-accent)]">*</span>
-                        </label>
-                        <input type="email" id="email" name="email" [(ngModel)]="formData.email"
-                            [ngClass]="{'border-[var(--color-accent)]': showErrors() && !isFieldValid('email')}"
-                            class="w-full px-4 py-3 bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all text-sm"
-                            placeholder="john@example.com" required />
-                        @if (showErrors() && !isFieldValid('email')) {
-                        <p class="mt-2 text-sm text-[var(--color-accent)]">Valid email is required</p>
-                        }
+                        <!-- Email -->
+                        <div>
+                            <label for="email" class="block text-sm font-semibold text-[var(--color-text)] mb-2">
+                                Email <span class="text-[var(--color-accent)]">*</span>
+                            </label>
+                            <input type="email" id="email" name="email" [(ngModel)]="formData.email"
+                                [ngClass]="{'border-[var(--color-accent)]': showErrors() && !isFieldValid('email')}"
+                                class="w-full px-4 py-3 bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all text-sm"
+                                placeholder="john@example.com" required />
+                            @if (showErrors() && !isFieldValid('email')) {
+                            <p class="mt-2 text-xs text-[var(--color-accent)]">Valid email is required</p>
+                            }
+                        </div>
                     </div>
 
                     <!-- Subject -->
@@ -200,55 +244,39 @@
                         </label>
                         <input type="text" id="subject" name="subject" [(ngModel)]="formData.subject"
                             [ngClass]="{'border-[var(--color-accent)]': showErrors() && !isFieldValid('subject')}"
-                            class="w-full px-4 py-3 bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all text-sm"
+                            class="w-full px-4 py-3 bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all text-sm"
                             placeholder="Project inquiry" required />
                         @if (showErrors() && !isFieldValid('subject')) {
-                        <p class="mt-2 text-sm text-[var(--color-accent)]">Subject is required</p>
+                        <p class="mt-2 text-xs text-[var(--color-accent)]">Subject is required</p>
                         }
                     </div>
 
                     <!-- Message -->
-                    <div class="flex-grow">
-                        <label for="message" class="block text-sm font-semibold text-[var(--color-text)] mb-2">
-                            Message <span class="text-[var(--color-accent)]">*</span>
-                        </label>
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <label for="message" class="block text-sm font-semibold text-[var(--color-text)]">
+                                Message <span class="text-[var(--color-accent)]">*</span>
+                            </label>
+                            <span class="text-xs text-[var(--color-text-muted)]">
+                                {{ formData.message.length }}/300
+                            </span>
+                        </div>
                         <textarea id="message" name="message" [(ngModel)]="formData.message"
                             [ngClass]="{'border-[var(--color-accent)]': showErrors() && !isFieldValid('message')}"
-                            rows="4"
-                            class="w-full px-4 py-3 bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all resize-none text-sm"
+                            maxlength="300"
+                            rows="5"
+                            class="w-full px-4 py-3 bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all resize-none text-sm"
                             placeholder='Feel free to say "🙋‍♂️ Hi 🙋‍♀️"...' required></textarea>
                         @if (showErrors() && !isFieldValid('message')) {
-                        <p class="mt-2 text-sm text-[var(--color-accent)]">Message is required</p>
+                        <p class="mt-2 text-xs text-[var(--color-accent)]">Message is required</p>
                         }
                     </div>
 
-                    <!-- Global Error Message -->
-                    @if (submitError()) {
-                    <div
-                        class="flex items-start space-x-3 p-4 bg-[var(--color-accent)]/10 border border-[var(--color-accent)] rounded-lg animate-fade-in">
-                        <svg class="w-6 h-6 text-[var(--color-accent)] flex-shrink-0 mt-0.5" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <div class="flex-1">
-                            <p class="text-[var(--color-accent)] font-medium text-sm">{{ submitError() }}</p>
-                        </div>
-                        <button type="button" (click)="submitError.set(null)"
-                            class="text-[var(--color-accent)] hover:text-[var(--color-accent)]/80 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                    </div>
-                    }
-
-                    <!-- hCaptcha Container - SSR Compatible -->
-                    <div class="space-y-3">
-                        <!-- Loading indicator - shown with CSS, not @if -->
-                        <div [class.hidden]="captchaReady()"
-                            class="flex items-center justify-center p-6 bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg transition-opacity duration-300">
+                    <!-- hCaptcha Container -->
+                    <div class="flex justify-center">
+                        <!-- Loading indicator -->
+                        <div [class.opacity-0]="captchaReady()" [class.pointer-events-none]="captchaReady()"
+                            class="absolute flex items-center justify-center p-5 bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl w-full max-w-[302px] transition-opacity duration-300">
                             <svg class="animate-spin h-5 w-5 text-[var(--color-primary)] mr-3" fill="none"
                                 viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
@@ -257,18 +285,18 @@
                                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                                 </path>
                             </svg>
-                            <span class="text-sm text-[var(--color-text-muted)]">Loading security verification...</span>
+                            <span class="text-sm text-[var(--color-text-muted)]">Loading verification...</span>
                         </div>
 
-                        <!-- Captcha widget container - ALWAYS in DOM for SSR -->
-                        <div class="flex justify-center min-h-[78px]" [class.opacity-0]="!captchaReady()">
+                        <!-- Captcha widget - Always visible in DOM -->
+                        <div class="w-[302px] h-[78px]" [class.opacity-0]="!captchaReady()">
                             <div data-captcha="true" class="transition-opacity duration-300"></div>
                         </div>
                     </div>
 
                     <!-- Submit Button -->
                     <button type="submit" [disabled]="isSubmitting()"
-                        class="w-full flex items-center justify-center space-x-2 px-6 py-3.5 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] text-white rounded-lg font-semibold hover:shadow-[var(--glow-primary)] transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-base">
+                        class="w-full flex items-center justify-center space-x-2 px-6 py-3.5 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] text-white rounded-xl font-semibold hover:shadow-[var(--glow-primary)] transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-base">
                         @if (isSubmitting()) {
                         <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
@@ -286,20 +314,6 @@
                         </svg>
                         }
                     </button>
-
-                    <!-- Success Message -->
-                    @if (submitSuccess()) {
-                    <div
-                        class="flex items-center space-x-3 p-4 bg-[var(--color-success)]/10 border border-[var(--color-success)] rounded-lg animate-fade-in">
-                        <svg class="w-6 h-6 text-[var(--color-success)] flex-shrink-0" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <p class="text-[var(--color-success)] font-medium text-sm">Message sent successfully! I'll get
-                            back to you soon.</p>
-                    </div>
-                    }
                 </form>
             </div>
         </div>

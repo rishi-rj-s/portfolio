@@ -1,31 +1,20 @@
 /* Shimmer Animation */
 @keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+  to { background-position: 200% 0; }
 }
 
 .animate-shimmer {
   animation: shimmer 3s linear infinite;
 }
 
-/* Carousel Container */
+/* Carousel Base */
 .carousel-container {
   position: relative;
   width: 100%;
   padding-block: 1.5rem;
-  display: flex;
-  flex-direction: column;
 }
 
-/* Projects Carousel */
 .projects-carousel {
-  list-style: none;
-  padding: 0;
-  margin: 0;
   display: flex;
   gap: 1.5rem;
   overflow-x: auto;
@@ -34,39 +23,29 @@
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
   padding-inline: max(calc((100vw - 1280px) / 2), 1.5rem);
-  flex: 1;
-  align-items: center;
+  scroll-padding-inline: max(calc((100vw - 1280px) / 2), 1.5rem);
   min-height: 450px;
 }
 
-.projects-carousel::-webkit-scrollbar {
-  display: none;
-}
+.projects-carousel::-webkit-scrollbar { display: none; }
 
 /* Carousel Item */
 .carousel-item {
   flex: 0 0 auto;
   width: min(85vw, 420px);
-  height: 100%;
   max-height: 550px;
   scroll-snap-align: center;
-  scroll-snap-stop: always;
-  transition: all 300ms ease-in-out;
-}
-
-/* Scroll to first item on load */
-.carousel-item.scroll-start {
-  scroll-snap-align: center;
+  transition: all 300ms;
 }
 
 /* Project Card */
 .project-card {
   position: relative;
-  background-color: var(--color-card);
+  background: var(--color-card);
   border: 1px solid var(--color-border);
   border-radius: 1.5rem;
   overflow: hidden;
-  transition: all 300ms ease-in-out;
+  transition: all 300ms;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -74,10 +53,11 @@
 
 .project-card:hover {
   border-color: var(--color-primary);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04);
   transform: translateY(-4px);
 }
+
+.project-card:hover .project-title { color: var(--color-primary); }
 
 /* Project Image */
 .project-image {
@@ -96,7 +76,6 @@
   flex: 1;
 }
 
-/* Project Header */
 .project-header {
   display: flex;
   flex-direction: column;
@@ -108,11 +87,7 @@
   font-weight: 700;
   color: var(--color-text);
   margin: 0;
-  transition: color 300ms ease-in-out;
-}
-
-.project-card:hover .project-title {
-  color: var(--color-primary);
+  transition: color 300ms;
 }
 
 .project-subtitle {
@@ -122,7 +97,6 @@
   margin: 0;
 }
 
-/* Project Description */
 .project-description {
   color: var(--color-text-muted);
   line-height: 1.5;
@@ -135,7 +109,7 @@
   overflow: hidden;
 }
 
-/* Project Metrics */
+/* Metrics */
 .project-metrics {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -143,7 +117,7 @@
 }
 
 .metric-card {
-  background-color: var(--color-card-hover);
+  background: var(--color-card-hover);
   border: 1px solid var(--color-border);
   border-radius: 0.5rem;
   padding: 0.625rem 0.75rem;
@@ -164,9 +138,7 @@
   color: var(--color-text);
 }
 
-.metric-value-primary {
-  color: var(--color-primary);
-}
+.metric-value-primary { color: var(--color-primary); }
 
 /* Tech Stack */
 .tech-stack {
@@ -177,7 +149,7 @@
 
 .tech-badge {
   padding: 0.25rem 0.625rem;
-  background-color: var(--color-card-hover);
+  background: var(--color-card-hover);
   border: 1px solid var(--color-border);
   border-radius: 9999px;
   font-size: 0.75rem;
@@ -185,7 +157,7 @@
   color: var(--color-text-secondary);
 }
 
-/* Project Actions */
+/* Actions */
 .project-actions {
   display: flex;
   gap: 0.5rem;
@@ -204,26 +176,23 @@
   border-radius: 0.5rem;
   font-weight: 600;
   font-size: 0.8125rem;
-  transition: all 300ms ease-in-out;
+  transition: all 300ms;
   text-decoration: none;
-  cursor: pointer;
 }
 
 .action-btn-secondary {
-  background-color: var(--color-card-hover);
+  background: var(--color-card-hover);
   border: 1px solid var(--color-border);
   color: var(--color-text-secondary);
 }
 
 .action-btn-secondary:hover {
   border-color: var(--color-primary);
-  background-color: var(--color-card);
+  background: var(--color-card);
   transform: scale(1.05);
 }
 
-.action-btn-secondary:hover .action-icon {
-  color: var(--color-primary);
-}
+.action-btn-secondary:hover .action-icon { color: var(--color-primary); }
 
 .action-btn-primary {
   background: linear-gradient(to right, var(--color-primary), var(--color-accent));
@@ -232,135 +201,49 @@
 }
 
 .action-btn-primary:hover {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
   transform: scale(1.05);
 }
 
 .action-icon {
   width: 1rem;
   height: 1rem;
-  transition: color 300ms ease-in-out;
-}
-
-.action-text {
-  transition: color 300ms ease-in-out;
+  transition: color 300ms;
 }
 
 /* Carousel Indicators */
 .carousel-indicators {
   display: flex;
   justify-content: center;
-  align-items: center;
   gap: 0.5rem;
   margin-top: 1.5rem;
 }
 
 .carousel-indicator {
-  width: 12px;
-  height: 12px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background-color: var(--color-border);
+  background: var(--color-border);
   border: none;
   cursor: pointer;
-  transition: all 200ms ease-in-out;
+  transition: all 200ms;
   padding: 0;
-  opacity: 0.4;
+  opacity: 0.5;
 }
 
 .carousel-indicator:hover {
   opacity: 1;
-  transform: scale(1.2);
-}
-
-.carousel-indicator:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 4px;
-}
-
-.carousel-indicator.active {
-  background-color: var(--color-primary);
-  opacity: 1;
   transform: scale(1.3);
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .projects-carousel {
-    min-height: 480px;
-  }
-
-  .carousel-item {
-    width: min(90vw, 380px);
-    max-height: 520px;
-  }
-
-  .project-image {
-    height: 120px;
-  }
-
-  .project-content {
-    padding: 1rem;
-    gap: 0.625rem;
-  }
-
-  .project-title {
-    font-size: 1.125rem;
-  }
-
-  .project-description {
-    font-size: 0.8125rem;
-  }
+.carousel-indicator.active {
+  width: 24px;
+  border-radius: 4px;
+  background: var(--color-primary);
+  opacity: 1;
 }
 
-@media (max-width: 480px) {
-  .projects-carousel {
-    min-height: 500px;
-  }
-
-  .carousel-item {
-    width: 90vw;
-    max-height: 540px;
-  }
-
-  .project-metrics {
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-  }
-
-  .project-image {
-    height: 110px;
-  }
-
-  .project-content {
-    padding: 0.875rem;
-    gap: 0.5rem;
-  }
-
-  .metric-card {
-    padding: 0.5rem 0.625rem;
-  }
-
-  .metric-label {
-    font-size: 0.625rem;
-  }
-
-  .metric-value {
-    font-size: 0.8125rem;
-  }
-
-  .action-btn {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.75rem;
-  }
-}
-
-/* Add smooth scroll padding for better UX */
-.projects-carousel {
-  scroll-padding-inline: max(calc((100vw - 1280px) / 2), 1.5rem);
-}
-
-/* Optional: Add fade effect to edges */
+/* Edge Fade */
 .carousel-container::before,
 .carousel-container::after {
   content: '';
@@ -382,9 +265,44 @@
   background: linear-gradient(to left, var(--color-background), transparent);
 }
 
+/* Responsive */
 @media (max-width: 768px) {
+  .projects-carousel { min-height: 480px; }
+  .carousel-item {
+    width: min(90vw, 380px);
+    max-height: 520px;
+  }
+  .project-image { height: 120px; }
+  .project-content {
+    padding: 1rem;
+    gap: 0.625rem;
+  }
+  .project-title { font-size: 1.125rem; }
+  .project-description { font-size: 0.8125rem; }
   .carousel-container::before,
-  .carousel-container::after {
-    width: 2rem;
+  .carousel-container::after { width: 2rem; }
+}
+
+@media (max-width: 480px) {
+  .projects-carousel { min-height: 500px; }
+  .carousel-item {
+    width: 90vw;
+    max-height: 540px;
+  }
+  .project-metrics {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  .project-image { height: 110px; }
+  .project-content {
+    padding: 0.875rem;
+    gap: 0.5rem;
+  }
+  .metric-card { padding: 0.5rem 0.625rem; }
+  .metric-label { font-size: 0.625rem; }
+  .metric-value { font-size: 0.8125rem; }
+  .action-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
   }
 }
