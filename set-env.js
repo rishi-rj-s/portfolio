@@ -3,14 +3,12 @@ const path = require('path');
 
 const targetPath = './src/environments';
 const prodFile = path.join(targetPath, 'environment.prod.ts');
-const baseFile = path.join(targetPath, 'environment.ts'); // New path for the base file
+const baseFile = path.join(targetPath, 'environment.ts');
 
-// Ensure the directory exists (create it recursively if it doesn't)
 if (!fs.existsSync(targetPath)) {
     fs.mkdirSync(targetPath, { recursive: true });
 }
 
-// 1. Configuration for the production file (using Vercel Environment Variables)
 const prodConfig = `
 export const environment = {
   production: true,
@@ -20,9 +18,7 @@ export const environment = {
 };
 `;
 
-// 2. Configuration for the base file (placeholder to satisfy the compiler's initial resolution check)
 const baseConfig = `
-// This file is a placeholder created dynamically during the build process
 export const environment = {
   production: false,
   web3formsUrl: 'DEV_URL_PLACEHOLDER',
@@ -31,7 +27,6 @@ export const environment = {
 };
 `;
 
-// Write both files
 fs.writeFileSync(prodFile, prodConfig);
 console.log('✅ Production environment variables injected into environment.prod.ts');
 

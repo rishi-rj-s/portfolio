@@ -2,7 +2,7 @@
   <!-- Background -->
   <div class="absolute inset-0">
     <div
-      class="absolute bottom-0 right-0 w-96 h-96 bg-[var(--color-accent)] rounded-full mix-blend-multiply filter blur-[128px] opacity-10">
+      class="absolute bottom-0 right-0 w-96 h-96 bg-[var(--color-accent)] rounded-full mix-blend-multiply filter blur-[40px] opacity-10">
     </div>
   </div>
 
@@ -89,10 +89,10 @@
                 <!-- Tech Stack -->
                 <div class="tech-stack">
                   @for (tech of project.tech.slice(0, 4); track tech) {
-                    <span class="tech-badge">{{ tech }}</span>
+                    <span class="tech-badge font-semibold">{{ tech }}</span>
                   }
                   @if (project.tech.length > 4) {
-                    <span class="tech-badge">+{{ project.tech.length - 4 }}</span>
+                    <span class="tech-badge font-semibold">+{{ project.tech.length - 4 }}</span>
                   }
                 </div>
 
