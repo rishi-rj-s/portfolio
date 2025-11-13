@@ -36,8 +36,8 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
       title: 'Tagtics',
       subtitle: 'SaaS Feedback Platform',
       description: 'Early-access prototype for in-context user feedback with authentication and workspace setup. Implements throttled REST endpoints and analytics schema for multi-tenant environments.',
-      challenge: 'Multi-tenant Architecture',
-      impact: 'Customer Satisfaction',
+      challenge: 'Multitenancy',
+      impact: 'Insights',
       tech: ['React', 'Supabase', 'PostgreSQL', 'REST APIs'],
       github: 'https://github.com/tagtics/tagtics-frontend',
       live: 'https://www.tagtics.online',
@@ -62,8 +62,8 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
       title: 'EEZY-CABS',
       subtitle: 'Taxi Booking Prototype',
       description: 'Modular microservice system with Angular-NestJS integration via gRPC and Kafka. Features real-time driver tracking using WebSockets and Redis pub/sub with event-driven communication.',
-      challenge: 'Microservice Architecture',
-      impact: 'Inter-service comm.',
+      challenge: 'Orchestration',
+      impact: 'Latency',
       tech: ['Angular', 'NestJS', 'gRPC', 'Kafka', 'Redis', 'WebSockets'],
       github: 'https://github.com/eezy-cabs-rrjs/EC-Backend-MR',
       featured: false,
@@ -112,19 +112,25 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
     // IntersectionObserver to track which item is in view
     const options: IntersectionObserverInit = {
       root: carousel,
-      threshold: 0.5, // Item is considered "active" when 50% visible
+      threshold: 0.15,
       rootMargin: '0px'
     };
 
+    let ticking = false;
+
     this.intersectionObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const index = Array.from(items).indexOf(entry.target as Element);
-          if (index !== -1 && index !== this.currentIndex()) {
-            this.currentIndex.set(index);
-          }
-        }
-      });
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const index = Array.from(items).indexOf(entry.target);
+              this.currentIndex.set(index);
+            }
+          });
+          ticking = false;
+        });
+        ticking = true;
+      }
     }, options);
 
     // Observe all items
