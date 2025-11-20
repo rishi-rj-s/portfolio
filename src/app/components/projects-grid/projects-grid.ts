@@ -53,7 +53,7 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
       impact: 'Data Security',
       tech: ['Vue 3', 'Pinia', 'Supabase', 'PostgreSQL', 'RLS'],
       github: 'https://github.com/rishi-rj-s/job-tracker-frontend',
-      live: 'https://apply-log-henna.vercel.app/',
+      live: 'https://www.apply-log.site/',
       featured: true,
       image: 'apply-log.png' // Update with your actual filename
     },
