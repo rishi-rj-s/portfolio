@@ -13,7 +13,15 @@ export class Theme {
 
     if (this.isBrowser) {
       const saved = sessionStorage.getItem('theme');
-      this.dark = saved === 'dark';
+
+      if (saved) {
+        this.dark = saved === 'dark';
+      } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        this.dark = prefersDark;
+        sessionStorage.setItem('theme', prefersDark ? 'dark' : 'light');
+      }
+
       this.applyTheme();
     }
   }
@@ -32,7 +40,6 @@ export class Theme {
 
   private applyTheme() {
     if (!this.isBrowser) return;
-    const html = document.documentElement;
-    html.classList.toggle('dark', this.dark);
+    document.documentElement.classList.toggle('dark', this.dark);
   }
 }
