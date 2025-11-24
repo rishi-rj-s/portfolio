@@ -11,7 +11,6 @@ interface Project {
   tech: string[];
   github?: string;
   live?: string;
-  featured: boolean;
   image: string;
 }
 
@@ -41,7 +40,6 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
       tech: ['React', 'Supabase', 'PostgreSQL', 'REST APIs'],
       github: 'https://github.com/tagtics/tagtics-frontend',
       live: 'https://www.tagtics.online',
-      featured: true,
       image: 'tagtics.png' // Update with your actual filename
     },
     {
@@ -54,7 +52,6 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
       tech: ['Vue 3', 'Pinia', 'Supabase', 'PostgreSQL', 'RLS'],
       github: 'https://github.com/rishi-rj-s/job-tracker-frontend',
       live: 'https://www.apply-log.site/',
-      featured: true,
       image: 'apply-log.png' // Update with your actual filename
     },
     {
@@ -66,7 +63,6 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
       impact: 'Latency',
       tech: ['Angular', 'NestJS', 'gRPC', 'Kafka', 'Redis', 'WebSockets'],
       github: 'https://github.com/eezy-cabs-rrjs/EC-Backend-MR',
-      featured: false,
       image: 'eezy-cabs.png' // Update with your actual filename
     },
     {
@@ -78,7 +74,6 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
       impact: 'Role-Based Access',
       tech: ['Node.js', 'Express', 'MongoDB', 'AWS EC2', 'OAuth'],
       github: 'https://github.com/rishi-rj-s/RSBackend',
-      featured: false,
       image: 'fashion-studio.png' // Update with your actual filename
     }
   ]);
