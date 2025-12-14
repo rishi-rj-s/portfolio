@@ -42,7 +42,7 @@
             <div class="project-image">
               <!-- Actual Project Image -->
               <img [src]="'assets/' + project.image" [alt]="project.title + ' preview'"
-                class="absolute inset-0 w-full h-full object-cover" />
+                class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
 
               <!-- Gradient Overlay -->
               <div

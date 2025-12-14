@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://rishiraj-sajeev.space/sitemap.xml
+Sitemap: https://www.rishiraj-sajeev.space/sitemap.xml
