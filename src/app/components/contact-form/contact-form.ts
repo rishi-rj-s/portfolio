@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID, signal, AfterViewInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID, signal, AfterViewInit, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ContactMail, ContactFormPayload } from '../../services/contact';
 import { environment } from '../../../environments/environment';
@@ -17,6 +17,7 @@ declare global {
   templateUrl: './contact-form.html'
 })
 export class ContactForm implements OnInit, AfterViewInit, OnDestroy {
+  private observer: IntersectionObserver | null = null;
   private hCaptchaWidgetId: string | null = null;
   private scriptLoadTimeout?: number;
   private renderAttempts = 0;
@@ -40,26 +41,41 @@ export class ContactForm implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private contactMail: ContactMail,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private elementRef: ElementRef
   ) {
     this.isBrowser.set(isPlatformBrowser(this.platformId));
   }
 
   ngOnInit() {
-    // Only load script if in browser
-    if (this.isBrowser()) {
-      this.loadHCaptchaScript();
-    }
+    // defer script loading to intersection observer
   }
 
   ngAfterViewInit() {
-    // Extra safety: try to render after view is fully initialized
-    if (this.isBrowser() && window.hcaptcha && !this.captchaReady()) {
-      this.renderHCaptcha();
+    if (this.isBrowser()) {
+      // Check if already loaded
+      if (window.hcaptcha && !this.captchaReady()) {
+        this.renderHCaptcha();
+      } else if ('IntersectionObserver' in window) {
+        // Lazy load on scroll
+        this.observer = new IntersectionObserver((entries) => {
+          if (entries[0].isIntersecting) {
+            this.loadHCaptchaScript();
+            this.observer?.disconnect();
+            this.observer = null;
+          }
+        }, { rootMargin: '100px' });
+
+        this.observer.observe(this.elementRef.nativeElement);
+      } else {
+        // Fallback for browsers without IntersectionObserver
+        this.loadHCaptchaScript();
+      }
     }
   }
 
   ngOnDestroy() {
+    this.observer?.disconnect();
     if (this.scriptLoadTimeout) {
       clearTimeout(this.scriptLoadTimeout);
     }
@@ -79,7 +95,7 @@ export class ContactForm implements OnInit, AfterViewInit, OnDestroy {
 
   private loadHCaptchaScript() {
     const scriptId = 'hcaptcha-script';
-    
+
     // Check if script already exists
     const existingScript = document.getElementById(scriptId);
     if (existingScript) {
@@ -104,7 +120,7 @@ export class ContactForm implements OnInit, AfterViewInit, OnDestroy {
     script.src = `https://js.hcaptcha.com/1/api.js?onload=hcaptchaOnLoad&render=explicit`;
     script.async = true;
     script.defer = true;
-    
+
     script.onerror = () => {
       console.error('Failed to load hCaptcha script');
       this.submitError.set('Failed to load security verification. Please refresh the page.');
@@ -143,7 +159,7 @@ export class ContactForm implements OnInit, AfterViewInit, OnDestroy {
     // Wait for Angular to render the DOM
     setTimeout(() => {
       const container = document.querySelector('[data-captcha="true"]') as HTMLElement;
-      
+
       if (!container) {
         console.warn(`Captcha container not found (attempt ${this.renderAttempts})`);
         // Retry after a delay
@@ -186,7 +202,7 @@ export class ContactForm implements OnInit, AfterViewInit, OnDestroy {
             this.submitError.set('Challenge expired. Please try again.');
           }
         });
-        
+
         this.captchaReady.set(true);
         console.log('hCaptcha rendered successfully, widget ID:', this.hCaptchaWidgetId);
       } catch (error) {
@@ -284,7 +300,7 @@ export class ContactForm implements OnInit, AfterViewInit, OnDestroy {
       next: (res: any) => {
         console.log('Form submission response:', res);
         this.isSubmitting.set(false);
-        
+
         if (res.success) {
           // Success - reset everything
           this.formData = { name: '', email: '', subject: '', message: '' };
@@ -304,7 +320,7 @@ export class ContactForm implements OnInit, AfterViewInit, OnDestroy {
       error: (err: any) => {
         console.error('Form submission failed:', err);
         this.isSubmitting.set(false);
-        
+
         // Show user-friendly error
         this.submitError.set(err.message || 'Failed to send message. Please try again later.');
         this.resetCaptcha();
