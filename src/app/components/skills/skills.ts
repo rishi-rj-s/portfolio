@@ -24,11 +24,11 @@ export class Skills {
       description: 'Modern UI frameworks with component-driven architecture',
       color: '#3b82f6',
       items: [
-        { name: 'Angular', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angularjs/angularjs-original.svg?width=32' },
-        { name: 'Vue 3', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg?width=32' },
-        { name: 'React', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg?width=32' },
-        { name: 'Tailwind CSS', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg?width=32' },
-        { name: 'Vite', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vitejs/vitejs-original.svg?width=32' },
+        { name: 'Angular', logo: 'assets/icons/angular.svg' },
+        { name: 'Vue 3', logo: 'assets/icons/vue-3.svg' },
+        { name: 'React', logo: 'assets/icons/react.svg' },
+        { name: 'Tailwind CSS', logo: 'assets/icons/tailwind-css.svg' },
+        { name: 'Vite', logo: 'assets/icons/vite.svg' },
       ],
     },
 
@@ -38,11 +38,11 @@ export class Skills {
       description: 'Building scalable REST and GraphQL APIs',
       color: '#10b981',
       items: [
-        { name: 'Node.js', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg?width=32' },
-        { name: 'NestJS', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nestjs/nestjs-original.svg?width=32' },
-        { name: 'Express', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg?width=32' },
-        { name: 'GraphQL', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/graphql/graphql-plain.svg?width=32' },
-        { name: 'gRPC', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/grpc/grpc-plain.svg?width=32' },
+        { name: 'Node.js', logo: 'assets/icons/node-js.svg' },
+        { name: 'NestJS', logo: 'assets/icons/nestjs.svg' },
+        { name: 'Express', logo: 'assets/icons/express.svg' },
+        { name: 'GraphQL', logo: 'assets/icons/graphql.svg' },
+        { name: 'gRPC', logo: 'assets/icons/grpc.svg' },
       ],
     },
 
@@ -52,9 +52,9 @@ export class Skills {
       description: 'Event-driven and realtime communication systems',
       color: '#ef4444',
       items: [
-        { name: 'Kafka', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apachekafka/apachekafka-original.svg?width=32' },
-        { name: 'Socket.io', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/socketio/socketio-original.svg?width=32' },
-        { name: 'Redis Pub/Sub', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg?width=32' },
+        { name: 'Kafka', logo: 'assets/icons/kafka.svg' },
+        { name: 'Socket.io', logo: 'assets/icons/socket-io.svg' },
+        { name: 'Redis Pub/Sub', logo: 'assets/icons/redis-pub-sub.svg' },
       ],
     },
 
@@ -64,10 +64,10 @@ export class Skills {
       description: 'Relational and NoSQL data storage engines',
       color: '#8b5cf6',
       items: [
-        { name: 'PostgreSQL', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg?width=32' },
-        { name: 'MongoDB', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg?width=32' },
-        { name: 'Redis', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg?width=32' },
-        { name: 'Supabase', logo: 'https://supabase.com/dashboard/img/supabase-logo.svg?width=32' },
+        { name: 'PostgreSQL', logo: 'assets/icons/postgresql.svg' },
+        { name: 'MongoDB', logo: 'assets/icons/mongodb.svg' },
+        { name: 'Redis', logo: 'assets/icons/redis.svg' },
+        { name: 'Supabase', logo: 'assets/icons/supabase.svg' },
       ],
     },
 
@@ -77,8 +77,8 @@ export class Skills {
       description: 'Schema modeling and type-safe database access',
       color: '#a855f7',
       items: [
-        { name: 'Prisma', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prisma/prisma-original.svg?width=32' },
-        { name: 'TypeORM', logo: 'https://raw.githubusercontent.com/gilbarbara/logos/de2c1f96ff6e74ea7ea979b43202e8d4b863c655/logos/typeorm.svg?width=32' },
+        { name: 'Prisma', logo: 'assets/icons/prisma.svg' },
+        { name: 'TypeORM', logo: 'assets/icons/typeorm.svg' },
       ],
     },
 
@@ -88,10 +88,11 @@ export class Skills {
       description: 'Container orchestration and CI/CD pipelines',
       color: '#f59e0b',
       items: [
-        { name: 'Docker', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg?width=32' },
-        { name: 'Kubernetes', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg?width=32' },
-        { name: 'GitHub Actions', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg?width=32' },
-        { name: 'AWS (EC2, S3)', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg?width=32' },],
+        { name: 'Docker', logo: 'assets/icons/docker.svg' },
+        { name: 'Kubernetes', logo: 'assets/icons/kubernetes.svg' },
+        { name: 'GitHub Actions', logo: 'assets/icons/github-actions.svg' },
+        { name: 'AWS (EC2, S3)', logo: 'assets/icons/aws-ec2-s3.svg' },
+      ],
     },
 
     // 7️⃣ State Management
@@ -100,10 +101,10 @@ export class Skills {
       description: 'Frontend and backend state management patterns',
       color: '#ec4899',
       items: [
-        { name: 'Pinia', logo: 'https://upload.wikimedia.org/wikipedia/commons/1/1c/Pinialogo.svg?width=32' },
-        { name: 'NgRx', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ngrx/ngrx-plain.svg?width=32' },
-        { name: 'Redux', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redux/redux-original.svg?width=32' },
-        { name: 'RxJS', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rxjs/rxjs-plain.svg?width=32' },
+        { name: 'Pinia', logo: 'assets/icons/pinia.svg' },
+        { name: 'NgRx', logo: 'assets/icons/ngrx.svg' },
+        { name: 'Redux', logo: 'assets/icons/redux.svg' },
+        { name: 'RxJS', logo: 'assets/icons/rxjs.svg' },
       ],
     },
 
@@ -113,11 +114,11 @@ export class Skills {
       description: 'Programming languages and core development tools',
       color: '#06b6d4',
       items: [
-        { name: 'JavaScript', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg?width=32' },
-        { name: 'TypeScript', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg?width=32' },
-        { name: 'SQL', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg?width=32' },
-        { name: 'Java', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg?width=32' },
-        { name: 'C', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg?width=32' },
+        { name: 'JavaScript', logo: 'assets/icons/javascript.svg' },
+        { name: 'TypeScript', logo: 'assets/icons/typescript.svg' },
+        { name: 'SQL', logo: 'assets/icons/sql.svg' },
+        { name: 'Java', logo: 'assets/icons/java.svg' },
+        { name: 'C', logo: 'assets/icons/c.svg' },
       ],
     },
 
@@ -127,9 +128,9 @@ export class Skills {
       description: 'Logging, metrics and dashboards for microservices',
       color: '#22c55e',
       items: [
-        { name: 'Prometheus', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prometheus/prometheus-original.svg?width=32' },
-        { name: 'Grafana', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/grafana/grafana-original.svg?width=32' },
-        { name: 'Loki', logo: 'https://raw.githubusercontent.com/grafana/loki/master/docs/sources/logo.png' },
+        { name: 'Prometheus', logo: 'assets/icons/prometheus.svg' },
+        { name: 'Grafana', logo: 'assets/icons/grafana.svg' },
+        { name: 'Loki', logo: 'assets/icons/loki.png' },
       ],
     },
   ]);
