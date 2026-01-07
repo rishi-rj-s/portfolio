@@ -42,7 +42,11 @@ import { RouterLink } from '@angular/router';
             <!-- Theme Toggle -->
             <button
               (click)="theme.toggleTheme($event)"
-              class="p-2.5 rounded-lg bg-[var(--color-card)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-card-hover)] transition-all duration-300 group"
+              (pointerdown)="startDisco($event)"
+              (dragstart)="$event.preventDefault()"
+              (contextmenu)="$event.preventDefault()"
+              draggable="false"
+              class="select-none p-2.5 rounded-lg bg-[var(--color-card)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-card-hover)] transition-all duration-300 group touch-none"
               [attr.aria-label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
             >
               <!-- Light Icon (Hidden in Dark Mode) -->
@@ -206,4 +210,18 @@ export class Navbar {
   closeMobileMenu() {
     this.mobileMenuOpen.set(false);
   }
+
+  startDisco(event: PointerEvent) {
+    this.theme.startDisco();
+
+    // Global listener for pointer release (covers mouse, touch, pen)
+    window.addEventListener('pointerup', this.stopDiscoBound);
+    window.addEventListener('pointercancel', this.stopDiscoBound);
+  }
+
+  private stopDiscoBound = () => {
+    this.theme.stopDisco();
+    window.removeEventListener('pointerup', this.stopDiscoBound);
+    window.removeEventListener('pointercancel', this.stopDiscoBound);
+  };
 }

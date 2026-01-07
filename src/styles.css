@@ -243,14 +243,12 @@ section:not(#about) {
   }
 }
 
-/* Responsive navbar height adjustments */
 @media (max-width: 768px) {
   :root {
     --navbar-height: 56px;
   }
 }
 
-/* View Transition API defaults disable */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
@@ -277,4 +275,65 @@ section:not(#about) {
 
 :root.dark .theme-icon-dark {
   display: block;
+}
+
+/* Disco Themes */
+:root.theme-disco-1 {
+  /* Red */
+  --color-background: #ef4444;
+  --color-card: #f87171;
+  --color-text: #ffffff;
+  --color-text-secondary: #fee2e2;
+  --color-border: #fca5a5;
+  --color-primary: #ffffff;
+  --color-accent: #fecaca;
+  --color-card-hover: #b91c1c;
+}
+
+:root.theme-disco-2 {
+  /* Yellow */
+  --color-background: #eab308;
+  --color-card: #facc15;
+  --color-text: #000000;
+  --color-text-secondary: #422006;
+  --color-border: #fde047;
+  --color-primary: #000000;
+  --color-accent: #854d0e;
+  --color-card-hover: #ca8a04;
+}
+
+:root.theme-disco-3 {
+  /* Green */
+  --color-background: #22c55e;
+  --color-card: #4ade80;
+  --color-text: #ffffff;
+  --color-text-secondary: #dcfce7;
+  --color-border: #86efac;
+  --color-primary: #ffffff;
+  --color-accent: #bbf7d0;
+  --color-card-hover: #15803d;
+}
+
+:root.theme-disco-4 {
+  /* Blue */
+  --color-background: #3b82f6;
+  --color-card: #60a5fa;
+  --color-text: #ffffff;
+  --color-text-secondary: #dbeafe;
+  --color-border: #93c5fd;
+  --color-primary: #ffffff;
+  --color-accent: #bfdbfe;
+  --color-card-hover: #1d4ed8;
+}
+
+:root.theme-disco-5 {
+  /* Purple */
+  --color-background: #a855f7;
+  --color-card: #c084fc;
+  --color-text: #ffffff;
+  --color-text-secondary: #f3e8ff;
+  --color-border: #d8b4fe;
+  --color-primary: #ffffff;
+  --color-accent: #e9d5ff;
+  --color-card-hover: #7e22ce;
 }
