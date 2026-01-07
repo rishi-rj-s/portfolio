@@ -10,7 +10,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "dev": "ng serve --watch",
+    "dev": "ng serve --watch --open",
     "build:prod": "ng build --configuration production",
     "build": "node set-env.js && pnpm run build:prod",
     "watch": "ng build --watch --configuration development",
@@ -52,6 +52,7 @@
     "@types/express": "^5.0.1",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^20.17.19",
+    "baseline-browser-mapping": "^2.9.12",
     "jasmine-core": "~5.9.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
