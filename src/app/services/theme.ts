@@ -30,12 +30,48 @@ export class Theme {
     return this.dark;
   }
 
-  toggleTheme() {
-    this.dark = !this.dark;
-    if (this.isBrowser) {
+  toggleTheme(event?: MouseEvent) {
+    const newThemeDark = !this.dark;
+
+    // @ts-ignore
+    if (!this.isBrowser || !document.startViewTransition || !event) {
+      this.dark = newThemeDark;
+      if (this.isBrowser) {
+        sessionStorage.setItem('theme', this.dark ? 'dark' : 'light');
+        this.applyTheme();
+      }
+      return;
+    }
+
+    const x = event.clientX;
+    const y = event.clientY;
+    const endRadius = Math.hypot(
+      Math.max(x, innerWidth - x),
+      Math.max(y, innerHeight - y)
+    );
+
+    // @ts-ignore
+    const transition = document.startViewTransition(() => {
+      this.dark = newThemeDark;
       sessionStorage.setItem('theme', this.dark ? 'dark' : 'light');
       this.applyTheme();
-    }
+    });
+
+    transition.ready.then(() => {
+      document.documentElement.animate(
+        {
+          clipPath: [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ],
+        },
+        {
+          duration: 500,
+          easing: 'ease-in',
+          pseudoElement: '::view-transition-new(root)',
+        }
+      );
+    });
   }
 
   private applyTheme() {
