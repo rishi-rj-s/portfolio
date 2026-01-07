@@ -111,7 +111,7 @@ export class ContactForm implements OnInit, AfterViewInit, OnDestroy {
 
     // Set up callback before loading script
     window.hcaptchaOnLoad = () => {
-      console.log('hCaptcha script loaded');
+      // console.log('hCaptcha script loaded');
       this.renderHCaptcha();
     };
 
@@ -180,17 +180,17 @@ export class ContactForm implements OnInit, AfterViewInit, OnDestroy {
       container.innerHTML = '';
 
       try {
-        console.log('Rendering hCaptcha...');
+        // console.log('Rendering hCaptcha...');
         this.hCaptchaWidgetId = window.hcaptcha.render(container, {
           sitekey: environment.hcaptchaSiteKey,
           theme: 'dark',
           size: 'normal',
           callback: (token: string) => {
-            console.log('Captcha completed');
+            // console.log('Captcha completed');
             this.submitError.set(null);
           },
           'expired-callback': () => {
-            console.log('Captcha expired');
+            // console.log('Captcha expired');
             this.submitError.set('Security verification expired. Please verify again.');
           },
           'error-callback': (error: any) => {
@@ -198,13 +198,13 @@ export class ContactForm implements OnInit, AfterViewInit, OnDestroy {
             this.submitError.set('Security verification failed. Please try again.');
           },
           'chalexpired-callback': () => {
-            console.log('Challenge expired');
+            // console.log('Challenge expired');
             this.submitError.set('Challenge expired. Please try again.');
           }
         });
 
         this.captchaReady.set(true);
-        console.log('hCaptcha rendered successfully, widget ID:', this.hCaptchaWidgetId);
+        // console.log('hCaptcha rendered successfully, widget ID:', this.hCaptchaWidgetId);
       } catch (error) {
         console.error('hCaptcha render error:', error);
         this.submitError.set('Failed to initialize security verification.');
@@ -220,7 +220,7 @@ export class ContactForm implements OnInit, AfterViewInit, OnDestroy {
 
     try {
       const response = window.hcaptcha.getResponse(this.hCaptchaWidgetId);
-      console.log('Captcha token retrieved:', response ? 'exists' : 'empty');
+      // console.log('Captcha token retrieved:', response ? 'exists' : 'empty');
       return response || null;
     } catch (error) {
       console.error('Error getting captcha response:', error);
@@ -235,7 +235,7 @@ export class ContactForm implements OnInit, AfterViewInit, OnDestroy {
 
     try {
       window.hcaptcha.reset(this.hCaptchaWidgetId);
-      console.log('Captcha reset');
+      // console.log('Captcha reset');
     } catch (error) {
       console.error('Error resetting captcha:', error);
     }
@@ -291,14 +291,14 @@ export class ContactForm implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    console.log('Submitting form with captcha token');
+    // console.log('Submitting form with captcha token');
     this.isSubmitting.set(true);
     this.submitSuccess.set(false);
 
     // Submit form with captcha token
     this.contactMail.sendForm(this.formData, captchaToken).subscribe({
       next: (res: any) => {
-        console.log('Form submission response:', res);
+        // console.log('Form submission response:', res);
         this.isSubmitting.set(false);
 
         if (res.success) {

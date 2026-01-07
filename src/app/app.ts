@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Navbar } from './components/navbar/navbar';
+import { printAsciiArt } from './utils/console-art';
 
 @Component({
   selector: 'app-root',
@@ -17,4 +18,8 @@ import { Navbar } from './components/navbar/navbar';
   </div>
   `
 })
-export class App { }
+export class App {
+  constructor() {
+    printAsciiArt();
+  }
+}
