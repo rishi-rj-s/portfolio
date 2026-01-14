@@ -1,29 +1,28 @@
-/* Base */
 .carousel-container {
   position: relative;
   padding-block: 1.5rem;
+  max-width: 60rem;
+  margin-inline: auto;
+  padding-inline: 4rem;
+  overflow: hidden;
+  box-sizing: border-box; /* Enforce border-box */
 }
 
 .projects-carousel {
   display: flex;
-  gap: 1.5rem;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-  padding-inline: max(calc((100vw - 1280px) / 2), 1.5rem);
-  scroll-padding-inline: max(calc((100vw - 1280px) / 2), 1.5rem);
-  min-height: 450px;
+  flex-direction: row;
+  width: 100%;
+  gap: 0; /* Strict no-gap */
+  padding: 0; /* Strict no-padding */
+  margin: 0; /* Strict no-margin */
+  box-sizing: border-box;
 }
-.projects-carousel::-webkit-scrollbar { display: none; }
 
 .carousel-item {
-  flex: 0 0 auto;
-  width: min(85vw, 420px);
-  max-height: 550px;
-  scroll-snap-align: center;
-  transition: transform .3s, border-color .3s, box-shadow .3s;
+  flex: 0 0 100%;
+  width: 100%;
+  padding-inline: 1rem;
+  box-sizing: border-box; /* Critical for 100% width + padding */
 }
 
 /* Card */
@@ -39,13 +38,12 @@
 }
 .project-card:hover {
   border-color: var(--color-primary);
-  box-shadow: 0 20px 25px -5px rgb(0 0 0/.1),
-              0 10px 10px -5px rgb(0 0 0/.04);
+  box-shadow: 0 20px 25px -5px rgb(0 0 0/.1), 0 10px 10px -5px rgb(0 0 0/.04);
   transform: translateY(-4px);
 }
 .project-card:hover .project-title { color: var(--color-primary); }
 
-.project-image { position: relative; height: 140px; overflow: hidden; }
+.project-image { position: relative; height: 280px; overflow: hidden; }
 
 .project-content {
   padding: 1.25rem;
@@ -179,18 +177,60 @@
   background: linear-gradient(to left, var(--color-background), transparent);
 }
 
-/* Responsive */
-@media (max-width:768px){
-  .projects-carousel{min-height:480px;}
-  .carousel-item{width:min(90vw,380px);max-height:520px;}
-  .project-image{height:120px;}
-  .project-content{padding:1rem;}
+/* Nav Buttons */
+.nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 50; /* Increased z-index */
+  width: 3.5rem; /* Slightly larger */
+  height: 3.5rem;
+  border-radius: 50%;
+  background: var(--color-card); /* Keep card background */
+  border: 1px solid var(--color-primary); /* Use primary color for visibility */
+  color: var(--color-primary); /* Match text/icon color */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.4); /* Stronger shadow */
+  outline: none;
 }
+.nav-btn:hover {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 12px 24px -4px rgba(var(--color-primary-rgb), 0.5); /* Glow effect if var exists, else fallback */
+  box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.5);
+}
+.nav-btn.prev { left: 0.5rem; } /* Moved slightly closer to edge */
+.nav-btn.next { right: 0.5rem; }
+
+/* Responsive */
+
+@media (max-width:768px){
+  .carousel-container { padding-inline: 0.5rem; }
+  .projects-carousel { min-height: 480px; }
+  .carousel-item { 
+    width: 100%; 
+    padding-inline: 0.5rem; 
+  }
+  .project-image { height: 200px; }
+  .project-content { padding: 1rem; }
+  .nav-btn { width: 3rem; height: 3rem; }
+}
+
 @media (max-width:480px){
-  .projects-carousel{min-height:500px;}
-  .carousel-item{width:90vw;max-height:540px;}
-  .project-metrics{grid-template-columns:1fr;}
-  .project-image{height:110px;}
-  .project-content{padding:.875rem;}
-  .action-btn{padding:.5rem .75rem;font-size:.75rem;}
+  .projects-carousel { min-height: 500px; }
+  /* Ensure 100% width, overriding potential previous 90vw */
+  .carousel-item { 
+    width: 100%; 
+    max-height: none; /* Let content dictate height if needed, or keep constraint if preferred */
+  }
+  .project-metrics { grid-template-columns: 1fr; }
+  .project-image { height: 180px; } /* Slightly larger image for mobile focus */
+  .project-content { padding: 1rem; }
+  .action-btn { padding: .75rem; font-size: .875rem; }
 }

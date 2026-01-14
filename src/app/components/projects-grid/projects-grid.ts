@@ -1,5 +1,4 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, inject, OnDestroy, PLATFORM_ID, signal, ViewChild } from '@angular/core';
+import { Component, computed, ElementRef, inject, OnDestroy, PLATFORM_ID, signal, ViewChild } from '@angular/core';
 
 interface Project {
   id: string;
@@ -16,18 +15,18 @@ interface Project {
 
 @Component({
   selector: 'app-projects-grid',
-  imports: [
-    CommonModule,
-  ],
   templateUrl: './projects-grid.html',
   styleUrl: './projects-grid.css'
 })
-export class ProjectsGrid implements AfterViewInit, OnDestroy {
-  @ViewChild('projectsCarousel') carouselRef?: ElementRef<HTMLDivElement>;
-
-  private intersectionObserver?: IntersectionObserver;
-  private platformId = inject(PLATFORM_ID);
+export class ProjectsGrid {
+  
+  // Touch handling
+  private touchStartX = 0;
+  private touchEndX = 0;
   currentIndex = signal(0);
+
+  // Computed transform for smooth sliding
+  carouselTransform = computed(() => `translateX(-${this.currentIndex() * 100}%)`);
 
   projects = signal<Project[]>([
     {
@@ -43,6 +42,18 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
       image: 'tagtics.png' // Update with your actual filename
     },
     {
+      id: 'career-comeback-coach',
+      title: 'Career Comeback Coach',
+      subtitle: 'AI-Powered Career Assistant',
+      description: 'AI-driven coaching platform using Gemini AI to provide personalized career road maps. Integrated ElevenLabs conversational agents for real-time, voice-interactive mock interviews. Modular Angular interface for streaming AI responses.',
+      challenge: 'Real-time Voice Interaction',
+      impact: 'Personalized Coaching',
+      tech: ['Angular', 'Gemini AI', 'ElevenLabs'],
+      github: 'https://github.com/raseenaanwar/hackathon-accelerateInnovation-careerComebackCoach',
+      live: 'https://career-comeback-coach.vercel.app/',
+      image: 'career-comeback-coach.jpg'
+    },
+    {
       id: 'apply-log',
       title: 'Apply Log',
       subtitle: 'Job Application Tracker',
@@ -52,7 +63,7 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
       tech: ['Vue 3', 'Pinia', 'Supabase', 'PostgreSQL', 'RLS'],
       github: 'https://github.com/rishi-rj-s/job-tracker-frontend',
       live: 'https://www.apply-log.site/',
-      image: 'apply-log.png' // Update with your actual filename
+      image: 'apply-log.png' 
     },
     {
       id: 'eezy-cabs',
@@ -63,7 +74,7 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
       impact: 'Latency',
       tech: ['Angular', 'NestJS', 'gRPC', 'Kafka', 'Redis', 'WebSockets'],
       github: 'https://github.com/eezy-cabs-rrjs/EC-Backend-MR',
-      image: 'eezy-cabs.png' // Update with your actual filename
+      image: 'eezy-cabs.png' 
     },
     {
       id: 'fashion-studio',
@@ -74,79 +85,46 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
       impact: 'Role-Based Access',
       tech: ['Node.js', 'Express', 'MongoDB', 'AWS EC2', 'OAuth'],
       github: 'https://github.com/rishi-rj-s/RSBackend',
-      image: 'fashion-studio.png' // Update with your actual filename
+      image: 'fashion-studio.png' 
     }
   ]);
 
-  ngAfterViewInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      // Small delay to ensure DOM is fully rendered
-      setTimeout(() => {
-        this.setupIntersectionObserver();
-      }, 100);
-    }
+  // Swipe handlers
+  onTouchStart(e: TouchEvent) {
+    this.touchStartX = e.changedTouches[0].screenX;
   }
 
-  ngOnDestroy() {
-    if (this.intersectionObserver) {
-      this.intersectionObserver.disconnect();
-    }
+  onTouchEnd(e: TouchEvent) {
+    this.touchEndX = e.changedTouches[0].screenX;
+    this.handleSwipe();
   }
 
-  private setupIntersectionObserver() {
-    if (!isPlatformBrowser(this.platformId) || !this.carouselRef) return;
+  private handleSwipe() {
+    const swipeThreshold = 50;
+    const diff = this.touchStartX - this.touchEndX;
 
-    const carousel = this.carouselRef.nativeElement;
-    const items = carousel.querySelectorAll('.carousel-item');
-
-    if (!items || items.length === 0) {
-      console.warn('No carousel items found');
-      return;
-    }
-
-    // IntersectionObserver to track which item is in view
-    const options: IntersectionObserverInit = {
-      root: carousel,
-      threshold: 0.15,
-      rootMargin: '0px'
-    };
-
-    let ticking = false;
-
-    this.intersectionObserver = new IntersectionObserver((entries) => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              const index = Array.from(items).indexOf(entry.target);
-              this.currentIndex.set(index);
-            }
-          });
-          ticking = false;
-        });
-        ticking = true;
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        this.nextProject();
+      } else {
+        this.prevProject();
       }
-    }, options);
-
-    // Observe all items
-    items.forEach(item => {
-      this.intersectionObserver?.observe(item);
-    });
+    }
   }
 
   scrollToProject(index: number) {
-    if (!isPlatformBrowser(this.platformId) || !this.carouselRef) return;
+    this.currentIndex.set(index);
+  }
 
-    const carousel = this.carouselRef.nativeElement;
-    const items = carousel.querySelectorAll('.carousel-item');
+  nextProject() {
+    if (this.currentIndex() < this.projects().length - 1) {
+      this.currentIndex.update(i => i + 1);
+    }
+  }
 
-    if (items && items[index]) {
-      items[index].scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'center'
-      });
-      this.currentIndex.set(index);
+  prevProject() {
+    if (this.currentIndex() > 0) {
+      this.currentIndex.update(i => i - 1);
     }
   }
 }
