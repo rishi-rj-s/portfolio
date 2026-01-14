@@ -33,7 +33,27 @@
 
     <!-- Projects Carousel -->
     <div class="carousel-container">
-      <div class="projects-carousel" #projectsCarousel>
+      <!-- Nav Buttons -->
+      @if (currentIndex() > 0) {
+      <button class="nav-btn prev hidden md:flex" (click)="prevProject()" aria-label="Previous project">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      }
+      
+      @if (currentIndex() < projects().length - 1) {
+      <button class="nav-btn next hidden md:flex" (click)="nextProject()" aria-label="Next project">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+      }
+
+      <div class="projects-carousel" #projectsCarousel 
+        (touchstart)="onTouchStart($event)" 
+        (touchend)="onTouchEnd($event)"
+        [style.transform]="carouselTransform()">
         @for (project of projects(); track project.id; let i = $index) {
         <article class="carousel-item" [class.scroll-start]="i === 0">
           <!-- Project Card -->
