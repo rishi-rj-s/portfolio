@@ -12,14 +12,14 @@ export class Theme {
     this.isBrowser = isPlatformBrowser(this.platformId);
 
     if (this.isBrowser) {
-      const saved = sessionStorage.getItem('theme');
+      const saved = localStorage.getItem('theme');
 
       if (saved) {
         this.dark = saved === 'dark';
       } else {
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         this.dark = prefersDark;
-        sessionStorage.setItem('theme', prefersDark ? 'dark' : 'light');
+        localStorage.setItem('theme', prefersDark ? 'dark' : 'light');
       }
 
       this.applyTheme();
@@ -37,7 +37,7 @@ export class Theme {
     if (!this.isBrowser || !document.startViewTransition || !event) {
       this.dark = newThemeDark;
       if (this.isBrowser) {
-        sessionStorage.setItem('theme', this.dark ? 'dark' : 'light');
+        localStorage.setItem('theme', this.dark ? 'dark' : 'light');
         this.applyTheme();
       }
       return;
@@ -53,7 +53,7 @@ export class Theme {
     // @ts-ignore
     const transition = document.startViewTransition(() => {
       this.dark = newThemeDark;
-      sessionStorage.setItem('theme', this.dark ? 'dark' : 'light');
+      localStorage.setItem('theme', this.dark ? 'dark' : 'light');
       this.applyTheme();
     });
 
