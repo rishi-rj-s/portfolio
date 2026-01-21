@@ -12,20 +12,20 @@ gsap.registerPlugin(ScrollTrigger);
     <section id="projects" class="projects-wrapper relative h-screen overflow-hidden bg-[var(--color-background)] flex flex-col justify-center">
       
       <!-- Section Header (Fixed Top Left) -->
-      <div class="absolute top-32 left-8 md:top-24 md:left-16 z-0 pointer-events-none select-none">
+      <div class="absolute top-32 left-6 md:top-24 md:left-16 z-0 pointer-events-none select-none">
         <h2 class="text-4xl md:text-8xl font-black tracking-tighter text-[var(--color-text)] opacity-30 relative">SELECTED WORKS</h2>
         <p class="text-[var(--color-text-muted)] mt-2 font-mono text-xs uppercase tracking-widest relative opacity-80"> &lt; Horizontal Scroll /&gt;</p>
       </div>
 
       <!-- Horizontal Track -->
-      <div class="projects-track flex h-[60vh] items-center pl-16 md:pl-32 pr-[50vw] gap-12 md:gap-24 will-change-transform z-10 relative mt-32 md:mt-40" #track>
+      <div class="projects-track flex h-auto items-stretch pl-8 md:pl-32 pr-[20vw] gap-8 md:gap-24 will-change-transform z-10 relative mt-8 md:mt-40" #track>
         
         <!-- Project Cards -->
         @for (project of projects; track project.title) {
           <article class="project-card relative w-[90vw] md:w-[800px] h-full flex-shrink-0 bg-[var(--color-card)] border border-[var(--color-border)] rounded-3xl overflow-hidden group hover:border-[var(--color-primary)] transition-colors duration-500 flex flex-col md:flex-row shadow-2xl">
              
              <!-- Image / Visual Area (Left or Top) -->
-             <div class="w-full h-64 md:h-auto md:w-1/2 bg-neutral-900 border-b md:border-b-0 md:border-r border-[var(--color-border)] relative overflow-hidden group flex-shrink-0">
+             <div class="w-full h-44 md:h-auto md:w-1/2 bg-neutral-900 border-b md:border-b-0 md:border-r border-[var(--color-border)] relative overflow-hidden group flex-shrink-0">
                 
                 @if (project.image) {
                    <img [src]="project.image" [alt]="project.title" class="absolute inset-0 w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-105" loading="lazy" />
@@ -41,17 +41,17 @@ gsap.registerPlugin(ScrollTrigger);
              </div>
              
              <!-- Content Area (Right or Bottom) -->
-             <div class="w-full md:w-1/2 p-8 md:p-10 flex flex-col justify-between h-auto bg-[var(--color-card)]">
+             <div class="w-full md:w-1/2 p-5 md:p-10 flex flex-col justify-between flex-1 bg-[var(--color-card)]">
                 <div>
                   <div class="flex items-start justify-between mb-4 gap-4">
-                     <h3 class="text-3xl md:text-5xl font-black tracking-tighter text-[var(--color-text)] mb-2">{{project.title}}</h3>
+                     <h3 class="text-2xl md:text-5xl font-black tracking-tighter text-[var(--color-text)] mb-2">{{project.title}}</h3>
                      <span class="text-xs px-3 py-1 border border-[var(--color-primary)] text-[var(--color-primary)] rounded-full uppercase tracking-wider bg-[var(--color-card)] whitespace-nowrap shrink-0">{{project.type}}</span>
                   </div>
                   
-                  <p class="text-[var(--color-text-secondary)] mb-8 leading-relaxed text-sm md:text-base">{{project.description}}</p>
+                  <p class="text-[var(--color-text-secondary)] mb-4 md:mb-8 leading-relaxed text-sm md:text-base">{{project.description}}</p>
                   
-                  <div class="mb-8">
-                     <h4 class="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-3">Tech Matrix</h4>
+                  <div class="mb-4 md:mb-8">
+                     <h4 class="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 md:mb-3">Tech Matrix</h4>
                      <div class="flex flex-nowrap gap-2 overflow-x-auto pb-2 scrollbar-none">
                         @for (stack of project.stack; track stack) {
                           <span class="text-xs font-mono text-[var(--color-text-muted)] bg-[var(--color-card-hover)] px-2 py-1 rounded border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors cursor-default whitespace-nowrap">
@@ -62,7 +62,7 @@ gsap.registerPlugin(ScrollTrigger);
                   </div>
                 </div>
   
-                <div class="flex gap-6 mt-auto pt-6 border-t border-[var(--color-border)]">
+                <div class="flex gap-6 mt-4 pt-4 border-t border-[var(--color-border)]">
                    @if (project.links.source) {
                      <a [href]="project.links.source" target="_blank" class="text-sm font-bold hover:text-[var(--color-primary)] flex items-center gap-2 group/link">
                         SOURCE CODE 
