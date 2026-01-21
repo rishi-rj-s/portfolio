@@ -1,130 +1,191 @@
-import { Component, computed, ElementRef, inject, OnDestroy, PLATFORM_ID, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-interface Project {
-  id: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  challenge: string;
-  impact: string;
-  tech: string[];
-  github?: string;
-  live?: string;
-  image: string;
-}
+gsap.registerPlugin(ScrollTrigger);
 
 @Component({
   selector: 'app-projects-grid',
-  templateUrl: './projects-grid.html',
-  styleUrl: './projects-grid.css'
-})
-export class ProjectsGrid {
+  imports: [],
+  template: `
+    <section id="projects" class="projects-wrapper relative h-screen overflow-hidden bg-[var(--color-background)] flex flex-col justify-center">
+      
+      <!-- Section Header (Fixed Top Left) -->
+      <div class="absolute top-12 left-8 md:top-24 md:left-16 z-0 pointer-events-none select-none">
+        <h2 class="text-4xl md:text-8xl font-black tracking-tighter text-[var(--color-text)] opacity-30 relative">SELECTED WORKS</h2>
+        <p class="text-[var(--color-text-muted)] mt-2 font-mono text-xs uppercase tracking-widest relative opacity-80"> &lt; Horizontal Scroll /&gt;</p>
+      </div>
+
+      <!-- Horizontal Track -->
+      <div class="projects-track flex h-[70vh] items-center pl-16 md:pl-32 pr-[50vw] gap-12 md:gap-24 will-change-transform z-10 relative mt-32 md:mt-60" #track>
+        
+        <!-- Project Cards -->
+        @for (project of projects; track project.title) {
+          <article class="project-card relative w-[90vw] md:w-[800px] h-full flex-shrink-0 bg-[var(--color-card)] border border-[var(--color-border)] rounded-3xl overflow-hidden group hover:border-[var(--color-primary)] transition-colors duration-500 flex flex-col md:flex-row shadow-2xl">
+             
+             <!-- Image / Visual Area (Left or Top) -->
+             <div class="w-full h-64 md:h-auto md:w-1/2 bg-neutral-900 border-b md:border-b-0 md:border-r border-[var(--color-border)] relative overflow-hidden group flex-shrink-0">
+                
+                @if (project.image) {
+                   <img [src]="project.image" [alt]="project.title" class="absolute inset-0 w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+                   <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500"></div>
+                } @else {
+                  <!-- Fallback/Placeholder -->
+                  <div class="absolute inset-0 bg-gradient-to-br from-neutral-800 to-neutral-950 flex items-center justify-center">
+                      <div class="absolute inset-0 bg-[url('/assets/noise.svg')] opacity-20"></div>
+                      <span class="text-[8rem] md:text-[12rem] font-black text-white/5 absolute -bottom-10 -left-10 leading-none select-none">{{project.year}}</span>
+                  </div>
+                }
+                
+             </div>
+             
+             <!-- Content Area (Right or Bottom) -->
+             <div class="w-full md:w-1/2 p-8 md:p-10 flex flex-col justify-between h-auto bg-[var(--color-card)]">
+                <div>
+                  <div class="flex items-start justify-between mb-4 gap-4">
+                     <h3 class="text-3xl md:text-5xl font-black tracking-tighter text-[var(--color-text)] mb-2">{{project.title}}</h3>
+                     <span class="text-xs px-3 py-1 border border-[var(--color-primary)] text-[var(--color-primary)] rounded-full uppercase tracking-wider bg-[var(--color-card)] whitespace-nowrap shrink-0">{{project.type}}</span>
+                  </div>
+                  
+                  <p class="text-[var(--color-text-secondary)] mb-8 leading-relaxed text-sm md:text-base">{{project.description}}</p>
+                  
+                  <div class="mb-8">
+                     <h4 class="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-3">Tech Matrix</h4>
+                     <div class="flex flex-nowrap gap-2 overflow-x-auto pb-2 scrollbar-none">
+                        @for (stack of project.stack; track stack) {
+                          <span class="text-xs font-mono text-[var(--color-text-muted)] bg-[var(--color-card-hover)] px-2 py-1 rounded border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors cursor-default whitespace-nowrap">
+                              {{stack}}
+                          </span>
+                        }
+                     </div>
+                  </div>
+                </div>
   
-  // Touch handling
-  private touchStartX = 0;
-  private touchEndX = 0;
-  currentIndex = signal(0);
-
-  // Computed transform for smooth sliding
-  carouselTransform = computed(() => `translateX(-${this.currentIndex() * 100}%)`);
-
-  projects = signal<Project[]>([
+                <div class="flex gap-6 mt-auto pt-6 border-t border-[var(--color-border)]">
+                   @if (project.links.source) {
+                     <a [href]="project.links.source" target="_blank" class="text-sm font-bold hover:text-[var(--color-primary)] flex items-center gap-2 group/link">
+                        SOURCE CODE 
+                        <span class="group-hover/link:translate-x-1 transition-transform">&rarr;</span>
+                     </a>
+                   }
+                   @if (project.links.live) {
+                     <a [href]="project.links.live" target="_blank" class="text-sm font-bold hover:text-[var(--color-primary)] flex items-center gap-2 group/link">
+                        LIVE DEMO
+                        <span class="group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5 transition-transform">&#8599;</span>
+                     </a>
+                   }
+                </div>
+             </div>
+          </article>
+        }
+      </div>
+    </section>
+  `,
+  styles: []
+})
+export class ProjectsGrid implements AfterViewInit, OnDestroy {
+  @ViewChild('track') track!: ElementRef<HTMLElement>;
+  
+  projects = [
     {
-      id: 'tagtics',
       title: 'Tagtics',
-      subtitle: 'SaaS Feedback Platform',
-      description: 'Early-access prototype for in-context user feedback with authentication and workspace setup. Implements throttled REST endpoints and analytics schema for multi-tenant environments.',
-      challenge: 'Multitenancy',
-      impact: 'Insights',
-      tech: ['React', 'Supabase', 'PostgreSQL', 'REST APIs'],
-      github: 'https://github.com/tagtics/tagtics-frontend',
-      live: 'https://www.tagtics.online',
-      image: 'tagtics.png' // Update with your actual filename
+      type: 'SaaS',
+      year: '2025',
+      image: 'assets/projects/tagtics.png',
+      description: 'A framework-agnostic UI tagging tool for real-time feedback. Features serverless architecture on Supabase Edge Functions (Deno) and strict RLS security.',
+      stack: ['React', 'Supabase', 'PostgreSQL', 'RLS'],
+      links: { source: 'https://github.com/tagtics/tagtics-frontend', live: 'https://www.tagtics.online' }
     },
     {
-      id: 'career-comeback-coach',
-      title: 'Career Comeback Coach',
-      subtitle: 'AI-Powered Career Assistant',
-      description: 'AI-driven coaching platform using Gemini AI to provide personalized career road maps. Integrated ElevenLabs conversational agents for real-time, voice-interactive mock interviews. Modular Angular interface for streaming AI responses.',
-      challenge: 'Real-time Voice Interaction',
-      impact: 'Personalized Coaching',
-      tech: ['Angular', 'Gemini AI', 'ElevenLabs'],
-      github: 'https://github.com/raseenaanwar/hackathon-accelerateInnovation-careerComebackCoach',
-      live: 'https://career-comeback-coach.vercel.app/',
-      image: 'career-comeback-coach.jpg'
+      title: 'Ever-Gauzy',
+      type: 'ERP',
+      year: '2025',
+      image: 'assets/projects/ever-gauzy.png',
+      description: 'Contributed to a 100k+ LoC enterprise ERP. Improved Auth UI and navigated complex NestJS/Angular monorepo architecture.',
+      stack: ['NestJS', 'Angular', 'Nx', 'CQRS'],
+      links: { source: 'https://github.com/ever-co/ever-gauzy', live: 'https://app.gauzy.co/#/auth/login' }
     },
     {
-      id: 'apply-log',
-      title: 'Apply Log',
-      subtitle: 'Job Application Tracker',
-      description: 'Lightweight job-tracking app built with Vue 3 Composition API and Pinia state management. Features Supabase backend with Row-Level Security for secure data isolation and export options for PDF, CSV, and Excel.',
-      challenge: 'State Management',
-      impact: 'Data Security',
-      tech: ['Vue 3', 'Pinia', 'Supabase', 'PostgreSQL', 'RLS'],
-      github: 'https://github.com/rishi-rj-s/job-tracker-frontend',
-      live: 'https://www.apply-log.site/',
-      image: 'apply-log.png' 
+      title: 'Eezy-Cabs',
+      type: 'Microservices',
+      year: '2024',
+      image: 'assets/projects/eezy-cabs.png',
+      description: 'Scalable ride-hailing platform with distributed systems architecture. Orchestrated via API Gateway with Redis/Kafka for real-time tracking.',
+      stack: ['NestJS', 'Kafka', 'Redis', 'MongoDB'],
+      links: { source: 'https://github.com/eezy-cabs-rrjs/EC-Backend-MR', live: 'https://raw.githubusercontent.com/eezy-cabs-rrjs/EC-Backend-MR/refs/heads/main/Arch-Diagram.png' }
     },
     {
-      id: 'eezy-cabs',
-      title: 'EEZY-CABS',
-      subtitle: 'Taxi Booking Prototype',
-      description: 'Modular microservice system with Angular-NestJS integration via gRPC and Kafka. Features real-time driver tracking using WebSockets and Redis pub/sub with event-driven communication.',
-      challenge: 'Orchestration',
-      impact: 'Latency',
-      tech: ['Angular', 'NestJS', 'gRPC', 'Kafka', 'Redis', 'WebSockets'],
-      github: 'https://github.com/eezy-cabs-rrjs/EC-Backend-MR',
-      image: 'eezy-cabs.png' 
+      title: 'Career Coach',
+      type: 'AI Agent',
+      year: '2025',
+      image: 'assets/projects/career-comeback-coach.jpg',
+      description: 'Voice-interactive AI agent using Gemini LLM and ElevenLabs. Achieved sub-500ms latency via WebSockets and sliding-window context.',
+      stack: ['Angular', 'Gemini', 'ElevenLabs', 'WebSockets'],
+      links: { source: 'https://github.com/raseenaanwar/hackathon-accelerateInnovation-careerComebackCoach', live: 'https://career-comeback-coach.vercel.app/' }
     },
     {
-      id: 'fashion-studio',
       title: 'Fashion Studio',
-      subtitle: 'E-Commerce Platform',
-      description: 'Full-stack e-commerce application with cart, checkout, and Razorpay payment integration. Deployed on AWS EC2 with Google OAuth authentication and role-based access control.',
-      challenge: 'Payment Integration',
-      impact: 'Role-Based Access',
-      tech: ['Node.js', 'Express', 'MongoDB', 'AWS EC2', 'OAuth'],
-      github: 'https://github.com/rishi-rj-s/RSBackend',
-      image: 'fashion-studio.png' 
+      type: 'E-Commerce',
+      year: '2024',
+      image: 'assets/projects/fashion-studio.png',
+      description: 'Production E-commerce backend deployed on AWS EC2 with Nginx. Secure payments integration via Razorpay.',
+      stack: ['Node.js', 'MongoDB', 'AWS EC2', 'Nginx'],
+      links: { source: 'https://github.com/rishi-rj-s/RSBackend' }
     }
-  ]);
+  ];
 
-  // Swipe handlers
-  onTouchStart(e: TouchEvent) {
-    this.touchStartX = e.changedTouches[0].screenX;
+  ctx: gsap.Context | undefined;
+  isBrowser: boolean;
+
+  constructor(@Inject(PLATFORM_ID) platformId: Object) {
+    this.isBrowser = isPlatformBrowser(platformId);
   }
 
-  onTouchEnd(e: TouchEvent) {
-    this.touchEndX = e.changedTouches[0].screenX;
-    this.handleSwipe();
+  ngAfterViewInit() {
+    // Only run GSAP in browser
+    if (this.isBrowser) {
+        // Use ResizeObserver to detect when the track actually has dimensions
+        const resizeObserver = new ResizeObserver((entries) => {
+          for (const entry of entries) {
+            if (entry.contentBoxSize) {
+              const trackWidth = this.track.nativeElement.scrollWidth;
+              const windowWidth = window.innerWidth;
+              
+              if (trackWidth > windowWidth) {
+                this.initScroll(trackWidth, windowWidth);
+                resizeObserver.disconnect(); // Initialize once
+              }
+            }
+          }
+        });
+        
+        resizeObserver.observe(this.track.nativeElement);
+     }
   }
 
-  private handleSwipe() {
-    const swipeThreshold = 50;
-    const diff = this.touchStartX - this.touchEndX;
+  private initScroll(trackWidth: number, windowWidth: number) {
+     this.ctx = gsap.context(() => {
+        const xMove = -(trackWidth - windowWidth);
 
-    if (Math.abs(diff) > swipeThreshold) {
-      if (diff > 0) {
-        this.nextProject();
-      } else {
-        this.prevProject();
-      }
-    }
+        gsap.to(this.track.nativeElement, {
+           x: xMove,
+           ease: 'none',
+           scrollTrigger: {
+              trigger: '.projects-wrapper',
+              pin: true,
+              start: 'top top',
+              scrub: 1,
+              end: () => "+=" + (trackWidth - windowWidth),
+              invalidateOnRefresh: true,
+              preventOverlaps: true
+           }
+        });
+     });
+     ScrollTrigger.refresh();
   }
 
-  scrollToProject(index: number) {
-    this.currentIndex.set(index);
-  }
-
-  nextProject() {
-    if (this.currentIndex() < this.projects().length - 1) {
-      this.currentIndex.update(i => i + 1);
-    }
-  }
-
-  prevProject() {
-    if (this.currentIndex() > 0) {
-      this.currentIndex.update(i => i - 1);
-    }
+  ngOnDestroy() {
+    this.ctx?.revert();
   }
 }

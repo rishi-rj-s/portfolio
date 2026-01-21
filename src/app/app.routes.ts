@@ -8,6 +8,7 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: ''
+    loadComponent: () => import('./pages/not-found').then(m => m.NotFound),
+    title: '404 - Lost in the Void'
   }
 ];

@@ -3,17 +3,16 @@ import { Hero } from '../components/hero/hero';
 import { Skills } from '../components/skills/skills';
 import { ProjectsGrid } from '../components/projects-grid/projects-grid';
 import { ContactForm } from '../components/contact-form/contact-form';
-import { Footer } from '../components/footer/footer';
+import { SocialIsland } from '../components/social-island/social-island';
 
 @Component({
   selector: 'app-home',
-  standalone: true,
   imports: [
     Hero,
     Skills,
     ProjectsGrid,
     ContactForm,
-    Footer
+    SocialIsland,
   ],
   template: `
     <main class="min-h-screen">
@@ -21,7 +20,7 @@ import { Footer } from '../components/footer/footer';
       <app-skills />
       <app-projects-grid />
       <app-contact-form />
-      <app-footer />
+      <app-social-island />
     </main>
   `
 })

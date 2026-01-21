@@ -18,20 +18,20 @@
   --font-sans: 'Clash Display', system-ui, sans-serif;
 }
 
-/* Dark mode theme - Pure Black */
+/* Dark mode theme - Premium Void */
 :root.dark {
-  --color-background: #000000;
-  --color-card: #0a0a0a;
-  --color-card-hover: #141414;
-  --color-border: #1f1f1f;
-  --color-text: #ffffff;
-  --color-text-muted: #a3a3a3;
-  --color-text-secondary: #d4d4d4;
-  --color-primary: #60a5fa;
-  --color-accent: #c084fc;
+  --color-background: #030303; /* Deepest Void */
+  --color-card: #0f0f0f;
+  --color-card-hover: #1a1a1a;
+  --color-border: #262626;
+  --color-text: #ededed;
+  --color-text-muted: #888888;
+  --color-text-secondary: #a1a1a1;
+  --color-primary: #ffffff; /* Stark White for contrast */
+  --color-accent: #333333;
   --color-success: #34d399;
-  --glow-primary: rgba(96, 165, 250, 0.4);
-  --glow-accent: rgba(192, 132, 252, 0.4);
+  --glow-primary: rgba(255, 255, 255, 0.15);
+  --glow-accent: rgba(255, 255, 255, 0.05);
 }
 
 html {
@@ -42,9 +42,46 @@ html {
 body {
   background-color: var(--color-background);
   color: var(--color-text);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.5s cubic-bezier(0.16, 1, 0.3, 1), color 0.5s ease;
   font-family: var(--font-sans);
   overflow-x: hidden;
+  cursor: none; /* We will use a custom cursor */
+}
+
+/* Global Noise Overlay */
+.noise-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Custom Cursor */
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  background-color: var(--color-text); /* Fill it so it's visible */
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10000;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s, height 0.3s, background-color 0.3s, opacity 0.3s;
+  opacity: 0.3; /* Slight transparency for "ghost" feel */
+}
+
+.custom-cursor.hovered {
+  width: 60px;
+  height: 60px;
+  background-color: var(--color-text);
+  opacity: 0.1; /* More transparent when large */
 }
 
 /* Custom Scrollbar */
@@ -65,9 +102,15 @@ body {
   background: var(--color-primary);
 }
 
-/* Selection */
+/* Selection - Light mode */
 ::selection {
-  background-color: var(--color-primary);
+  background-color: #3b82f6;
+  color: white;
+}
+
+/* Selection - Dark mode */
+:root.dark ::selection {
+  background-color: #3b82f6;
   color: white;
 }
 
@@ -275,6 +318,11 @@ section:not(#about) {
 
 :root.dark .theme-icon-dark {
   display: block;
+}
+
+/* Invert colors in dark mode (for black logos) */
+:root.dark .theme-inverse {
+  filter: brightness(0) invert(1) !important;
 }
 
 /* Disco Themes */

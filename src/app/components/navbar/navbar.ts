@@ -1,100 +1,61 @@
-import { CommonModule } from '@angular/common';
-import { Component, HostListener, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChildren, QueryList, AfterViewInit, signal, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Theme } from '../../services/theme';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
+import gsap from 'gsap';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+
+gsap.registerPlugin(ScrollToPlugin);
 
 @Component({
   selector: 'app-navbar',
   imports: [
-    CommonModule,
     RouterLink,
   ],
   template: `
-    <nav 
-      class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-      [class.nav-scrolled]="isScrolled()"
-    >
-      <div class="max-w-7xl mx-auto px-2 py-3">
-        <div class="flex items-center justify-between">
-          <!-- Logo/Brand -->
-          <a routerLink="/" class="group flex items-center space-x-3">
-            <div class="relative">
-              <div class="absolute inset-0 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] rounded-lg blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
-              <div class="relative bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] p-2 rounded-lg">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
-                </svg>
-              </div>
-            </div>
-            <span class="text-xl font-bold text-gradient">RS</span>
+    <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300">
+      <div 
+        class="relative px-6 py-3 rounded-full flex items-center gap-6 shadow-2xl border border-white/10 overflow-hidden"
+        (mouseleave)="resetMagnets()"
+        (mousemove)="handleMouseMove($event)"
+      >
+        <!-- Glass Background Layer (Absolute) -->
+        <div class="absolute inset-0 glass-bg pointer-events-none"></div>
+
+        <!-- Content Layer (Relative) -->
+        <div class="relative z-10 flex items-center gap-6">
+          <!-- Logo -->
+          <a routerLink="/" (click)="handleLogoClick($event)" class="nav-item group relative font-bold text-xl tracking-tighter text-[var(--color-text)]" #navItem>
+            RS
+            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[var(--color-primary)] transition-all group-hover:w-full"></span>
           </a>
 
-          <!-- Navigation Links -->
-          <div class="hidden md:flex items-center space-x-8">
-            <a href="#about" class="nav-link">About</a>
-            <a href="#skills" class="nav-link">Skills</a>
-            <a href="#projects" class="nav-link">Projects</a>
-            <a href="#contact" class="nav-link">Contact</a>
+          <!-- Desktop Links -->
+          <div class="hidden md:flex items-center gap-1">
+            <a href="#skills" (click)="handleNavClick($event, '#skills')" class="nav-item px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:text-[var(--color-primary)] transition-colors rounded-full hover:bg-[var(--color-card-hover)]" #navItem>Skills</a>
+            <a href="#projects" (click)="handleNavClick($event, '#projects')" class="nav-item px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:text-[var(--color-primary)] transition-colors rounded-full hover:bg-[var(--color-card-hover)]" #navItem>Projects</a>
           </div>
 
           <!-- Actions -->
-          <div class="flex items-center space-x-4">
+          <div class="flex items-center gap-4">
             <!-- Theme Toggle -->
             <button
+              #navItem
+              class="nav-item p-2 rounded-full text-[var(--color-text)] hover:scale-110 transition-transform hover:bg-[var(--color-card-hover)]"
               (click)="theme.toggleTheme($event)"
               (pointerdown)="startDisco($event)"
-              (dragstart)="$event.preventDefault()"
-              (contextmenu)="$event.preventDefault()"
-              draggable="false"
-              class="select-none p-2.5 rounded-lg bg-[var(--color-card)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-card-hover)] transition-all duration-300 group touch-none"
               [attr.aria-label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
             >
-              <!-- Light Icon (Hidden in Dark Mode) -->
-              <svg 
-                class="w-5 h-5 text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)] transition-colors theme-icon-light" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <circle cx="12" cy="12" r="5"/>
-                <line x1="12" y1="1" x2="12" y2="3"/>
-                <line x1="12" y1="21" x2="12" y2="23"/>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                <line x1="1" y1="12" x2="3" y2="12"/>
-                <line x1="21" y1="12" x2="23" y2="12"/>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-              </svg>
-              
-              <!-- Dark Icon (Hidden in Light Mode) -->
-              <svg 
-                class="w-5 h-5 text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)] transition-colors theme-icon-dark" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-              </svg>
+               <svg class="w-5 h-5 theme-icon-light" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+               <svg class="w-5 h-5 theme-icon-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
             </button>
 
-            <!-- CTA Button -->
-            <a 
-              href="#contact" 
-              class="hidden md:flex items-center space-x-2 px-6 py-2.5 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] text-white rounded-lg font-medium hover:shadow-[var(--glow-primary)] transition-all duration-300 hover:scale-105"
-            >
-              <span>Let's Talk</span>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-              </svg>
+            <!-- CTA / Mobile Menu Toggle -->
+             <a href="#contact" (click)="handleNavClick($event, '#contact')" class="hidden md:block nav-item px-5 py-2 bg-[var(--color-text)] text-[var(--color-background)] rounded-full text-sm font-bold hover:scale-105 transition-transform" #navItem>
+              Let's Talk
             </a>
 
-            <!-- Mobile Menu Button -->
-            <button
-              (click)="toggleMobileMenu()"
-              class="md:hidden p-2.5 rounded-lg bg-[var(--color-card)] border border-[var(--color-border)] hover:border-[var(--color-primary)] transition-all"
-              aria-label="Toggle menu"
-            >
+            <button (click)="toggleMobileMenu()" class="md:hidden nav-item p-2 text-[var(--color-text)]" #navItem>
               @if (!mobileMenuOpen()) {
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
@@ -108,103 +69,98 @@ import { RouterLink } from '@angular/router';
             </button>
           </div>
         </div>
-
-        <!-- Mobile Menu -->
-        @if (mobileMenuOpen()) {
-          <div 
-            class="md:hidden mt-4 p-4 bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg animate-fade-in-up"
-          >
-            <div class="flex flex-col space-y-3">
-              <a href="#about" (click)="closeMobileMenu()" class="nav-link-mobile">About</a>
-              <a href="#skills" (click)="closeMobileMenu()" class="nav-link-mobile">Skills</a>
-              <a href="#projects" (click)="closeMobileMenu()" class="nav-link-mobile">Projects</a>
-              <a href="#contact" (click)="closeMobileMenu()" class="nav-link-mobile">Contact</a>
-              <a 
-                href="#contact" 
-                (click)="closeMobileMenu()"
-                class="flex items-center justify-center space-x-2 px-6 py-2.5 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] text-white rounded-lg font-medium mt-2"
-              >
-                <span>Let's Talk</span>
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                </svg>
-              </a>
-            </div>
-          </div>
-        }
       </div>
+
+      <!-- Mobile Menu Dropdown -->
+      @if (mobileMenuOpen()) {
+        <div 
+          class="absolute top-full left-0 right-0 mt-4 p-4 rounded-2xl flex flex-col gap-4 md:hidden animate-fade-in-up origin-top shadow-xl border border-white/10 glass-bg"
+        >
+          <a href="#skills" (click)="closeMobileMenu(); handleNavClick($event, '#skills')" class="p-3 text-[var(--color-text)] hover:bg-[var(--color-card-hover)] rounded-xl font-bold">Skills</a>
+          <a href="#projects" (click)="closeMobileMenu(); handleNavClick($event, '#projects')" class="p-3 text-[var(--color-text)] hover:bg-[var(--color-card-hover)] rounded-xl font-bold">Projects</a>
+          <a href="#contact" (click)="closeMobileMenu(); handleNavClick($event, '#contact')" class="p-3 bg-[var(--color-text)] text-[var(--color-background)] rounded-xl text-center font-bold">Let's Talk</a>
+        </div>
+      }
     </nav>
   `,
   styles: [`
-    nav {
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      background-color: color-mix(in srgb, var(--color-background) 80%, transparent);
-      border-bottom: 1px solid transparent;
-    }
-
-    nav.nav-scrolled {
-      background-color: color-mix(in srgb, var(--color-background) 95%, transparent);
-      border-bottom-color: var(--color-border);
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    }
-
-    .nav-link {
-      position: relative;
-      font-size: 0.9375rem;
-      font-weight: 500;
-      color: var(--color-text-secondary);
-      transition: color 0.3s ease;
-    }
-
-    .nav-link::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
-      transition: width 0.3s ease;
-    }
-
-    .nav-link:hover {
-      color: var(--color-primary);
-    }
-
-    .nav-link:hover::after {
-      width: 100%;
-    }
-
-    .nav-link-mobile {
-      display: block;
-      padding: 0.75rem 1rem;
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--color-text-secondary);
-      border-radius: 0.5rem;
-      transition: all 0.3s ease;
-    }
-
-    .nav-link-mobile:hover {
-      color: var(--color-primary);
-      background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    .glass-bg {
+      background: rgba(125, 125, 125, 0.05);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
   `]
 })
 export class Navbar {
-  isScrolled = signal(false);
+  @ViewChildren('navItem') navItems!: QueryList<ElementRef>;
   mobileMenuOpen = signal(false);
 
-  constructor(public theme: Theme) { }
+  constructor(
+    public theme: Theme,
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
-  @HostListener('window:scroll')
-  onScroll() {
-    this.isScrolled.set(window.scrollY > 20);
+  ngAfterViewInit() {
+    // Basic initialization if needed
+  }
+
+  handleMouseMove(e: MouseEvent) {
+    if (!isPlatformBrowser(this.platformId)) return;
+    
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
+    
+    this.navItems.forEach((item) => {
+      const el = item.nativeElement;
+      const rect = el.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      // Calculate distance from mouse to center of item
+      const dist = Math.sqrt(Math.pow(mouseX - centerX, 2) + Math.pow(mouseY - centerY, 2));
+      
+      // Magnetic effect calculation
+      // Only effect closer items
+      if (dist < 100) {
+        const pull = (100 - dist) * 0.15; // Strength
+        const moveX = (mouseX - centerX) * 0.2;
+        const moveY = (mouseY - centerY) * 0.2;
+        
+        gsap.to(el, {
+          x: moveX,
+          y: moveY,
+          scale: 1 + (pull * 0.005), // Subtle scale up
+          duration: 0.2,
+          ease: 'power2.out'
+        });
+      } else {
+        gsap.to(el, {
+          x: 0,
+          y: 0,
+          scale: 1,
+          duration: 0.5,
+          ease: 'elastic.out(1, 0.3)'
+        });
+      }
+    });
+  }
+
+  resetMagnets() {
+    if (!isPlatformBrowser(this.platformId)) return;
+    this.navItems.forEach((item) => {
+      gsap.to(item.nativeElement, {
+        x: 0,
+        y: 0,
+        scale: 1,
+        duration: 0.5,
+        ease: 'elastic.out(1, 0.3)'
+      });
+    });
   }
 
   toggleMobileMenu() {
-    this.mobileMenuOpen.update(value => !value);
+    this.mobileMenuOpen.update(v => !v);
   }
 
   closeMobileMenu() {
@@ -212,16 +168,42 @@ export class Navbar {
   }
 
   startDisco(event: PointerEvent) {
+    if (!isPlatformBrowser(this.platformId)) return;
     this.theme.startDisco();
-
-    // Global listener for pointer release (covers mouse, touch, pen)
     window.addEventListener('pointerup', this.stopDiscoBound);
     window.addEventListener('pointercancel', this.stopDiscoBound);
   }
 
   private stopDiscoBound = () => {
+    if (!isPlatformBrowser(this.platformId)) return;
     this.theme.stopDisco();
     window.removeEventListener('pointerup', this.stopDiscoBound);
     window.removeEventListener('pointercancel', this.stopDiscoBound);
   };
+
+  handleNavClick(e: Event, id: string) {
+    e.preventDefault();
+    if (isPlatformBrowser(this.platformId)) {
+      gsap.to(window, {
+        duration: 1,
+        scrollTo: { y: id, autoKill: false },
+        ease: 'power3.inOut'
+      });
+    }
+  }
+
+  handleLogoClick(e: Event) {
+    e.preventDefault();
+    if (this.router.url === '/') {
+      if (isPlatformBrowser(this.platformId)) {
+        gsap.to(window, {
+          duration: 1,
+          scrollTo: { y: 0, autoKill: false },
+          ease: 'power3.inOut'
+        });
+      }
+    } else {
+      this.router.navigate(['/']);
+    }
+  }
 }
