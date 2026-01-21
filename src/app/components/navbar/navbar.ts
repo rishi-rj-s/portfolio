@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, ViewChildren, QueryList, AfterViewInit, signal, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChildren, QueryList, signal, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Theme } from '../../services/theme';
 import { RouterLink, Router } from '@angular/router';
@@ -27,7 +27,6 @@ gsap.registerPlugin(ScrollToPlugin);
           <!-- Logo -->
           <a routerLink="/" (click)="handleLogoClick($event)" class="nav-item group relative font-bold text-xl tracking-tighter text-[var(--color-text)]" #navItem>
             RS
-            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[var(--color-primary)] transition-all group-hover:w-full"></span>
           </a>
 
           <!-- Desktop Links -->
@@ -101,48 +100,50 @@ export class Navbar {
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
-  ngAfterViewInit() {
-    // Basic initialization if needed
-  }
+
 
   handleMouseMove(e: MouseEvent) {
     if (!isPlatformBrowser(this.platformId)) return;
     
-    const mouseX = e.clientX;
-    const mouseY = e.clientY;
-    
-    this.navItems.forEach((item) => {
-      const el = item.nativeElement;
-      const rect = el.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-
-      // Calculate distance from mouse to center of item
-      const dist = Math.sqrt(Math.pow(mouseX - centerX, 2) + Math.pow(mouseY - centerY, 2));
+    requestAnimationFrame(() => {
+      const mouseX = e.clientX;
+      const mouseY = e.clientY;
       
-      // Magnetic effect calculation
-      // Only effect closer items
-      if (dist < 100) {
-        const pull = (100 - dist) * 0.15; // Strength
-        const moveX = (mouseX - centerX) * 0.2;
-        const moveY = (mouseY - centerY) * 0.2;
+      this.navItems.forEach((item) => {
+        const el = item.nativeElement;
+        const rect = el.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        // Calculate distance from mouse to center of item
+        const dist = Math.sqrt(Math.pow(mouseX - centerX, 2) + Math.pow(mouseY - centerY, 2));
         
-        gsap.to(el, {
-          x: moveX,
-          y: moveY,
-          scale: 1 + (pull * 0.005), // Subtle scale up
-          duration: 0.2,
-          ease: 'power2.out'
-        });
-      } else {
-        gsap.to(el, {
-          x: 0,
-          y: 0,
-          scale: 1,
-          duration: 0.5,
-          ease: 'elastic.out(1, 0.3)'
-        });
-      }
+        // Magnetic effect calculation
+        // Only effect closer items
+        if (dist < 100) {
+          const pull = (100 - dist) * 0.15; // Strength
+          const moveX = (mouseX - centerX) * 0.2;
+          const moveY = (mouseY - centerY) * 0.2;
+          
+          gsap.to(el, {
+            x: moveX,
+            y: moveY,
+            scale: 1 + (pull * 0.005), // Subtle scale up
+            duration: 0.2,
+            ease: 'power2.out',
+            overwrite: 'auto'
+          });
+        } else {
+          gsap.to(el, {
+            x: 0,
+            y: 0,
+            scale: 1,
+            duration: 0.5,
+            ease: 'elastic.out(1, 0.3)',
+            overwrite: 'auto'
+          });
+        }
+      });
     });
   }
 

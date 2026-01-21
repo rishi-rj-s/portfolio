@@ -1,9 +1,5 @@
-import { Component, signal, ViewChild, ElementRef, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, signal, ViewChild, ElementRef, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface SkillItem {
   name: string;
@@ -64,7 +60,7 @@ interface SkillCategory {
     </section>
   `
 })
-export class Skills implements AfterViewInit {
+export class Skills {
   @ViewChild('header') header!: ElementRef;
   @ViewChild('grid') grid!: ElementRef;
 
@@ -124,6 +120,5 @@ export class Skills implements AfterViewInit {
     },
   ]);
 
-  // Animations removed for instant rendering
-  ngAfterViewInit() {}
+
 }

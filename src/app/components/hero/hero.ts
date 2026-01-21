@@ -93,34 +93,39 @@ export class Hero implements AfterViewInit {
   onMouseMove(e: MouseEvent) {
     if (!this.container || !this.isBrowser) return;
 
-    const { innerWidth, innerHeight } = window;
-    const x = e.clientX;
-    const y = e.clientY;
+    requestAnimationFrame(() => {
+      const { innerWidth, innerHeight } = window;
+      const x = e.clientX;
+      const y = e.clientY;
 
-    // Calculate rotation (-15 to 15 degrees)
-    const rotateX = ((y / innerHeight) - 0.5) * -30;
-    const rotateY = ((x / innerWidth) - 0.5) * 30;
+      // Calculate rotation (-15 to 15 degrees)
+      const rotateX = ((y / innerHeight) - 0.5) * -30;
+      const rotateY = ((x / innerWidth) - 0.5) * 30;
 
-    gsap.to(this.title.nativeElement, {
-      rotateX: rotateX,
-      rotateY: rotateY,
-      duration: 1,
-      ease: 'power3.out'
-    });
+      gsap.to(this.title.nativeElement, {
+        rotateX: rotateX,
+        rotateY: rotateY,
+        duration: 1,
+        ease: 'power3.out',
+        overwrite: 'auto'
+      });
 
-    // Parallax for lines
-    gsap.to(this.line1.nativeElement, {
-      x: (x - innerWidth / 2) * 0.05,
-      y: (y - innerHeight / 2) * 0.05,
-      duration: 1,
-      ease: 'power3.out'
-    });
+      // Parallax for lines
+      gsap.to(this.line1.nativeElement, {
+        x: (x - innerWidth / 2) * 0.05,
+        y: (y - innerHeight / 2) * 0.05,
+        duration: 1,
+        ease: 'power3.out',
+        overwrite: 'auto'
+      });
 
-    gsap.to(this.line2.nativeElement, {
-      x: (x - innerWidth / 2) * -0.05, // Reverse direction
-      y: (y - innerHeight / 2) * -0.05,
-      duration: 1,
-      ease: 'power3.out'
+      gsap.to(this.line2.nativeElement, {
+        x: (x - innerWidth / 2) * -0.05, // Reverse direction
+        y: (y - innerHeight / 2) * -0.05,
+        duration: 1,
+        ease: 'power3.out',
+        overwrite: 'auto'
+      });
     });
   }
 }

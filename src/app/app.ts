@@ -1,9 +1,8 @@
-import { Component, ElementRef, HostListener, ViewChild, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { Navbar } from './components/navbar/navbar';
 import { printAsciiArt } from './utils/console-art';
-import gsap from 'gsap';
 import { Footer } from './components/footer/footer';
 
 @Component({
@@ -15,10 +14,12 @@ import { Footer } from './components/footer/footer';
   ],
   template: `
     <div class="noise-overlay"></div>
-    <!-- Only show cursor on browser to avoid hydration mismatch/flicker -->
-    @if (isBrowser) {
-      <div #cursor class="custom-cursor hidden md:block"></div>
-    }
+    
+    <!-- Custom Cursor Element -->
+    <div class="custom-cursor hidden md:block">
+      <div class="cursor-dot"></div>
+      <div class="cursor-reticle"></div>
+    </div>
     
     <div class="relative min-h-screen z-10">
       <app-navbar />
@@ -29,9 +30,10 @@ import { Footer } from './components/footer/footer';
     </div>
   `
 })
-export class App implements AfterViewInit {
-  @ViewChild('cursor') cursor!: ElementRef;
+export class App implements AfterViewInit, OnDestroy {
   isBrowser: boolean;
+  private mouseHandler: ((e: MouseEvent) => void) | null = null;
+  private clickHandler: ((e: MouseEvent) => void) | null = null;
   
   constructor(@Inject(PLATFORM_ID) platformId: Object) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -41,30 +43,46 @@ export class App implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    if (this.isBrowser && this.cursor) {
-      // Initial cursor setup
-      gsap.set(this.cursor.nativeElement, { xPercent: -50, yPercent: -50 });
+    if (this.isBrowser) {
+      // Throttled mouse tracking for CSS variables
+      this.mouseHandler = (e: MouseEvent) => {
+        requestAnimationFrame(() => {
+          document.documentElement.style.setProperty('--cursor-x', `${e.clientX}px`);
+          document.documentElement.style.setProperty('--cursor-y', `${e.clientY}px`);
+          
+          // Check for interactive elements
+          const target = e.target as HTMLElement;
+          const isInteractive = target.closest('a, button, [role="button"], input, select, textarea');
+          
+          if (isInteractive) {
+            document.documentElement.classList.add('cursor-hover');
+          } else {
+            document.documentElement.classList.remove('cursor-hover');
+          }
+        });
+      };
+      
+      this.clickHandler = (e: MouseEvent) => {
+        if (e.type === 'mousedown') {
+          document.documentElement.classList.add('cursor-active');
+        } else {
+          document.documentElement.classList.remove('cursor-active');
+        }
+      };
+      
+      window.addEventListener('mousemove', this.mouseHandler, { passive: true });
+      window.addEventListener('mousedown', this.clickHandler);
+      window.addEventListener('mouseup', this.clickHandler);
     }
   }
 
-  @HostListener('document:mousemove', ['$event'])
-  onMouseMove(e: MouseEvent) {
-    if (!this.isBrowser || !this.cursor) return;
-
-    gsap.to(this.cursor.nativeElement, {
-      x: e.clientX,
-      y: e.clientY,
-      duration: 0.2,
-      ease: 'power2.out'
-    });
-
-    const target = e.target as HTMLElement;
-    const isInteractive = target.closest('a, button, [role="button"], input, select, textarea');
-
-    if (isInteractive) {
-      this.cursor.nativeElement.classList.add('hovered');
-    } else {
-      this.cursor.nativeElement.classList.remove('hovered');
+  ngOnDestroy() {
+    if (this.mouseHandler) {
+      window.removeEventListener('mousemove', this.mouseHandler);
+    }
+    if (this.clickHandler) {
+      window.removeEventListener('mousedown', this.clickHandler);
+      window.removeEventListener('mouseup', this.clickHandler);
     }
   }
 }

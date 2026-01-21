@@ -9,7 +9,7 @@ import { isPlatformBrowser } from '@angular/common';
   selector: 'app-contact-form',
   imports: [ReactiveFormsModule, NgHcaptchaModule],
   template: `
-    <section id="contact" class="flex flex-col justify-center items-center bg-[var(--color-background)] px-6 pt-32 pb-5 min-h-[80vh] relative overflow-hidden">
+    <section id="contact" class="flex flex-col justify-center items-center bg-[var(--color-background)] px-6 pt-32 pb-10 min-h-[80vh] relative overflow-hidden">
       
       <!-- Content Container -->
       <div class="w-full max-w-2xl relative z-10">
@@ -66,15 +66,18 @@ import { isPlatformBrowser } from '@angular/common';
                 <!-- Submit Button -->
                 <div>
                   <button type="submit" [disabled]="contactForm.invalid || isSubmitting() || !captchaToken()"
-                          class="group relative inline-flex items-center gap-4 text-xl font-bold uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed">
-                    <span class="relative z-10 text-[var(--color-text)] group-hover:text-[var(--color-background)] transition-colors duration-300">
-                       {{ isSubmitting() ? 'Sending...' : 'Send Message' }}
-                    </span>
-                    <div class="w-12 h-12 rounded-full border border-[var(--color-text)] flex items-center justify-center group-hover:bg-[var(--color-text)] group-hover:scale-110 transition-all duration-300">
-                       <svg class="w-5 h-5 text-[var(--color-text)] group-hover:text-[var(--color-background)] transition-colors duration-300 transform group-hover:rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          class="group relative w-full overflow-hidden rounded-full border border-[var(--color-text)] bg-transparent py-4 md:py-5 text-xl font-bold uppercase tracking-widest text-[var(--color-text)] transition-colors hover:border-[var(--color-primary)] disabled:cursor-not-allowed disabled:opacity-50">
+                    
+                    <!-- Hover Slide Effect (Primary Color) -->
+                    <div class="absolute inset-0 -translate-y-[101%] bg-[var(--color-primary)] transition-transform duration-300 ease-in-out group-hover:translate-y-0"></div>
+                    
+                    <!-- Content -->
+                    <span class="relative z-10 flex items-center justify-center gap-3 transition-colors duration-300 group-hover:text-[var(--color-background)]">
+                       <span>{{ isSubmitting() ? 'Transmitting...' : 'Send Message' }}</span>
+                       <svg class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                        </svg>
-                    </div>
+                    </span>
                   </button>
                   @if (errorMessage()) {
                     <p class="text-red-500 text-sm mt-4 font-mono">{{ errorMessage() }}</p>

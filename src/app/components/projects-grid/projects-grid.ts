@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -71,7 +71,7 @@ gsap.registerPlugin(ScrollTrigger);
                    }
                    @if (project.links.live) {
                      <a [href]="project.links.live" target="_blank" class="text-sm font-bold hover:text-[var(--color-primary)] flex items-center gap-2 group/link">
-                        LIVE DEMO
+                        {{ project.demoLabel || 'LIVE DEMO' }}
                         <span class="group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5 transition-transform">&#8599;</span>
                      </a>
                    }
@@ -95,7 +95,8 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
       image: 'assets/projects/tagtics.png',
       description: 'A framework-agnostic UI tagging tool for real-time feedback. Features serverless architecture on Supabase Edge Functions (Deno) and strict RLS security.',
       stack: ['React', 'Supabase', 'PostgreSQL', 'RLS'],
-      links: { source: 'https://github.com/tagtics/tagtics-frontend', live: 'https://www.tagtics.online' }
+      links: { source: 'https://github.com/tagtics/tagtics-frontend', live: 'https://www.tagtics.online' },
+      demoLabel: 'LIVE'
     },
     {
       title: 'Ever-Gauzy',
@@ -104,7 +105,8 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
       image: 'assets/projects/ever-gauzy.png',
       description: 'Contributed to a 100k+ LoC enterprise ERP. Improved Auth UI and navigated complex NestJS/Angular monorepo architecture.',
       stack: ['NestJS', 'Angular', 'Nx', 'CQRS'],
-      links: { source: 'https://github.com/ever-co/ever-gauzy', live: 'https://app.gauzy.co/#/auth/login' }
+      links: { source: 'https://github.com/ever-co/ever-gauzy', live: 'https://app.gauzy.co/#/auth/login' },
+      demoLabel: 'LIVE'
     },
     {
       title: 'Eezy-Cabs',
@@ -113,7 +115,8 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
       image: 'assets/projects/eezy-cabs.png',
       description: 'Scalable ride-hailing platform with distributed systems architecture. Orchestrated via API Gateway with Redis/Kafka for real-time tracking.',
       stack: ['NestJS', 'Kafka', 'Redis', 'MongoDB'],
-      links: { source: 'https://github.com/eezy-cabs-rrjs/EC-Backend-MR', live: 'https://raw.githubusercontent.com/eezy-cabs-rrjs/EC-Backend-MR/refs/heads/main/Arch-Diagram.png' }
+      links: { source: 'https://github.com/eezy-cabs-rrjs/EC-Backend-MR', live: 'https://raw.githubusercontent.com/eezy-cabs-rrjs/EC-Backend-MR/refs/heads/main/Arch-Diagram.png' },
+      demoLabel: 'ARCH. IMG'
     },
     {
       title: 'Career Coach',
@@ -122,7 +125,8 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
       image: 'assets/projects/career-comeback-coach.jpg',
       description: 'Voice-interactive AI agent using Gemini LLM and ElevenLabs. Achieved sub-500ms latency via WebSockets and sliding-window context.',
       stack: ['Angular', 'Gemini', 'ElevenLabs', 'WebSockets'],
-      links: { source: 'https://github.com/raseenaanwar/hackathon-accelerateInnovation-careerComebackCoach', live: 'https://career-comeback-coach.vercel.app/' }
+      links: { source: 'https://github.com/raseenaanwar/hackathon-accelerateInnovation-careerComebackCoach', live: 'https://career-comeback-coach.vercel.app/' },
+      demoLabel: 'LIVE'
     },
     {
       title: 'Fashion Studio',
