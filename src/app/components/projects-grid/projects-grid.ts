@@ -12,13 +12,13 @@ gsap.registerPlugin(ScrollTrigger);
     <section id="projects" class="projects-wrapper relative h-screen overflow-hidden bg-[var(--color-background)] flex flex-col justify-center">
       
       <!-- Section Header (Fixed Top Left) -->
-      <div class="absolute top-12 left-8 md:top-24 md:left-16 z-0 pointer-events-none select-none">
+      <div class="absolute top-32 left-8 md:top-24 md:left-16 z-0 pointer-events-none select-none">
         <h2 class="text-4xl md:text-8xl font-black tracking-tighter text-[var(--color-text)] opacity-30 relative">SELECTED WORKS</h2>
         <p class="text-[var(--color-text-muted)] mt-2 font-mono text-xs uppercase tracking-widest relative opacity-80"> &lt; Horizontal Scroll /&gt;</p>
       </div>
 
       <!-- Horizontal Track -->
-      <div class="projects-track flex h-[70vh] items-center pl-16 md:pl-32 pr-[50vw] gap-12 md:gap-24 will-change-transform z-10 relative mt-32 md:mt-60" #track>
+      <div class="projects-track flex h-[60vh] items-center pl-16 md:pl-32 pr-[50vw] gap-12 md:gap-24 will-change-transform z-10 relative mt-32 md:mt-40" #track>
         
         <!-- Project Cards -->
         @for (project of projects; track project.title) {
