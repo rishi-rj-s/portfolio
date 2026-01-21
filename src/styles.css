@@ -18,20 +18,20 @@
   --font-sans: 'Clash Display', system-ui, sans-serif;
 }
 
-/* Dark mode theme - Pure Black */
+/* Dark mode theme - Premium Void */
 :root.dark {
-  --color-background: #000000;
-  --color-card: #0a0a0a;
-  --color-card-hover: #141414;
-  --color-border: #1f1f1f;
-  --color-text: #ffffff;
-  --color-text-muted: #a3a3a3;
-  --color-text-secondary: #d4d4d4;
-  --color-primary: #60a5fa;
-  --color-accent: #c084fc;
+  --color-background: #030303; /* Deepest Void */
+  --color-card: #0f0f0f;
+  --color-card-hover: #1a1a1a;
+  --color-border: #262626;
+  --color-text: #ededed;
+  --color-text-muted: #888888;
+  --color-text-secondary: #a1a1a1;
+  --color-primary: #ffffff; /* Stark White for contrast */
+  --color-accent: #333333;
   --color-success: #34d399;
-  --glow-primary: rgba(96, 165, 250, 0.4);
-  --glow-accent: rgba(192, 132, 252, 0.4);
+  --glow-primary: rgba(255, 255, 255, 0.15);
+  --glow-accent: rgba(255, 255, 255, 0.05);
 }
 
 html {
@@ -42,11 +42,172 @@ html {
 body {
   background-color: var(--color-background);
   color: var(--color-text);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.5s cubic-bezier(0.16, 1, 0.3, 1), color 0.5s ease;
   font-family: var(--font-sans);
   overflow-x: hidden;
 }
 
+/* Global Noise Overlay */
+.noise-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Custom Cursor - FPS Style Crosshair */
+
+/* DEFAULT: Touch/Mobile - Native Cursor Only */
+body, a, button, input, select, textarea {
+  cursor: auto;
+}
+.custom-cursor {
+  display: none;
+}
+
+/* DESKTOP/MOUSE - Custom Cursor Only */
+@media (hover: hover) and (pointer: fine) {
+  /* Aggressively hide native cursor on EVERYTHING */
+  *, *::before, *::after {
+    cursor: none !important;
+  }
+  
+  .custom-cursor {
+    display: block !important;
+  }
+
+  body {
+    /* Ensure we can still select text if needed, but no cursor shows */
+    cursor: none;
+  }
+}
+
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  /* Critical: Position using hardware-accelerated transform */
+  transform: translate3d(var(--cursor-x, -100px), var(--cursor-y, -100px), 0);
+  pointer-events: none;
+  z-index: 10000;
+  /* High contrast drop-shadow ensuring visibility on white backgrounds */
+  filter: drop-shadow(0 0 1px rgba(0,0,0,1)) drop-shadow(0 0 2px rgba(0,0,0,0.5));
+}
+
+/* 1. Center Dot (High Visibility Core) */
+.cursor-dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  background-color: #ffffff; /* White hot core */
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  /* Stronger Double-Ring Glow */
+  box-shadow: 0 0 6px 2px var(--color-primary), 0 0 12px 4px var(--color-primary); 
+  z-index: 2;
+  transition: transform 0.1s;
+}
+
+/* 2. Reticle Container (Large 60px) */
+.cursor-reticle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60px;
+  height: 60px;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s;
+  z-index: 1;
+}
+
+/* Reticle Lines */
+.cursor-reticle::before,
+.cursor-reticle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--color-primary); 
+  /* Intense Glow */
+  box-shadow: 0 0 8px var(--color-primary), 0 0 2px rgba(255, 255, 255, 0.5) inset; 
+  transition: all 0.2s cubic-bezier(0.1, 1, 0.3, 1);
+  opacity: 0.9;
+}
+
+/* Horizontal Hairs (Wider) */
+.cursor-reticle::before {
+  width: 36px;
+  height: 3px;
+  /* Cut center */
+  -webkit-mask-image: linear-gradient(to right, black 0%, black 40%, transparent 40%, transparent 60%, black 60%, black 100%);
+  mask-image: linear-gradient(to right, black 0%, black 40%, transparent 40%, transparent 60%, black 60%, black 100%);
+}
+
+/* Vertical Hairs (Taller) */
+.cursor-reticle::after {
+  width: 3px;
+  height: 36px;
+  /* Cut center */
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 40%, transparent 40%, transparent 60%, black 60%, black 100%);
+  mask-image: linear-gradient(to bottom, black 0%, black 40%, transparent 40%, transparent 60%, black 60%, black 100%);
+}
+
+
+/* --- STATE: HOVER (Aim/Spread) --- */
+.cursor-hover .cursor-reticle::before {
+  width: 50px;
+}
+
+.cursor-hover .cursor-reticle::after {
+  height: 50px;
+}
+
+.cursor-hover .cursor-dot {
+  transform: translate(-50%, -50%) scale(1.4);
+  box-shadow: 0 0 10px 3px var(--color-primary), 0 0 20px 6px var(--color-primary);
+}
+
+
+/* --- STATE: FIRE (Hold to Spread) --- */
+/* Muzzle Flash (Instant impact on click start) */
+/* --- STATE: FIRE (Hold to Spread) --- */
+/* Muzzle Flash (Instant impact on click start) */
+@keyframes muzzle-flash {
+  0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 4px 1px var(--color-primary); background: #ffffff; }
+  10% { transform: translate(-50%, -50%) scale(3); box-shadow: 0 0 30px 10px var(--color-primary); background: #ffffff; }
+  100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 4px 1px var(--color-primary); background: #ffffff; }
+}
+
+.cursor-active .cursor-reticle::before {
+  width: 65px; /* Max spread limit */
+  /* Maintain primary color, just expand */
+  background: var(--color-primary);
+  box-shadow: 0 0 15px var(--color-primary);
+  transition: width 1s cubic-bezier(0.1, 1, 0.1, 1); /* Expand over 1s */
+}
+
+.cursor-active .cursor-reticle::after {
+  height: 65px; /* Max spread limit */
+  /* Maintain primary color, just expand */
+  background: var(--color-primary);
+  box-shadow: 0 0 15px var(--color-primary);
+  transition: height 1s cubic-bezier(0.1, 1, 0.1, 1); /* Expand over 1s */
+}
+
+/* Flash dot instantly */
+.cursor-active .cursor-dot {
+  animation: muzzle-flash 0.1s ease-out;
+}
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
@@ -65,9 +226,15 @@ body {
   background: var(--color-primary);
 }
 
-/* Selection */
+/* Selection - Light mode */
 ::selection {
-  background-color: var(--color-primary);
+  background-color: #3b82f6;
+  color: white;
+}
+
+/* Selection - Dark mode */
+:root.dark ::selection {
+  background-color: #3b82f6;
   color: white;
 }
 
@@ -275,6 +442,11 @@ section:not(#about) {
 
 :root.dark .theme-icon-dark {
   display: block;
+}
+
+/* Invert colors in dark mode (for black logos) */
+:root.dark .theme-inverse {
+  filter: brightness(0) invert(1) !important;
 }
 
 /* Disco Themes */
