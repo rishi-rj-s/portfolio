@@ -1,6 +1,7 @@
-import { Component, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, Inject, PLATFORM_ID, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
+import Tagtics from 'tagtics-client';
 import { Navbar } from './components/navbar/navbar';
 import { printAsciiArt } from './utils/console-art';
 import { Footer } from './components/footer/footer';
@@ -30,7 +31,7 @@ import { Footer } from './components/footer/footer';
     </div>
   `
 })
-export class App implements AfterViewInit, OnDestroy {
+export class App implements OnInit, AfterViewInit, OnDestroy {
   isBrowser: boolean;
   private mouseHandler: ((e: MouseEvent) => void) | null = null;
   private clickHandler: ((e: MouseEvent) => void) | null = null;
@@ -40,6 +41,12 @@ export class App implements AfterViewInit, OnDestroy {
     if (this.isBrowser) {
       printAsciiArt();
     }
+  }
+  ngOnInit(): void {
+    Tagtics.init({
+      apiKey: 'none',
+      testingMode: true,
+    });
   }
 
   ngAfterViewInit() {
