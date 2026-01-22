@@ -44,6 +44,7 @@
     "gsap": "^3.14.2",
     "ng-hcaptcha": "^2.7.0",
     "rxjs": "~7.8.0",
+    "tagtics-client": "^1.4.0",
     "tailwindcss": "^4.0.0",
     "tslib": "^2.3.0"
   },
