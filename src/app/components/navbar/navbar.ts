@@ -31,6 +31,7 @@ gsap.registerPlugin(ScrollToPlugin);
 
           <!-- Desktop Links -->
           <div class="hidden md:flex items-center gap-1">
+             <a href="#info" (click)="handleNavClick($event, '#info')" class="nav-item px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:text-[var(--color-primary)] transition-colors rounded-full hover:bg-[var(--color-card-hover)]" #navItem>Info</a>
             <a href="#skills" (click)="handleNavClick($event, '#skills')" class="nav-item px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:text-[var(--color-primary)] transition-colors rounded-full hover:bg-[var(--color-card-hover)]" #navItem>Skills</a>
             <a href="#projects" (click)="handleNavClick($event, '#projects')" class="nav-item px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:text-[var(--color-primary)] transition-colors rounded-full hover:bg-[var(--color-card-hover)]" #navItem>Projects</a>
           </div>
@@ -75,6 +76,7 @@ gsap.registerPlugin(ScrollToPlugin);
         <div 
           class="absolute top-full left-0 right-0 mt-4 p-4 rounded-2xl flex flex-col gap-4 md:hidden animate-fade-in-up origin-top shadow-xl border border-white/10 glass-bg"
         >
+          <a href="#info" (click)="closeMobileMenu(); handleNavClick($event, '#info')" class="p-3 text-[var(--color-text)] hover:bg-[var(--color-card-hover)] rounded-xl font-bold">Info</a>
           <a href="#skills" (click)="closeMobileMenu(); handleNavClick($event, '#skills')" class="p-3 text-[var(--color-text)] hover:bg-[var(--color-card-hover)] rounded-xl font-bold">Skills</a>
           <a href="#projects" (click)="closeMobileMenu(); handleNavClick($event, '#projects')" class="p-3 text-[var(--color-text)] hover:bg-[var(--color-card-hover)] rounded-xl font-bold">Projects</a>
           <a href="#contact" (click)="closeMobileMenu(); handleNavClick($event, '#contact')" class="p-3 bg-[var(--color-text)] text-[var(--color-background)] rounded-xl text-center font-bold">Let's Talk</a>
