@@ -6,7 +6,7 @@ import { isPlatformBrowser } from '@angular/common';
   template: `
     <!-- Mobile: Static between contact & footer, Desktop: Fixed on left -->
     <aside 
-      class="z-40 bg-[var(--color-card)]/90 backdrop-blur-md border border-[var(--color-border)] shadow-2xl flex w-fit items-center justify-center rounded-full transition-all duration-200 relative mx-auto mt-8 mb-12 flex-row p-2 gap-2 md:fixed md:flex-col md:pb-3 md:gap-3 md:left-6 md:top-1/2 md:-translate-y-1/2 md:mx-0 md:my-0 md:w-auto"
+      class="z-40 bg-[var(--color-card)]/90 backdrop-blur-md border border-[var(--color-border)] shadow-2xl flex w-fit items-center justify-center rounded-full transition-all duration-200 relative mx-auto mt-4 mb-6 flex-row p-2 gap-2 md:fixed md:flex-col md:pb-3 md:gap-3 md:left-6 md:top-1/2 md:-translate-y-1/2 md:mx-0 md:my-0 md:w-auto"
       #islandContainer>
       
       <!-- Resume Button -->

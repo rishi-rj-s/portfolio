@@ -170,20 +170,6 @@ export class Navbar {
     this.mobileMenuOpen.set(false);
   }
 
-  startDisco(event: PointerEvent) {
-    if (!isPlatformBrowser(this.platformId)) return;
-    this.theme.startDisco();
-    window.addEventListener('pointerup', this.stopDiscoBound);
-    window.addEventListener('pointercancel', this.stopDiscoBound);
-  }
-
-  private stopDiscoBound = () => {
-    if (!isPlatformBrowser(this.platformId)) return;
-    this.theme.stopDisco();
-    window.removeEventListener('pointerup', this.stopDiscoBound);
-    window.removeEventListener('pointercancel', this.stopDiscoBound);
-  };
-
   handleNavClick(e: Event, id: string) {
     e.preventDefault();
     if (isPlatformBrowser(this.platformId)) {

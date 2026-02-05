@@ -102,45 +102,6 @@ export class Theme {
     this.setTheme(newTheme, event);
   }
   
-  // Legacy support for Disco mode (kept as is)
-  private discoTimer: any;
-  private discoInterval: any;
-  private currentDiscoClass: string | null = null;
-  private readonly discoClasses = [
-    'theme-disco-1', 'theme-disco-2', 'theme-disco-3', 'theme-disco-4', 'theme-disco-5'
-  ];
-
-  startDisco() {
-    if (!this.isBrowser) return;
-    this.discoTimer = setTimeout(() => {
-      this.startDiscoCycle();
-    }, 2000);
-  }
-
-  private startDiscoCycle() {
-    let index = 0;
-    const cycle = () => {
-      if (this.currentDiscoClass) {
-        document.documentElement.classList.remove(this.currentDiscoClass);
-      }
-      this.currentDiscoClass = this.discoClasses[index];
-      document.documentElement.classList.add(this.currentDiscoClass);
-      index = (index + 1) % this.discoClasses.length;
-    };
-    cycle();
-    this.discoInterval = setInterval(cycle, 250);
-  }
-
-  stopDisco() {
-    if (!this.isBrowser) return;
-    if (this.discoTimer) clearTimeout(this.discoTimer);
-    if (this.discoInterval) clearInterval(this.discoInterval);
-    if (this.currentDiscoClass) {
-      document.documentElement.classList.remove(this.currentDiscoClass);
-      this.currentDiscoClass = null;
-    }
-  }
-  
   openSelector() {
     this.isSelectorOpen.set(true);
   }
