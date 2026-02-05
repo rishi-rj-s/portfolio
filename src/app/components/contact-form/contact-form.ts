@@ -1,4 +1,4 @@
-import { Component, signal, computed, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, signal, computed, inject, PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgHcaptchaModule } from 'ng-hcaptcha';
 import { ContactMail } from '../../services/contact';
@@ -101,39 +101,36 @@ import { isPlatformBrowser } from '@angular/common';
   `
 })
 export class ContactForm {
-  contactForm: FormGroup;
+  // v20 inject() instead of constructor DI
+  private fb = inject(FormBuilder);
+  private contactService = inject(ContactMail);
+  private platformId = inject(PLATFORM_ID);
+  
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
+  private readonly isLocalhost = this.isBrowser && (
+    typeof window !== 'undefined' && (
+      window.location.hostname === 'localhost' || 
+      window.location.hostname === '127.0.0.1'
+    )
+  );
+  
+  contactForm: FormGroup = this.fb.group({
+    name: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    message: ['', Validators.required]
+  });
+  
   isSubmitting = signal(false);
   isSubmitted = signal(false);
   errorMessage = signal('');
   captchaToken = signal('');
   siteKey = environment.hcaptchaSiteKey;
-  
-  private readonly isBrowser: boolean;
-  private readonly isLocalhost: boolean;
 
   // Show captcha only in browser and not localhost
   readonly showCaptcha = computed(() => this.isBrowser && !this.isLocalhost);
   
   // Can submit if: (has captcha token) OR (is localhost, so captcha skipped)
   readonly canSubmit = computed(() => !!this.captchaToken() || this.isLocalhost);
-
-  constructor(
-      private fb: FormBuilder,
-      private contactService: ContactMail,
-      @Inject(PLATFORM_ID) platformId: Object
-  ) {
-    this.isBrowser = isPlatformBrowser(platformId);
-    this.isLocalhost = this.isBrowser && (
-      window.location.hostname === 'localhost' || 
-      window.location.hostname === '127.0.0.1'
-    );
-    
-    this.contactForm = this.fb.group({
-      name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      message: ['', Validators.required]
-    });
-  }
 
   autoResize(event: Event) {
     const textarea = event.target as HTMLTextAreaElement;

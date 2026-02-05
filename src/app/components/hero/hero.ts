@@ -1,11 +1,10 @@
-import { Component, ElementRef, ViewChild, AfterViewInit, HostListener, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component, ElementRef, afterNextRender, viewChild, OnDestroy } from '@angular/core';
 import gsap from 'gsap';
 
 @Component({
   selector: 'app-hero',
   template: `
-    <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden perspective-1000">
+    <section id="hero" #heroSection class="relative min-h-screen flex items-center justify-center overflow-hidden perspective-1000">
       
       <!-- Background Elements -->
       <div class="absolute inset-0 pointer-events-none">
@@ -63,22 +62,28 @@ import gsap from 'gsap';
     }
   `]
 })
-export class Hero implements AfterViewInit {
-  @ViewChild('heroContainer') container!: ElementRef;
-  @ViewChild('heroTitle') title!: ElementRef;
-  @ViewChild('line1') line1!: ElementRef;
-  @ViewChild('line2') line2!: ElementRef;
+export class Hero implements OnDestroy {
+  // v20 signal-based queries
+  section = viewChild<ElementRef<HTMLElement>>('heroSection');
+  container = viewChild<ElementRef<HTMLElement>>('heroContainer');
+  title = viewChild<ElementRef<HTMLElement>>('heroTitle');
+  line1 = viewChild<ElementRef<HTMLElement>>('line1');
+  line2 = viewChild<ElementRef<HTMLElement>>('line2');
   
-  isBrowser: boolean;
+  private isInViewport = false;
+  private observer: IntersectionObserver | null = null;
+  private mouseMoveHandler: ((e: MouseEvent) => void) | null = null;
 
-  constructor(@Inject(PLATFORM_ID) platformId: Object) {
-    this.isBrowser = isPlatformBrowser(platformId);
-  }
-
-  ngAfterViewInit() {
-    if (this.isBrowser) {
+  constructor() {
+    // Use afterNextRender for browser-only initialization
+    afterNextRender(() => {
+      const titleEl = this.title()?.nativeElement;
+      const sectionEl = this.section()?.nativeElement;
+      
+      if (!titleEl || !sectionEl) return;
+      
       // Initial Text Reveal
-      gsap.from(this.title.nativeElement.children, {
+      gsap.from(titleEl.children, {
         y: 100,
         opacity: 0,
         duration: 1.5,
@@ -86,46 +91,69 @@ export class Hero implements AfterViewInit {
         ease: 'power4.out',
         delay: 0.2
       });
-    }
+      
+      // Set up Intersection Observer - only track mouse when hero is visible
+      this.observer = new IntersectionObserver(
+        (entries) => {
+          this.isInViewport = entries[0].isIntersecting;
+        },
+        { threshold: 0.1 }
+      );
+      this.observer.observe(sectionEl);
+      
+      // Mouse handler with viewport check
+      this.mouseMoveHandler = (e: MouseEvent) => {
+        if (!this.isInViewport) return;
+        
+        const containerEl = this.container()?.nativeElement;
+        const titleEl = this.title()?.nativeElement;
+        const line1El = this.line1()?.nativeElement;
+        const line2El = this.line2()?.nativeElement;
+        
+        if (!containerEl || !titleEl || !line1El || !line2El) return;
+        
+        requestAnimationFrame(() => {
+          const { innerWidth, innerHeight } = window;
+          const x = e.clientX;
+          const y = e.clientY;
+
+          const rotateX = ((y / innerHeight) - 0.5) * -30;
+          const rotateY = ((x / innerWidth) - 0.5) * 30;
+
+          gsap.to(titleEl, {
+            rotateX,
+            rotateY,
+            duration: 1,
+            ease: 'power3.out',
+            overwrite: 'auto'
+          });
+
+          gsap.to(line1El, {
+            x: (x - innerWidth / 2) * 0.05,
+            y: (y - innerHeight / 2) * 0.05,
+            duration: 1,
+            ease: 'power3.out',
+            overwrite: 'auto'
+          });
+
+          gsap.to(line2El, {
+            x: (x - innerWidth / 2) * -0.05,
+            y: (y - innerHeight / 2) * -0.05,
+            duration: 1,
+            ease: 'power3.out',
+            overwrite: 'auto'
+          });
+        });
+      };
+      
+      window.addEventListener('mousemove', this.mouseMoveHandler, { passive: true });
+    });
   }
 
-  @HostListener('document:mousemove', ['$event'])
-  onMouseMove(e: MouseEvent) {
-    if (!this.container || !this.isBrowser) return;
-
-    requestAnimationFrame(() => {
-      const { innerWidth, innerHeight } = window;
-      const x = e.clientX;
-      const y = e.clientY;
-
-      // Calculate rotation (-15 to 15 degrees)
-      const rotateX = ((y / innerHeight) - 0.5) * -30;
-      const rotateY = ((x / innerWidth) - 0.5) * 30;
-
-      gsap.to(this.title.nativeElement, {
-        rotateX: rotateX,
-        rotateY: rotateY,
-        duration: 1,
-        ease: 'power3.out',
-        overwrite: 'auto'
-      });
-
-      // Parallax for lines
-      gsap.to(this.line1.nativeElement, {
-        x: (x - innerWidth / 2) * 0.05,
-        y: (y - innerHeight / 2) * 0.05,
-        duration: 1,
-        ease: 'power3.out',
-        overwrite: 'auto'
-      });
-
-      gsap.to(this.line2.nativeElement, {
-        x: (x - innerWidth / 2) * -0.05, // Reverse direction
-        y: (y - innerHeight / 2) * -0.05,
-        duration: 1,
-        ease: 'power3.out',
-        overwrite: 'auto'
-      });
-    });
+  ngOnDestroy() {
+    this.observer?.disconnect();
+    if (this.mouseMoveHandler) {
+      window.removeEventListener('mousemove', this.mouseMoveHandler);
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Component, signal, ViewChild, ElementRef, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, signal, viewChild, ElementRef, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 interface SkillItem {
@@ -61,10 +61,13 @@ interface SkillCategory {
   `
 })
 export class Skills {
-  @ViewChild('header') header!: ElementRef;
-  @ViewChild('grid') grid!: ElementRef;
-
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  // v20 signal-based queries
+  header = viewChild<ElementRef<HTMLElement>>('header');
+  grid = viewChild<ElementRef<HTMLElement>>('grid');
+  
+  // v20 inject() instead of constructor DI
+  private platformId = inject(PLATFORM_ID);
+  readonly isBrowser = isPlatformBrowser(this.platformId);
 
   skills = signal<SkillCategory[]>([
     {
@@ -119,6 +122,4 @@ export class Skills {
       ],
     },
   ]);
-
-
 }

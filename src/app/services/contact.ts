@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, timeout, retry, catchError } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -19,11 +19,10 @@ export interface Web3FormsResponse {
   providedIn: 'root',
 })
 export class ContactMail {
+  private readonly http = inject(HttpClient);
   private readonly WEB3_API_URL = environment.web3formsUrl;
   private readonly ACCESS_KEY = environment.web3formsKey;
   private readonly REQUEST_TIMEOUT = 15000; // 15 seconds
-
-  constructor(private http: HttpClient) {}
 
   sendForm(payload: ContactFormPayload, hCaptchaToken: string): Observable<Web3FormsResponse> {
     // Validate payload

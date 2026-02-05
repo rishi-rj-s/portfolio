@@ -120,14 +120,16 @@ export class WebglBackgroundComponent implements OnDestroy {
     this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
     this.camera.position.z = 50;
 
-    // RENDERER
+    // RENDERER - optimized settings
+    const isMobile = window.innerWidth < 768;
     this.renderer = new THREE.WebGLRenderer({
       canvas: canvas,
       alpha: true,
-      antialias: true
+      antialias: !isMobile, // Disable antialias on mobile for performance
+      powerPreference: 'high-performance'
     });
     this.renderer.setSize(width, height);
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // Cap at 1.5
 
     // Load initial effect
     this.currentBackgroundStyle = this.background.currentBackground();
