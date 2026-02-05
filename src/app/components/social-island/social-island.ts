@@ -130,8 +130,6 @@ export class SocialIsland implements OnDestroy {
       this.isDesktop = window.innerWidth >= 768;
       const islandRect = container.getBoundingClientRect();
       
-      console.log('Island rect:', islandRect, 'isDesktop:', this.isDesktop);
-      
       if (this.isDesktop) {
         this.dropdownPosition = {
           x: islandRect.right + 16,
@@ -143,10 +141,6 @@ export class SocialIsland implements OnDestroy {
           y: Math.max(16, islandRect.top - 230)
         };
       }
-      
-      console.log('Dropdown position:', this.dropdownPosition);
-    } else {
-      console.log('Container not found!');
     }
   }
 

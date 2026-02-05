@@ -1,6 +1,10 @@
 import { Component, ElementRef, OnDestroy, PLATFORM_ID, effect, afterNextRender, viewChild, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import * as THREE from 'three';
+import { 
+  Scene, 
+  PerspectiveCamera, 
+  WebGLRenderer, 
+} from 'three';
 import { Theme } from '../../services/theme';
 import { Background, BackgroundStyle } from '../../services/background';
 import { 
@@ -37,9 +41,9 @@ export class WebglBackgroundComponent implements OnDestroy {
   canvasContainer = viewChild<ElementRef<HTMLDivElement>>('canvasContainer');
   canvasRef = viewChild<ElementRef<HTMLCanvasElement>>('canvas');
 
-  private renderer!: THREE.WebGLRenderer;
-  private scene!: THREE.Scene;
-  private camera!: THREE.PerspectiveCamera;
+  private renderer!: WebGLRenderer;
+  private scene!: Scene;
+  private camera!: PerspectiveCamera;
   private animationFrameId: number | null = null;
   
   private currentEffect: WebGLEffect | null = null;
@@ -114,15 +118,15 @@ export class WebglBackgroundComponent implements OnDestroy {
     const height = window.innerHeight;
 
     // SCENE
-    this.scene = new THREE.Scene();
+    this.scene = new Scene();
     
     // CAMERA
-    this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+    this.camera = new PerspectiveCamera(75, width / height, 0.1, 1000);
     this.camera.position.z = 50;
 
     // RENDERER - optimized settings
     const isMobile = window.innerWidth < 768;
-    this.renderer = new THREE.WebGLRenderer({
+    this.renderer = new WebGLRenderer({
       canvas: canvas,
       alpha: true,
       antialias: !isMobile, // Disable antialias on mobile for performance

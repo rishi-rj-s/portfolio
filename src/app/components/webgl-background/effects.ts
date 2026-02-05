@@ -1,8 +1,31 @@
-import * as THREE from 'three';
+import {
+  Scene,
+  PerspectiveCamera,
+  WebGLRenderer,
+  Points,
+  PointsMaterial,
+  BufferGeometry,
+  BufferAttribute,
+  AdditiveBlending,
+  Group,
+  PointLight,
+  AmbientLight,
+  Light,
+  OctahedronGeometry,
+  TetrahedronGeometry,
+  IcosahedronGeometry,
+  MeshPhysicalMaterial,
+  Mesh,
+  Line,
+  LineBasicMaterial,
+  Vector3,
+  ShaderMaterial,
+  Color,
+} from 'three';
 
 // Base interface for all effects
 export interface WebGLEffect {
-  init(scene: THREE.Scene, camera: THREE.PerspectiveCamera, renderer: THREE.WebGLRenderer): void;
+  init(scene: Scene, camera: PerspectiveCamera, renderer: WebGLRenderer): void;
   animate(time: number, mouseX: number, mouseY: number, scrollY: number): void;
   updateColors(theme: string): void;
   dispose(): void;
@@ -12,13 +35,13 @@ export interface WebGLEffect {
 // AURORA EFFECT - Vertical light curtains using particles
 // ============================================
 export class AuroraEffect implements WebGLEffect {
-  private points!: THREE.Points;
-  private material!: THREE.PointsMaterial;
-  private geometry!: THREE.BufferGeometry;
+  private points!: Points;
+  private material!: PointsMaterial;
+  private geometry!: BufferGeometry;
   private basePositions!: Float32Array;
   private count = 0;
 
-  init(scene: THREE.Scene) {
+  init(scene: Scene) {
     // Create vertical curtains of particles
     const curtains = 5;
     const particlesPerCurtain = 500;
@@ -48,25 +71,25 @@ export class AuroraEffect implements WebGLEffect {
       }
     }
 
-    this.geometry = new THREE.BufferGeometry();
-    this.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    this.geometry = new BufferGeometry();
+    this.geometry.setAttribute('position', new BufferAttribute(positions, 3));
 
     // Simple PointsMaterial - reliable
-    this.material = new THREE.PointsMaterial({
+    this.material = new PointsMaterial({
       color: 0x00ff88,
       size: 2,
       transparent: true,
       opacity: 0.6,
-      blending: THREE.AdditiveBlending,
+      blending: AdditiveBlending,
       sizeAttenuation: true
     });
 
-    this.points = new THREE.Points(this.geometry, this.material);
+    this.points = new Points(this.geometry, this.material);
     scene.add(this.points);
   }
 
   animate(time: number, mouseX: number, _mouseY: number, _scrollY: number) {
-    const posAttr = this.geometry.attributes['position'] as THREE.BufferAttribute;
+    const posAttr = this.geometry.attributes['position'] as BufferAttribute;
     
     // Wave the particles
     for (let i = 0; i < this.count; i++) {
@@ -110,41 +133,41 @@ export class AuroraEffect implements WebGLEffect {
 // CRYSTAL EFFECT - Prismatic rotating structures
 // ============================================
 export class CrystalEffect implements WebGLEffect {
-  private group!: THREE.Group;
-  private crystals: THREE.Mesh[] = [];
-  private materials: THREE.MeshPhysicalMaterial[] = [];
-  private lights: THREE.Light[] = [];
+  private group!: Group;
+  private crystals: Mesh[] = [];
+  private materials: MeshPhysicalMaterial[] = [];
+  private lights: Light[] = [];
 
-  init(scene: THREE.Scene) {
-    this.group = new THREE.Group();
+  init(scene: Scene) {
+    this.group = new Group();
     
-    const light1 = new THREE.PointLight(0xffffff, 2, 200);
+    const light1 = new PointLight(0xffffff, 2, 200);
     light1.position.set(40, 40, 40);
     this.group.add(light1);
     this.lights.push(light1);
     
-    const light2 = new THREE.PointLight(0x8888ff, 1, 200);
+    const light2 = new PointLight(0x8888ff, 1, 200);
     light2.position.set(-40, -40, 20);
     this.group.add(light2);
     this.lights.push(light2);
 
-    const ambientLight = new THREE.AmbientLight(0x404040, 1);
+    const ambientLight = new AmbientLight(0x404040, 1);
     this.group.add(ambientLight);
     this.lights.push(ambientLight);
 
     const crystalConfigs = [
-      { geo: new THREE.OctahedronGeometry(10, 0), pos: { x: 0, y: 0, z: -10 } },
-      { geo: new THREE.TetrahedronGeometry(8, 0), pos: { x: 30, y: 15, z: -20 } },
-      { geo: new THREE.IcosahedronGeometry(7, 0), pos: { x: -35, y: -12, z: -15 } },
-      { geo: new THREE.OctahedronGeometry(6, 0), pos: { x: 25, y: -20, z: -5 } },
-      { geo: new THREE.TetrahedronGeometry(5, 0), pos: { x: -20, y: 22, z: -25 } },
-      { geo: new THREE.IcosahedronGeometry(4, 0), pos: { x: -45, y: 5, z: -10 } },
-      { geo: new THREE.OctahedronGeometry(5, 0), pos: { x: 45, y: -5, z: -18 } },
-      { geo: new THREE.TetrahedronGeometry(7, 0), pos: { x: 10, y: -28, z: -22 } },
+      { geo: new OctahedronGeometry(10, 0), pos: { x: 0, y: 0, z: -10 } },
+      { geo: new TetrahedronGeometry(8, 0), pos: { x: 30, y: 15, z: -20 } },
+      { geo: new IcosahedronGeometry(7, 0), pos: { x: -35, y: -12, z: -15 } },
+      { geo: new OctahedronGeometry(6, 0), pos: { x: 25, y: -20, z: -5 } },
+      { geo: new TetrahedronGeometry(5, 0), pos: { x: -20, y: 22, z: -25 } },
+      { geo: new IcosahedronGeometry(4, 0), pos: { x: -45, y: 5, z: -10 } },
+      { geo: new OctahedronGeometry(5, 0), pos: { x: 45, y: -5, z: -18 } },
+      { geo: new TetrahedronGeometry(7, 0), pos: { x: 10, y: -28, z: -22 } },
     ];
 
     crystalConfigs.forEach((config) => {
-      const material = new THREE.MeshPhysicalMaterial({
+      const material = new MeshPhysicalMaterial({
         color: 0xffffff,
         metalness: 0.1,
         roughness: 0.05,
@@ -154,7 +177,7 @@ export class CrystalEffect implements WebGLEffect {
         opacity: 0.85
       });
       
-      const mesh = new THREE.Mesh(config.geo, material);
+      const mesh = new Mesh(config.geo, material);
       mesh.position.set(config.pos.x, config.pos.y, config.pos.z);
       mesh.userData['rotSpeed'] = {
         x: (Math.random() - 0.5) * 0.012,
@@ -214,16 +237,16 @@ export class CrystalEffect implements WebGLEffect {
 // WAVES EFFECT - Flowing curved lines
 // ============================================
 export class WavesEffect implements WebGLEffect {
-  private lines: THREE.Line[] = [];
-  private materials: THREE.LineBasicMaterial[] = [];
-  private group!: THREE.Group;
+  private lines: Line[] = [];
+  private materials: LineBasicMaterial[] = [];
+  private group!: Group;
   private lineCount = 20;
 
-  init(scene: THREE.Scene) {
-    this.group = new THREE.Group();
+  init(scene: Scene) {
+    this.group = new Group();
     
     for (let l = 0; l < this.lineCount; l++) {
-      const points: THREE.Vector3[] = [];
+      const points: Vector3[] = [];
       const segments = 50;
       
       // Create flowing curve
@@ -236,18 +259,18 @@ export class WavesEffect implements WebGLEffect {
         const x = startX + t * 100 - 50;
         const y = startY + Math.sin(t * Math.PI * 2) * 15;
         const z = startZ + Math.cos(t * Math.PI) * 10;
-        points.push(new THREE.Vector3(x, y, z));
+        points.push(new Vector3(x, y, z));
       }
       
-      const geometry = new THREE.BufferGeometry().setFromPoints(points);
-      const material = new THREE.LineBasicMaterial({
+      const geometry = new BufferGeometry().setFromPoints(points);
+      const material = new LineBasicMaterial({
         color: 0x4a00e0,
         transparent: true,
         opacity: 0.4,
-        blending: THREE.AdditiveBlending
+        blending: AdditiveBlending
       });
       
-      const line = new THREE.Line(geometry, material);
+      const line = new Line(geometry, material);
       line.userData['phase'] = l * 0.5;
       line.userData['speed'] = 0.3 + Math.random() * 0.3;
       line.userData['startY'] = startY;
@@ -266,7 +289,7 @@ export class WavesEffect implements WebGLEffect {
       const speed = line.userData['speed'];
       const startY = line.userData['startY'];
       
-      const posAttr = line.geometry.attributes['position'] as THREE.BufferAttribute;
+      const posAttr = line.geometry.attributes['position'] as BufferAttribute;
       const segments = posAttr.count;
       
       for (let s = 0; s < segments; s++) {
@@ -316,23 +339,23 @@ export class WavesEffect implements WebGLEffect {
 // BLOBS EFFECT - Morphing organic shapes
 // ============================================
 export class BlobsEffect implements WebGLEffect {
-  private blobs: THREE.Mesh[] = [];
-  private materials: THREE.ShaderMaterial[] = [];
-  private group!: THREE.Group;
+  private blobs: Mesh[] = [];
+  private materials: ShaderMaterial[] = [];
+  private group!: Group;
 
-  init(scene: THREE.Scene) {
-    this.group = new THREE.Group();
+  init(scene: Scene) {
+    this.group = new Group();
     
     const blobCount = 7;
     
     for (let i = 0; i < blobCount; i++) {
       const size = 5 + Math.random() * 6;
-      const geometry = new THREE.IcosahedronGeometry(size, 4);
+      const geometry = new IcosahedronGeometry(size, 4);
       
-      const material = new THREE.ShaderMaterial({
+      const material = new ShaderMaterial({
         uniforms: {
           uTime: { value: 0 },
-          uColor: { value: new THREE.Color(0xff0088) },
+          uColor: { value: new Color(0xff0088) },
           uFrequency: { value: 0.4 + Math.random() * 0.3 },
           uAmplitude: { value: 0.3 + Math.random() * 0.3 }
         },
@@ -364,12 +387,12 @@ export class BlobsEffect implements WebGLEffect {
           }
         `,
         transparent: true,
-        blending: THREE.AdditiveBlending
+        blending: AdditiveBlending
       });
 
       const angle = (i / blobCount) * Math.PI * 2;
       const radius = 20 + Math.random() * 25;
-      const mesh = new THREE.Mesh(geometry, material);
+      const mesh = new Mesh(geometry, material);
       mesh.position.set(
         Math.cos(angle) * radius,
         (Math.random() - 0.5) * 40,
@@ -436,13 +459,13 @@ export class BlobsEffect implements WebGLEffect {
 // TERRAIN EFFECT - Wave grid
 // ============================================
 export class TerrainEffect implements WebGLEffect {
-  private points!: THREE.Points;
-  private material!: THREE.PointsMaterial;
-  private geometry!: THREE.BufferGeometry;
+  private points!: Points;
+  private material!: PointsMaterial;
+  private geometry!: BufferGeometry;
   private basePositions!: Float32Array;
   private count = 0;
 
-  init(scene: THREE.Scene) {
+  init(scene: Scene) {
     const gridSize = 50;
     const spacing = 3;
     this.count = gridSize * gridSize;
@@ -465,26 +488,26 @@ export class TerrainEffect implements WebGLEffect {
       }
     }
 
-    this.geometry = new THREE.BufferGeometry();
-    this.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    this.geometry = new BufferGeometry();
+    this.geometry.setAttribute('position', new BufferAttribute(positions, 3));
 
-    this.material = new THREE.PointsMaterial({
+    this.material = new PointsMaterial({
       color: 0x4a00e0,
       size: 1.2,
       transparent: true,
       opacity: 0.5,
-      blending: THREE.AdditiveBlending,
+      blending: AdditiveBlending,
       sizeAttenuation: true
     });
 
-    this.points = new THREE.Points(this.geometry, this.material);
+    this.points = new Points(this.geometry, this.material);
     this.points.rotation.x = -0.5;
     this.points.position.y = 0;
     scene.add(this.points);
   }
 
   animate(time: number, _mouseX: number, _mouseY: number, _scrollY: number) {
-    const posAttr = this.geometry.attributes['position'] as THREE.BufferAttribute;
+    const posAttr = this.geometry.attributes['position'] as BufferAttribute;
     
     for (let i = 0; i < this.count; i++) {
       const i3 = i * 3;
@@ -524,13 +547,13 @@ export class TerrainEffect implements WebGLEffect {
 // GALAXY EFFECT - Spiraling particles
 // ============================================
 export class GalaxyEffect implements WebGLEffect {
-  private points!: THREE.Points;
-  private material!: THREE.PointsMaterial;
-  private geometry!: THREE.BufferGeometry;
+  private points!: Points;
+  private material!: PointsMaterial;
+  private geometry!: BufferGeometry;
   private basePositions!: Float32Array;
   private count = 0;
 
-  init(scene: THREE.Scene) {
+  init(scene: Scene) {
     this.count = 5000;
     const positions = new Float32Array(this.count * 3);
     this.basePositions = new Float32Array(this.count * 3);
@@ -558,19 +581,19 @@ export class GalaxyEffect implements WebGLEffect {
       this.basePositions[i3 + 2] = positions[i3 + 2];
     }
 
-    this.geometry = new THREE.BufferGeometry();
-    this.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    this.geometry = new BufferGeometry();
+    this.geometry.setAttribute('position', new BufferAttribute(positions, 3));
 
-    this.material = new THREE.PointsMaterial({
+    this.material = new PointsMaterial({
       color: 0xff6030,
       size: 0.6,
       transparent: true,
       opacity: 0.5,
-      blending: THREE.AdditiveBlending,
+      blending: AdditiveBlending,
       sizeAttenuation: true
     });
 
-    this.points = new THREE.Points(this.geometry, this.material);
+    this.points = new Points(this.geometry, this.material);
     this.points.rotation.x = 0.8;
     scene.add(this.points);
   }
@@ -582,7 +605,7 @@ export class GalaxyEffect implements WebGLEffect {
     this.points.rotation.z = mouseX * 0.00002;
     
     // Differential rotation for particles
-    const positionAttr = this.geometry.attributes['position'] as THREE.BufferAttribute;
+    const positionAttr = this.geometry.attributes['position'] as BufferAttribute;
     for (let i = 0; i < this.count; i++) {
       const i3 = i * 3;
       const x = this.basePositions[i3];
