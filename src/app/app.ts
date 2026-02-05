@@ -19,7 +19,11 @@ import { WebglBackgroundComponent } from './components/webgl-background/webgl-ba
     ThemeSelectorComponent
   ],
   template: `
-    <app-webgl-background />
+    @defer (on idle) {
+      <app-webgl-background />
+    } @placeholder {
+      <div class="fixed inset-0 -z-10 bg-[var(--color-bg)] transition-colors duration-500"></div>
+    }
     <div class="noise-overlay"></div>
     
     <!-- Custom Cursor Element -->
