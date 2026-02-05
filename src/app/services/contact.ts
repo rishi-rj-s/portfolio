@@ -31,6 +31,17 @@ export class ContactMail {
       return throwError(() => new Error('Web3Forms access key not configured'));
     }
 
+    // Allow localhost bypass - return mock success for local testing
+    if (hCaptchaToken === 'localhost-dev-bypass') {
+      console.log('[ContactMail] Localhost bypass - simulating success', payload);
+      return new Observable(subscriber => {
+        setTimeout(() => {
+          subscriber.next({ success: true, message: 'Localhost test - message not actually sent' });
+          subscriber.complete();
+        }, 500);
+      });
+    }
+    
     if (!hCaptchaToken) {
       return throwError(() => new Error('hCaptcha token is required'));
     }
