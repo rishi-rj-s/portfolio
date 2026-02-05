@@ -1,16 +1,17 @@
-import { Component, ElementRef, HostListener, ViewChildren, QueryList, signal, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, ElementRef, viewChildren, signal, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Theme } from '../../services/theme';
 import { RouterLink, Router } from '@angular/router';
 import gsap from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+import { ThemeSelectorComponent } from '../theme-selector/theme-selector';
 
 gsap.registerPlugin(ScrollToPlugin);
 
 @Component({
   selector: 'app-navbar',
   imports: [
-    RouterLink,
+    RouterLink
   ],
   template: `
     <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300">
@@ -38,16 +39,16 @@ gsap.registerPlugin(ScrollToPlugin);
 
           <!-- Actions -->
           <div class="flex items-center gap-4">
-            <!-- Theme Toggle -->
-            <button
+
+
+            <!-- Palette Selector -->
+            <button 
               #navItem
               class="nav-item p-2 rounded-full text-[var(--color-text)] hover:scale-110 transition-transform hover:bg-[var(--color-card-hover)]"
-              (click)="theme.toggleTheme($event)"
-              (pointerdown)="startDisco($event)"
-              [attr.aria-label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+              (click)="theme.toggleSelector()"
+              aria-label="Select theme"
             >
-               <svg class="w-5 h-5 theme-icon-light" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-               <svg class="w-5 h-5 theme-icon-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
             </button>
 
             <!-- CTA / Mobile Menu Toggle -->
@@ -93,14 +94,13 @@ gsap.registerPlugin(ScrollToPlugin);
   `]
 })
 export class Navbar {
-  @ViewChildren('navItem') navItems!: QueryList<ElementRef>;
+  navItems = viewChildren<ElementRef>('navItem');
   mobileMenuOpen = signal(false);
 
-  constructor(
-    public theme: Theme,
-    private router: Router,
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
+  private platformId = inject(PLATFORM_ID);
+  public theme = inject(Theme);
+  private router = inject(Router);
+
 
 
 
@@ -111,7 +111,7 @@ export class Navbar {
       const mouseX = e.clientX;
       const mouseY = e.clientY;
       
-      this.navItems.forEach((item) => {
+      this.navItems().forEach((item) => {
         const el = item.nativeElement;
         const rect = el.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
@@ -151,7 +151,7 @@ export class Navbar {
 
   resetMagnets() {
     if (!isPlatformBrowser(this.platformId)) return;
-    this.navItems.forEach((item) => {
+    this.navItems().forEach((item) => {
       gsap.to(item.nativeElement, {
         x: 0,
         y: 0,
@@ -169,20 +169,6 @@ export class Navbar {
   closeMobileMenu() {
     this.mobileMenuOpen.set(false);
   }
-
-  startDisco(event: PointerEvent) {
-    if (!isPlatformBrowser(this.platformId)) return;
-    this.theme.startDisco();
-    window.addEventListener('pointerup', this.stopDiscoBound);
-    window.addEventListener('pointercancel', this.stopDiscoBound);
-  }
-
-  private stopDiscoBound = () => {
-    if (!isPlatformBrowser(this.platformId)) return;
-    this.theme.stopDisco();
-    window.removeEventListener('pointerup', this.stopDiscoBound);
-    window.removeEventListener('pointercancel', this.stopDiscoBound);
-  };
 
   handleNavClick(e: Event, id: string) {
     e.preventDefault();

@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, AfterViewInit, Inject, PLATFORM_ID, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, PLATFORM_ID, OnDestroy, viewChild, afterNextRender } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 @Component({
@@ -6,7 +6,7 @@ import { isPlatformBrowser } from '@angular/common';
   template: `
     <!-- Mobile: Static between contact & footer, Desktop: Fixed on left -->
     <aside 
-      class="z-40 bg-[var(--color-card)]/90 backdrop-blur-md border border-[var(--color-border)] shadow-2xl flex w-fit items-center justify-center rounded-full transition-all duration-200 relative mx-auto mt-8 mb-12 flex-row p-2 gap-2 md:fixed md:flex-col md:pb-3 md:gap-3 md:left-6 md:top-1/2 md:-translate-y-1/2 md:mx-0 md:my-0 md:w-auto"
+      class="z-40 bg-[var(--color-card)]/90 backdrop-blur-md border border-[var(--color-border)] shadow-2xl flex w-fit items-center justify-center rounded-full transition-all duration-200 relative mx-auto mt-4 mb-6 flex-row p-2 gap-2 md:fixed md:flex-col md:pb-3 md:gap-3 md:left-6 md:top-1/2 md:-translate-y-1/2 md:mx-0 md:my-0 md:w-auto"
       #islandContainer>
       
       <!-- Resume Button -->
@@ -83,32 +83,30 @@ import { isPlatformBrowser } from '@angular/common';
   `,
   styles: []
 })
-export class SocialIsland implements AfterViewInit, OnDestroy {
-  @ViewChild('islandContainer') islandContainer!: ElementRef<HTMLElement>;
+export class SocialIsland implements OnDestroy {
+  // v20 signal-based queries
+  islandContainer = viewChild<ElementRef<HTMLElement>>('islandContainer');
+  
+  // v20 inject() instead of constructor DI
+  private elementRef = inject(ElementRef);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
   
   isOpen = false;
   isDesktop = false;
   dropdownPosition = { x: 0, y: 0 };
   
-  private isBrowser: boolean;
   private resizeHandler: (() => void) | null = null;
 
-  constructor(
-    private elementRef: ElementRef,
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {
-    this.isBrowser = isPlatformBrowser(platformId);
-  }
-
-  ngAfterViewInit() {
-    if (this.isBrowser) {
+  constructor() {
+    afterNextRender(() => {
       this.checkDesktop();
       this.resizeHandler = () => {
         this.checkDesktop();
         this.closeDropdown();
       };
       window.addEventListener('resize', this.resizeHandler);
-    }
+    });
   }
 
   ngOnDestroy() {
@@ -122,8 +120,17 @@ export class SocialIsland implements AfterViewInit, OnDestroy {
   toggleDropdown(event: MouseEvent) {
     this.isOpen = !this.isOpen;
     
-    if (this.isOpen && this.isBrowser && this.islandContainer) {
-      const islandRect = this.islandContainer.nativeElement.getBoundingClientRect();
+    // Check at runtime since isBrowser may be set during SSR
+    if (!this.isOpen || typeof window === 'undefined') return;
+    
+    // Use querySelector as fallback - more reliable than viewChild signal timing
+    const container = this.elementRef.nativeElement.querySelector('aside') as HTMLElement;
+    if (container) {
+      // Check desktop status at click time to ensure accurate positioning
+      this.isDesktop = window.innerWidth >= 768;
+      const islandRect = container.getBoundingClientRect();
+      
+      console.log('Island rect:', islandRect, 'isDesktop:', this.isDesktop);
       
       if (this.isDesktop) {
         this.dropdownPosition = {
@@ -136,6 +143,10 @@ export class SocialIsland implements AfterViewInit, OnDestroy {
           y: Math.max(16, islandRect.top - 230)
         };
       }
+      
+      console.log('Dropdown position:', this.dropdownPosition);
+    } else {
+      console.log('Container not found!');
     }
   }
 

@@ -17,17 +17,19 @@ export const appConfig: ApplicationConfig = {
         scrollPositionRestoration: 'enabled',
         anchorScrolling: 'enabled'
       })
-
-    ), provideClientHydration(
+    ),
+    provideClientHydration(
       withEventReplay(),
       withIncrementalHydration()
     ),
     provideHttpClient(
       withFetch()
     ),
-    importProvidersFrom(NgHcaptchaModule.forRoot({
-      siteKey: environment.hcaptchaSiteKey,
-      languageCode: 'en' // Optional
-    }))
+    // Properly configure hCaptcha with forRoot
+    importProvidersFrom(
+      NgHcaptchaModule.forRoot({
+        siteKey: environment.hcaptchaSiteKey
+      })
+    )
   ]
 };

@@ -1,19 +1,25 @@
-import { Component, AfterViewInit, OnDestroy, Inject, PLATFORM_ID, OnInit } from '@angular/core';
+import { Component, OnDestroy, PLATFORM_ID, inject, afterNextRender } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import Tagtics from 'tagtics-client';
 import { Navbar } from './components/navbar/navbar';
-import { printAsciiArt } from './utils/console-art';
+import { ThemeSelectorComponent } from './components/theme-selector/theme-selector';
+import { Theme } from './services/theme';
+
 import { Footer } from './components/footer/footer';
+import { WebglBackgroundComponent } from './components/webgl-background/webgl-background';
 
 @Component({
   selector: 'app-root',
   imports: [
     RouterOutlet,
     Navbar,
-    Footer
+    Footer,
+    WebglBackgroundComponent,
+    ThemeSelectorComponent
   ],
   template: `
+    <app-webgl-background />
     <div class="noise-overlay"></div>
     
     <!-- Custom Cursor Element -->
@@ -21,6 +27,11 @@ import { Footer } from './components/footer/footer';
       <div class="cursor-dot"></div>
       <div class="cursor-reticle"></div>
     </div>
+
+    <!-- Global Theme Selector -->
+    @if (theme.isSelectorOpen()) {
+      <app-theme-selector (close)="theme.closeSelector()" />
+    }
     
     <div class="relative min-h-screen z-10">
       <app-navbar />
@@ -31,26 +42,27 @@ import { Footer } from './components/footer/footer';
     </div>
   `
 })
-export class App implements OnInit, AfterViewInit, OnDestroy {
-  isBrowser: boolean;
+export class App implements OnDestroy {
+  // v20 inject() instead of constructor DI
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
+  
+  public theme = inject(Theme);
+  
   private mouseHandler: ((e: MouseEvent) => void) | null = null;
   private clickHandler: ((e: MouseEvent) => void) | null = null;
   
-  constructor(@Inject(PLATFORM_ID) platformId: Object) {
-    this.isBrowser = isPlatformBrowser(platformId);
-    if (this.isBrowser) {
-      printAsciiArt();
-    }
-  }
-  ngOnInit(): void {
-    Tagtics.init({
-      apiKey: 'none',
-      testingMode: true,
-    });
-  }
-
-  ngAfterViewInit() {
-    if (this.isBrowser) {
+  constructor() {
+    // Initialize all browser-only functionality after render
+    afterNextRender(() => {
+      if (!this.isBrowser) return;
+      
+      // Initialize Tagtics
+      Tagtics.init({
+        apiKey: 'none',
+        testingMode: true,
+      });
+      
       // Throttled mouse tracking for CSS variables
       this.mouseHandler = (e: MouseEvent) => {
         requestAnimationFrame(() => {
@@ -80,7 +92,7 @@ export class App implements OnInit, AfterViewInit, OnDestroy {
       window.addEventListener('mousemove', this.mouseHandler, { passive: true });
       window.addEventListener('mousedown', this.clickHandler);
       window.addEventListener('mouseup', this.clickHandler);
-    }
+    });
   }
 
   ngOnDestroy() {
