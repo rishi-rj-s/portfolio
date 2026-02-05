@@ -5,7 +5,7 @@ import gsap from 'gsap';
 @Component({
   selector: 'app-hero',
   template: `
-    <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden bg-[var(--color-background)] perspective-1000">
+    <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden perspective-1000">
       
       <!-- Background Elements -->
       <div class="absolute inset-0 pointer-events-none">

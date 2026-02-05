@@ -1,19 +1,25 @@
-import { Component, AfterViewInit, OnDestroy, Inject, PLATFORM_ID, OnInit } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, Inject, PLATFORM_ID, OnInit, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import Tagtics from 'tagtics-client';
 import { Navbar } from './components/navbar/navbar';
-import { printAsciiArt } from './utils/console-art';
+import { ThemeSelectorComponent } from './components/theme-selector/theme-selector';
+import { Theme } from './services/theme';
+
 import { Footer } from './components/footer/footer';
+import { WebglBackgroundComponent } from './components/webgl-background/webgl-background';
 
 @Component({
   selector: 'app-root',
   imports: [
     RouterOutlet,
     Navbar,
-    Footer
+    Footer,
+    WebglBackgroundComponent,
+    ThemeSelectorComponent
   ],
   template: `
+    <app-webgl-background />
     <div class="noise-overlay"></div>
     
     <!-- Custom Cursor Element -->
@@ -21,6 +27,11 @@ import { Footer } from './components/footer/footer';
       <div class="cursor-dot"></div>
       <div class="cursor-reticle"></div>
     </div>
+
+    <!-- Global Theme Selector -->
+    @if (theme.isSelectorOpen()) {
+      <app-theme-selector (close)="theme.closeSelector()" />
+    }
     
     <div class="relative min-h-screen z-10">
       <app-navbar />
@@ -33,13 +44,13 @@ import { Footer } from './components/footer/footer';
 })
 export class App implements OnInit, AfterViewInit, OnDestroy {
   isBrowser: boolean;
+  public theme = inject(Theme);
   private mouseHandler: ((e: MouseEvent) => void) | null = null;
   private clickHandler: ((e: MouseEvent) => void) | null = null;
   
   constructor(@Inject(PLATFORM_ID) platformId: Object) {
     this.isBrowser = isPlatformBrowser(platformId);
     if (this.isBrowser) {
-      printAsciiArt();
     }
   }
   ngOnInit(): void {

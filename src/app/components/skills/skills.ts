@@ -16,31 +16,31 @@ interface SkillCategory {
 @Component({
   selector: 'app-skills',
   template: `
-    <section id="skills" class="relative min-h-screen bg-[var(--color-background)] py-32 px-6 flex flex-col justify-center border-t border-[var(--color-border)]">
+    <section id="skills" class="relative min-h-screen py-20 px-6 flex flex-col justify-center border-t border-[var(--color-border)]">
       
       <div class="max-w-7xl mx-auto w-full">
          <!-- Header -->
-         <div class="mb-24" #header>
-            <h2 class="text-6xl md:text-9xl font-black tracking-tighter text-[var(--color-text)] mb-6 leading-[0.8]">
+         <div class="mb-12" #header>
+            <h2 class="text-5xl md:text-7xl font-black tracking-tighter text-[var(--color-text)] mb-4 leading-[0.8]">
               TECHNICAL<br>
               <span class="text-[var(--color-text-muted)] opacity-50">ARSENAL</span>
             </h2>
          </div>
 
          <!-- Skills List (Minimal) -->
-         <div class="space-y-16" #grid>
+         <div class="space-y-10" #grid>
             @for (category of skills(); track category.category) {
-              <div class="border-t border-[var(--color-border)] pt-8 group cursor-default">
+              <div class="border-t border-[var(--color-border)] pt-6 group cursor-default">
                  
-                 <div class="flex flex-col md:flex-row md:items-baseline gap-8 md:gap-24">
+                 <div class="flex flex-col md:flex-row md:items-baseline gap-6 md:gap-12">
                     <!-- Category Name -->
-                    <h3 class="text-2xl md:text-3xl font-bold text-[var(--color-text)] tracking-tight w-full md:w-1/4 shrink-0 flex items-center gap-3">
+                    <h3 class="text-xl md:text-2xl font-bold text-[var(--color-text)] tracking-tight w-full md:w-1/4 shrink-0 flex items-center gap-3">
                        <span class="w-2 h-2 rounded-full transition-transform duration-500 group-hover:scale-150" [style.backgroundColor]="category.color"></span>
                        {{category.category}}
                     </h3>
 
                     <!-- Skills Items -->
-                    <div class="flex flex-wrap gap-x-6 gap-y-4">
+                    <div class="flex flex-wrap gap-x-6 gap-y-3">
                        @for (item of category.items; track item.name) {
                          <div class="flex items-center gap-3 group/item">
                             <div class="w-10 h-10 md:w-12 md:h-12 bg-[var(--color-card)] rounded-full flex items-center justify-center border border-[var(--color-border)] group-hover/item:border-[var(--color-primary)] transition-all duration-300 group-hover/item:scale-110">

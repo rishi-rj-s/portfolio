@@ -25,9 +25,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withFetch()
     ),
-    importProvidersFrom(NgHcaptchaModule.forRoot({
-      siteKey: environment.hcaptchaSiteKey,
-      languageCode: 'en' // Optional
-    }))
+    { provide: 'CAPTCHA_CONFIG', useValue: { siteKey: environment.hcaptchaSiteKey } }
   ]
 };

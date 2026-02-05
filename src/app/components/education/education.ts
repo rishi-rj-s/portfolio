@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-education',
-  standalone: true,
   template: `
     <div class="h-full flex flex-col justify-center">
       <h3 class="text-3xl font-bold text-[var(--color-text)] mb-8 flex items-center gap-3">

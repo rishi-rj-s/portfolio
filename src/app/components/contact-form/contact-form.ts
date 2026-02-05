@@ -8,8 +8,9 @@ import { isPlatformBrowser } from '@angular/common';
 @Component({
   selector: 'app-contact-form',
   imports: [ReactiveFormsModule, NgHcaptchaModule],
+  providers: [],
   template: `
-    <section id="contact" class="flex flex-col justify-center items-center bg-[var(--color-background)] px-6 min-h-screen relative overflow-hidden">
+    <section id="contact" class="flex flex-col justify-center items-center px-6 min-h-screen relative overflow-hidden">
       
       <!-- Content Container -->
       <div class="w-full max-w-xl relative z-10">
