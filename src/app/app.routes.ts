@@ -4,10 +4,11 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./pages/home').then(m => m.Home),
-    title: 'Rishiraj Sajeev - Full-Stack Developer'
+    title: 'Rishiraj Sajeev - Full Stack Engineer | SaaS & Microservices Architect'
   },
   {
     path: '**',
-    redirectTo: ''
+    loadComponent: () => import('./pages/not-found').then(m => m.NotFound),
+    title: '404 - Lost in the Void'
   }
 ];

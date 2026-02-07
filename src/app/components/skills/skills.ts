@@ -1,135 +1,124 @@
-import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, signal, viewChild, ElementRef, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
-interface Skill {
+interface SkillItem {
+  name: string;
+  logo: string;
+  invertDark?: boolean;
+}
+
+interface SkillCategory {
   category: string;
-  description: string;
-  items: { name: string; logo: string }[];
   color: string;
+  items: SkillItem[];
 }
 
 @Component({
   selector: 'app-skills',
-  imports: [
-    CommonModule,
-  ],
-  templateUrl: './skills.html',
-  styleUrl: './skills.css'
+  template: `
+    <section id="skills" class="relative min-h-screen py-20 px-6 flex flex-col justify-center border-t border-[var(--color-border)]">
+      
+      <div class="max-w-7xl mx-auto w-full">
+         <!-- Header -->
+         <div class="mb-12" #header>
+            <h2 class="text-5xl md:text-7xl font-black tracking-tighter text-[var(--color-text)] mb-4 leading-[0.8]">
+              TECHNICAL<br>
+              <span class="text-[var(--color-text-muted)] opacity-50">ARSENAL</span>
+            </h2>
+         </div>
+
+         <!-- Skills List (Minimal) -->
+         <div class="space-y-10" #grid>
+            @for (category of skills(); track category.category) {
+              <div class="border-t border-[var(--color-border)] pt-6 group cursor-default">
+                 
+                 <div class="flex flex-col md:flex-row md:items-baseline gap-6 md:gap-12">
+                    <!-- Category Name -->
+                    <h3 class="text-xl md:text-2xl font-bold text-[var(--color-text)] tracking-tight w-full md:w-1/4 shrink-0 flex items-center gap-3">
+                       <span class="w-2 h-2 rounded-full transition-transform duration-500 group-hover:scale-150" [style.backgroundColor]="category.color"></span>
+                       {{category.category}}
+                    </h3>
+
+                    <!-- Skills Items -->
+                    <div class="flex flex-wrap gap-x-6 gap-y-3">
+                       @for (item of category.items; track item.name) {
+                         <div class="flex items-center gap-3 group/item">
+                            <div class="w-10 h-10 md:w-12 md:h-12 bg-[var(--color-card)] rounded-full flex items-center justify-center border border-[var(--color-border)] group-hover/item:border-[var(--color-primary)] transition-all duration-300 group-hover/item:scale-110">
+                               <img [src]="item.logo" [alt]="item.name" [class.theme-inverse]="item.invertDark" class="w-5 h-5 md:w-6 md:h-6 object-contain opacity-70 group-hover/item:opacity-100 transition-opacity">
+                            </div>
+                            <span class="text-base md:text-lg font-medium text-[var(--color-text-secondary)] group-hover/item:text-[var(--color-text)] transition-colors">{{item.name}}</span>
+                         </div>
+                       }
+                    </div>
+                 </div>
+
+              </div>
+            }
+         </div>
+
+      </div>
+    </section>
+  `
 })
 export class Skills {
-  skills = signal<Skill[]>([
-    // 1️⃣ Frontend
+  // v20 signal-based queries
+  header = viewChild<ElementRef<HTMLElement>>('header');
+  grid = viewChild<ElementRef<HTMLElement>>('grid');
+  
+  // v20 inject() instead of constructor DI
+  private platformId = inject(PLATFORM_ID);
+  readonly isBrowser = isPlatformBrowser(this.platformId);
+
+  skills = signal<SkillCategory[]>([
     {
-      category: 'Frontend',
-      description: 'Modern UI frameworks with component-driven architecture',
+      category: 'Frontend Engineering',
       color: '#3b82f6',
       items: [
-        { name: 'Angular', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angularjs/angularjs-original.svg?width=32' },
-        { name: 'Vue 3', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg?width=32' },
-        { name: 'React', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg?width=32' },
-        { name: 'Tailwind CSS', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg?width=32' },
-        { name: 'Vite', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vitejs/vitejs-original.svg?width=32' },
+        { name: 'Angular v20', logo: 'assets/icons/angular.svg' },
+        { name: 'Vue 3', logo: 'assets/icons/vue-3.svg' },
+        { name: 'React', logo: 'assets/icons/react.svg' },
+        { name: 'Tailwind CSS', logo: 'assets/icons/tailwind-css.svg' },
+        { name: 'Vite', logo: 'assets/icons/vite.svg' },
+        { name: 'GSAP', logo: 'assets/icons/gsap.svg' }
       ],
     },
-
-    // 2️⃣ Backend Frameworks
     {
-      category: 'Backend Frameworks',
-      description: 'Building scalable REST and GraphQL APIs',
+      category: 'Backend & Architecture',
       color: '#10b981',
       items: [
-        { name: 'Node.js', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg?width=32' },
-        { name: 'NestJS', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nestjs/nestjs-original.svg?width=32' },
-        { name: 'Express', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg?width=32' },
-        { name: 'GraphQL', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/graphql/graphql-plain.svg?width=32' },
-        { name: 'gRPC', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/grpc/grpc-plain.svg?width=32' },
+        { name: 'Node.js', logo: 'assets/icons/node-js.svg' },
+        { name: 'NestJS', logo: 'assets/icons/nestjs.svg' },
+        { name: 'Microservices', logo: 'assets/icons/express.svg', invertDark: true },
+        { name: 'GraphQL', logo: 'assets/icons/graphql.svg' },
       ],
     },
-
-    // 3️⃣ Messaging & Realtime
     {
-      category: 'Messaging & Realtime',
-      description: 'Event-driven and realtime communication systems',
+      category: 'Realtime Systems',
       color: '#ef4444',
       items: [
-        { name: 'Kafka', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apachekafka/apachekafka-original.svg?width=32' },
-        { name: 'Socket.io', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/socketio/socketio-original.svg?width=32' },
-        { name: 'Redis Pub/Sub', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg?width=32' },
+        { name: 'Apache Kafka', logo: 'assets/icons/kafka.svg', invertDark: true },
+        { name: 'Socket.io', logo: 'assets/icons/socket-io.svg', invertDark: true },
+        { name: 'Redis Pub/Sub', logo: 'assets/icons/redis-pub-sub.svg' },
       ],
     },
-
-    // 4️⃣ Databases
     {
-      category: 'Databases',
-      description: 'Relational and NoSQL data storage engines',
+      category: 'Database Engine',
       color: '#8b5cf6',
       items: [
-        { name: 'PostgreSQL', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg?width=32' },
-        { name: 'MongoDB', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg?width=32' },
-        { name: 'Redis', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg?width=32' },
-        { name: 'Supabase', logo: 'https://supabase.com/dashboard/img/supabase-logo.svg?width=32' },
+        { name: 'PostgreSQL', logo: 'assets/icons/postgresql.svg' },
+        { name: 'MongoDB', logo: 'assets/icons/mongodb.svg' },
+        { name: 'Redis', logo: 'assets/icons/redis.svg' },
+        { name: 'Supabase', logo: 'assets/icons/supabase.svg' },
       ],
     },
-
-    // 5️⃣ ORMs & Query Builders
     {
-      category: "ORM's & Query Builders",
-      description: 'Schema modeling and type-safe database access',
-      color: '#a855f7',
-      items: [
-        { name: 'Prisma', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prisma/prisma-original.svg?width=32' },
-        { name: 'TypeORM', logo: 'https://raw.githubusercontent.com/gilbarbara/logos/de2c1f96ff6e74ea7ea979b43202e8d4b863c655/logos/typeorm.svg?width=32' },
-      ],
-    },
-
-    // 6️⃣ DevOps & Deployment
-    {
-      category: 'DevOps & Deployment',
-      description: 'Container orchestration and CI/CD pipelines',
+      category: 'DevOps & Cloud',
       color: '#f59e0b',
       items: [
-        { name: 'Docker', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg?width=32' },
-        { name: 'Kubernetes', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg?width=32' },
-        { name: 'GitHub Actions', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg?width=32' },
-        { name: 'AWS (EC2, S3)', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg?width=32' },],
-    },
-
-    // 7️⃣ State Management
-    {
-      category: 'State Management',
-      description: 'Frontend and backend state management patterns',
-      color: '#ec4899',
-      items: [
-        { name: 'Pinia', logo: 'https://upload.wikimedia.org/wikipedia/commons/1/1c/Pinialogo.svg?width=32' },
-        { name: 'NgRx', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ngrx/ngrx-plain.svg?width=32' },
-        { name: 'Redux', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redux/redux-original.svg?width=32' },
-        { name: 'RxJS', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rxjs/rxjs-plain.svg?width=32' },
-      ],
-    },
-
-    // 8️⃣ Languages
-    {
-      category: 'Languages',
-      description: 'Programming languages and core development tools',
-      color: '#06b6d4',
-      items: [
-        { name: 'JavaScript', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg?width=32' },
-        { name: 'TypeScript', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg?width=32' },
-        { name: 'SQL', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg?width=32' },
-        { name: 'Java', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg?width=32' },
-        { name: 'C', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg?width=32' },
-      ],
-    },
-
-    // 9️⃣ Observability & Monitoring (NEW)
-    {
-      category: 'Observability & Monitoring',
-      description: 'Logging, metrics and dashboards for microservices',
-      color: '#22c55e',
-      items: [
-        { name: 'Prometheus', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prometheus/prometheus-original.svg?width=32' },
-        { name: 'Grafana', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/grafana/grafana-original.svg?width=32' },
-        { name: 'Loki', logo: 'https://raw.githubusercontent.com/grafana/loki/master/docs/sources/logo.png' },
+        { name: 'Docker', logo: 'assets/icons/docker.svg' },
+        { name: 'Kubernetes', logo: 'assets/icons/kubernetes.svg' },
+        { name: 'AWS (EC2/S3)', logo: 'assets/icons/aws-ec2-s3.svg', invertDark: true },
+        { name: 'CI/CD Pipelines', logo: 'assets/icons/github-actions.svg', invertDark: true },
       ],
     },
   ]);

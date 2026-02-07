@@ -2,36 +2,102 @@
 
 /* Light mode theme */
 :root {
-  --color-background: #fafafa;
-  --color-card: #ffffff;
-  --color-card-hover: #f5f5f5;
+  --color-background: #ffffff; /* Pure White */
+  --color-card: #f5f5f5;
+  --color-card-hover: #e5e5e5;
   --color-border: #e5e7eb;
-  --color-text: #271c11;
-  --color-text-muted: #6b7280;
-  --color-text-secondary: #374151;
-  --color-primary: #3b82f6;
-  --color-accent: #8b5cf6;
+  --color-text: #000000;
+  --color-text-muted: #000000;
+  --color-text-secondary: #000000;
+  --color-primary: #000000;
+  --color-accent: #666666;
   --color-success: #10b981;
-  --glow-primary: rgba(59, 130, 246, 0.3);
-  --glow-accent: rgba(139, 92, 246, 0.3);
+  --glow-primary: rgba(0, 0, 0, 0.1);
+  --glow-accent: rgba(0, 0, 0, 0.05);
   --navbar-height: 64px;
   --font-sans: 'Clash Display', system-ui, sans-serif;
 }
 
-/* Dark mode theme - Pure Black */
+/* Dark mode theme - Pure Void */
 :root.dark {
-  --color-background: #000000;
+  --color-background: #000000; /* Pure Black */
   --color-card: #0a0a0a;
-  --color-card-hover: #141414;
-  --color-border: #1f1f1f;
+  --color-card-hover: #1a1a1a;
+  --color-border: #262626;
   --color-text: #ffffff;
-  --color-text-muted: #a3a3a3;
-  --color-text-secondary: #d4d4d4;
-  --color-primary: #60a5fa;
-  --color-accent: #c084fc;
+  --color-text-muted: #ffffff;
+  --color-text-secondary: #ffffff;
+  --color-primary: #ffffff; /* Stark White for contrast */
+  --color-accent: #333333;
   --color-success: #34d399;
-  --glow-primary: rgba(96, 165, 250, 0.4);
-  --glow-accent: rgba(192, 132, 252, 0.4);
+  --glow-primary: rgba(255, 255, 255, 0.15);
+  --glow-accent: rgba(255, 255, 255, 0.05);
+}
+
+/* --- Curated Themes --- */
+
+/* Ocean */
+:root.theme-ocean {
+  --color-background: #0d1b32; /* Deep Blue */
+  --color-card: #152744;
+  --color-card-hover: #21365b;
+  --color-border: #2a416a;
+  --color-text: #e2e8f0;
+  --color-text-muted: #e2e8f0;
+  --color-text-secondary: #e2e8f0;
+  --color-primary: #38bdf8; /* Sky Blue */
+  --color-accent: #0ea5e9;
+  --color-success: #2dd4bf;
+  --glow-primary: rgba(56, 189, 248, 0.2);
+  --glow-accent: rgba(14, 165, 233, 0.1);
+}
+
+/* Sunset */
+:root.theme-sunset {
+  --color-background: #2b0a0a; /* Deep Red-Brown */
+  --color-card: #451212;
+  --color-card-hover: #5c1b1b;
+  --color-border: #7f2e2e;
+  --color-text: #ffe4e6;
+  --color-text-muted: #ffe4e6;
+  --color-text-secondary: #ffe4e6;
+  --color-primary: #fb7185; /* Rose */
+  --color-accent: #f43f5e;
+  --color-success: #34d399;
+  --glow-primary: rgba(251, 113, 133, 0.2);
+  --glow-accent: rgba(244, 63, 94, 0.1);
+}
+
+/* Cyberpunk */
+:root.theme-cyberpunk {
+  --color-background: #09090b; /* Zinc 950 */
+  --color-card: #18181b;
+  --color-card-hover: #27272a;
+  --color-border: #3f3f46;
+  --color-text: #e4e4e7;
+  --color-text-muted: #e4e4e7;
+  --color-text-secondary: #e4e4e7;
+  --color-primary: #d946ef; /* Fuchsia */
+  --color-accent: #8b5cf6; /* Violet */
+  --color-success: #00dac6;
+  --glow-primary: rgba(217, 70, 239, 0.3);
+  --glow-accent: rgba(139, 92, 246, 0.2);
+}
+
+/* Forest */
+:root.theme-forest {
+  --color-background: #052e16;
+  --color-card: #064e3b;
+  --color-card-hover: #065f46;
+  --color-border: #047857;
+  --color-text: #ecfdf5;
+  --color-text-muted: #ecfdf5;
+  --color-text-secondary: #ecfdf5;
+  --color-primary: #34d399;
+  --color-accent: #10b981;
+  --color-success: #4ade80;
+  --glow-primary: rgba(52, 211, 153, 0.2);
+  --glow-accent: rgba(16, 185, 129, 0.1);
 }
 
 html {
@@ -40,13 +106,177 @@ html {
 }
 
 body {
-  background-color: var(--color-background);
+  background-color: transparent; /* Allow WebGL to provide bg */
   color: var(--color-text);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: color 0.5s ease;
   font-family: var(--font-sans);
   overflow-x: hidden;
 }
 
+/* Global Noise Overlay */
+.noise-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Custom Cursor - FPS Style Crosshair */
+
+/* DEFAULT: Touch/Mobile - Native Cursor Only */
+body, a, button, input, select, textarea {
+  cursor: auto;
+}
+.custom-cursor {
+  display: none;
+}
+
+/* DESKTOP/MOUSE - Custom Cursor Only */
+@media (hover: hover) and (pointer: fine) {
+  /* Aggressively hide native cursor on EVERYTHING */
+  *, *::before, *::after {
+    cursor: none !important;
+  }
+  
+  .custom-cursor {
+    display: block !important;
+  }
+
+  body {
+    /* Ensure we can still select text if needed, but no cursor shows */
+    cursor: none;
+  }
+}
+
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  /* Critical: Position using hardware-accelerated transform */
+  transform: translate3d(var(--cursor-x, -100px), var(--cursor-y, -100px), 0);
+  pointer-events: none;
+  z-index: 20000;
+  /* High contrast drop-shadow ensuring visibility on white backgrounds */
+  filter: drop-shadow(0 0 1px rgba(0,0,0,1)) drop-shadow(0 0 2px rgba(0,0,0,0.5));
+}
+
+/* 1. Center Dot (High Visibility Core) */
+.cursor-dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  /* Mix Blend Mode for High Contrast Visibility */
+  mix-blend-mode: difference;
+  z-index: 2;
+  transition: transform 0.1s;
+}
+
+/* 2. Reticle Container (Large 60px) */
+.cursor-reticle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60px;
+  height: 60px;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s;
+  z-index: 1;
+  /* Mix Blend Mode for High Contrast Visibility */
+  mix-blend-mode: difference;
+  pointer-events: none;
+}
+
+/* Reticle Lines */
+.cursor-reticle::before,
+.cursor-reticle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #ffffff; /* White to invert against background via difference mode */
+  /* Remove colored glow in favor of high contrast inversion */
+  box-shadow: 0 0 2px rgba(255, 255, 255, 0.5); 
+  transition: all 0.2s cubic-bezier(0.1, 1, 0.3, 1);
+  opacity: 0.9;
+}
+
+/* Horizontal Hairs (Wider) */
+.cursor-reticle::before {
+  width: 36px;
+  height: 3px;
+  /* Cut center */
+  -webkit-mask-image: linear-gradient(to right, black 0%, black 40%, transparent 40%, transparent 60%, black 60%, black 100%);
+  mask-image: linear-gradient(to right, black 0%, black 40%, transparent 40%, transparent 60%, black 60%, black 100%);
+}
+
+/* Vertical Hairs (Taller) */
+.cursor-reticle::after {
+  width: 3px;
+  height: 36px;
+  /* Cut center */
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 40%, transparent 40%, transparent 60%, black 60%, black 100%);
+  mask-image: linear-gradient(to bottom, black 0%, black 40%, transparent 40%, transparent 60%, black 60%, black 100%);
+}
+
+
+/* --- STATE: HOVER (Aim/Spread) --- */
+.cursor-hover .cursor-reticle::before {
+  width: 50px;
+}
+
+.cursor-hover .cursor-reticle::after {
+  height: 50px;
+}
+
+.cursor-hover .cursor-dot {
+  transform: translate(-50%, -50%) scale(1.4);
+  box-shadow: 0 0 10px 3px var(--color-primary), 0 0 20px 6px var(--color-primary);
+}
+
+
+/* --- STATE: FIRE (Hold to Spread) --- */
+/* Muzzle Flash (Instant impact on click start) */
+/* --- STATE: FIRE (Hold to Spread) --- */
+/* Muzzle Flash (Instant impact on click start) */
+@keyframes muzzle-flash {
+  0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 4px 1px var(--color-primary); background: #ffffff; }
+  10% { transform: translate(-50%, -50%) scale(3); box-shadow: 0 0 30px 10px var(--color-primary); background: #ffffff; }
+  100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 4px 1px var(--color-primary); background: #ffffff; }
+}
+
+.cursor-active .cursor-reticle::before {
+  width: 65px; /* Max spread limit */
+  /* Maintain primary color, just expand */
+  background: var(--color-primary);
+  box-shadow: 0 0 15px var(--color-primary);
+  transition: width 1s cubic-bezier(0.1, 1, 0.1, 1); /* Expand over 1s */
+}
+
+.cursor-active .cursor-reticle::after {
+  height: 65px; /* Max spread limit */
+  /* Maintain primary color, just expand */
+  background: var(--color-primary);
+  box-shadow: 0 0 15px var(--color-primary);
+  transition: height 1s cubic-bezier(0.1, 1, 0.1, 1); /* Expand over 1s */
+}
+
+/* Flash dot instantly */
+.cursor-active .cursor-dot {
+  animation: muzzle-flash 0.1s ease-out;
+}
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
@@ -65,9 +295,15 @@ body {
   background: var(--color-primary);
 }
 
-/* Selection */
+/* Selection - Light mode */
 ::selection {
-  background-color: var(--color-primary);
+  background-color: #3b82f6;
+  color: white;
+}
+
+/* Selection - Dark mode */
+:root.dark ::selection {
+  background-color: #3b82f6;
   color: white;
 }
 
@@ -243,9 +479,41 @@ section:not(#about) {
   }
 }
 
-/* Responsive navbar height adjustments */
 @media (max-width: 768px) {
   :root {
     --navbar-height: 56px;
   }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+  display: block;
+}
+
+::view-transition-image-pair(root) {
+  isolation: isolate;
+}
+
+/* Theme Icon Visibility */
+.theme-icon-light {
+  display: block;
+}
+
+.theme-icon-dark {
+  display: none;
+}
+
+:root.dark .theme-icon-light {
+  display: none;
+}
+
+:root.dark .theme-icon-dark {
+  display: block;
+}
+
+/* Invert colors in dark mode (for black logos) */
+:root.dark .theme-inverse {
+  filter: brightness(0) invert(1) !important;
 }
