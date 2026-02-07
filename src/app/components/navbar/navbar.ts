@@ -2,11 +2,8 @@ import { Component, ElementRef, viewChildren, signal, inject, PLATFORM_ID } from
 import { isPlatformBrowser } from '@angular/common';
 import { Theme } from '../../services/theme';
 import { RouterLink, Router } from '@angular/router';
-import gsap from 'gsap';
-import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+// GSAP loaded dynamically for better TBT
 import { ThemeSelectorComponent } from '../theme-selector/theme-selector';
-
-gsap.registerPlugin(ScrollToPlugin);
 
 @Component({
   selector: 'app-navbar',
@@ -107,11 +104,11 @@ export class Navbar {
   handleMouseMove(e: MouseEvent) {
     if (!isPlatformBrowser(this.platformId)) return;
     
-    requestAnimationFrame(() => {
+    requestAnimationFrame(async () => {
       const mouseX = e.clientX;
       const mouseY = e.clientY;
       
-      this.navItems().forEach((item) => {
+      this.navItems().forEach(async (item) => {
         const el = item.nativeElement;
         const rect = el.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
@@ -127,6 +124,7 @@ export class Navbar {
           const moveX = (mouseX - centerX) * 0.2;
           const moveY = (mouseY - centerY) * 0.2;
           
+          const { default: gsap } = await import('gsap');
           gsap.to(el, {
             x: moveX,
             y: moveY,
@@ -136,6 +134,7 @@ export class Navbar {
             overwrite: 'auto'
           });
         } else {
+          const { default: gsap } = await import('gsap');
           gsap.to(el, {
             x: 0,
             y: 0,
@@ -149,8 +148,9 @@ export class Navbar {
     });
   }
 
-  resetMagnets() {
+  async resetMagnets() {
     if (!isPlatformBrowser(this.platformId)) return;
+    const { default: gsap } = await import('gsap');
     this.navItems().forEach((item) => {
       gsap.to(item.nativeElement, {
         x: 0,
@@ -170,9 +170,13 @@ export class Navbar {
     this.mobileMenuOpen.set(false);
   }
 
-  handleNavClick(e: Event, id: string) {
+  async handleNavClick(e: Event, id: string) {
     e.preventDefault();
     if (isPlatformBrowser(this.platformId)) {
+      const gsapModule = await import('gsap');
+      const scrollToModule = await import('gsap/ScrollToPlugin');
+      const gsap = gsapModule.default;
+      gsap.registerPlugin(scrollToModule.ScrollToPlugin);
       gsap.to(window, {
         duration: 1,
         scrollTo: { y: id, autoKill: false },
@@ -181,10 +185,14 @@ export class Navbar {
     }
   }
 
-  handleLogoClick(e: Event) {
+  async handleLogoClick(e: Event) {
     e.preventDefault();
     if (this.router.url === '/') {
       if (isPlatformBrowser(this.platformId)) {
+        const gsapModule = await import('gsap');
+        const scrollToModule = await import('gsap/ScrollToPlugin');
+        const gsap = gsapModule.default;
+        gsap.registerPlugin(scrollToModule.ScrollToPlugin);
         gsap.to(window, {
           duration: 1,
           scrollTo: { y: 0, autoKill: false },

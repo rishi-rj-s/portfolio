@@ -1,9 +1,6 @@
 import { Component, ElementRef, OnDestroy, PLATFORM_ID, inject, viewChild, afterNextRender } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
+// GSAP loaded dynamically for better TBT
 
 @Component({
   selector: 'app-projects-grid',
@@ -28,7 +25,9 @@ gsap.registerPlugin(ScrollTrigger);
              <div class="w-full h-44 md:h-auto md:w-1/2 bg-[var(--color-card)]/30 backdrop-blur-sm border-b md:border-b-0 md:border-r border-[var(--color-border)] relative overflow-hidden group flex-shrink-0">
                 
                 @if (project.image) {
-                   <img [src]="project.image" [alt]="project.title" class="absolute inset-0 w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+                   <img [src]="project.image" [alt]="project.title" 
+                        class="absolute inset-0 w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-105" 
+                        loading="lazy" decoding="async" width="400" height="300" />
                    <div class="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-500"></div>
                 } @else {
                   <!-- Fallback/Placeholder -->
@@ -139,7 +138,7 @@ export class ProjectsGrid implements OnDestroy {
     }
   ];
 
-  ctx: gsap.Context | undefined;
+  ctx: any;
   
   private platformId = inject(PLATFORM_ID);
   
@@ -167,26 +166,32 @@ export class ProjectsGrid implements OnDestroy {
     });
   }
 
-  private initScroll(trackWidth: number, windowWidth: number) {
-     this.ctx = gsap.context(() => {
-        const xMove = -(trackWidth - windowWidth);
-        const trackEl = this.track()!.nativeElement;
+  private async initScroll(trackWidth: number, windowWidth: number) {
+    // Dynamic import for better TBT
+    const gsapModule = await import('gsap');
+    const scrollTriggerModule = await import('gsap/ScrollTrigger');
+    const gsap = gsapModule.default;
+    gsap.registerPlugin(scrollTriggerModule.ScrollTrigger);
 
-        gsap.to(trackEl, {
-           x: xMove,
-           ease: 'none',
-           scrollTrigger: {
-              trigger: '.projects-wrapper',
-              pin: true,
-              start: 'top top',
-              scrub: 1,
-              end: () => "+=" + (trackWidth - windowWidth),
-              invalidateOnRefresh: true,
-              preventOverlaps: true
-           }
-        });
-     });
-     ScrollTrigger.refresh();
+    this.ctx = gsap.context(() => {
+      const xMove = -(trackWidth - windowWidth);
+      const trackEl = this.track()!.nativeElement;
+
+      gsap.to(trackEl, {
+        x: xMove,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.projects-wrapper',
+          pin: true,
+          start: 'top top',
+          scrub: 1,
+          end: () => "+=" + (trackWidth - windowWidth),
+          invalidateOnRefresh: true,
+          preventOverlaps: true
+        }
+      });
+    });
+    scrollTriggerModule.ScrollTrigger.refresh();
   }
 
   ngOnDestroy() {
