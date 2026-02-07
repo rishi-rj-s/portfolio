@@ -44,7 +44,9 @@ interface SkillCategory {
                        @for (item of category.items; track item.name) {
                          <div class="flex items-center gap-3 group/item">
                             <div class="w-10 h-10 md:w-12 md:h-12 bg-[var(--color-card)] rounded-full flex items-center justify-center border border-[var(--color-border)] group-hover/item:border-[var(--color-primary)] transition-all duration-300 group-hover/item:scale-110">
-                               <img [src]="item.logo" [alt]="item.name" [class.theme-inverse]="item.invertDark" class="w-5 h-5 md:w-6 md:h-6 object-contain opacity-70 group-hover/item:opacity-100 transition-opacity">
+                               <img [src]="item.logo" [alt]="item.name" [class.theme-inverse]="item.invertDark" 
+                                    class="w-5 h-5 md:w-6 md:h-6 object-contain opacity-70 group-hover/item:opacity-100 transition-opacity" 
+                                    loading="lazy" decoding="async" width="24" height="24">
                             </div>
                             <span class="text-base md:text-lg font-medium text-[var(--color-text-secondary)] group-hover/item:text-[var(--color-text)] transition-colors">{{item.name}}</span>
                          </div>

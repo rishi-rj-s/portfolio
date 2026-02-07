@@ -1,21 +1,7 @@
-import { Component, ElementRef, OnDestroy, PLATFORM_ID, effect, afterNextRender, viewChild, inject } from '@angular/core';
+import { Component, ElementRef, OnDestroy, PLATFORM_ID, effect, afterNextRender, viewChild, inject, NgZone } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { 
-  Scene, 
-  PerspectiveCamera, 
-  WebGLRenderer, 
-} from 'three';
 import { Theme } from '../../services/theme';
 import { Background, BackgroundStyle } from '../../services/background';
-import { 
-  WebGLEffect, 
-  AuroraEffect, 
-  CrystalEffect, 
-  WavesEffect, 
-  BlobsEffect, 
-  TerrainEffect, 
-  GalaxyEffect 
-} from './effects';
 
 @Component({
   selector: 'app-webgl-background',
@@ -41,24 +27,11 @@ export class WebglBackgroundComponent implements OnDestroy {
   canvasContainer = viewChild<ElementRef<HTMLDivElement>>('canvasContainer');
   canvasRef = viewChild<ElementRef<HTMLCanvasElement>>('canvas');
 
-  private renderer!: WebGLRenderer;
-  private scene!: Scene;
-  private camera!: PerspectiveCamera;
-  private animationFrameId: number | null = null;
-  
-  private currentEffect: WebGLEffect | null = null;
-  private currentBackgroundStyle: BackgroundStyle = 'aurora';
-  
-  private mouseX = 0;
-  private mouseY = 0;
-  private targetMouseX = 0;
-  private targetMouseY = 0;
-  private scrollY = 0;
-  private targetScrollY = 0;
-  
+  private worker: Worker | null = null;
   private platformId = inject(PLATFORM_ID);
   private theme = inject(Theme);
   private background = inject(Background);
+  private ngZone = inject(NgZone);
   
   isBrowser = isPlatformBrowser(this.platformId);
 
@@ -66,22 +39,22 @@ export class WebglBackgroundComponent implements OnDestroy {
     // Theme reaction effect
     effect(() => {
       const currentTheme = this.theme.currentTheme();
-      if (this.isBrowser && this.currentEffect) {
-        this.currentEffect.updateColors(currentTheme);
+      if (this.isBrowser && this.worker) {
+        this.worker.postMessage({ type: 'theme', theme: currentTheme });
       }
     });
 
     // Background style reaction effect
     effect(() => {
       const newStyle = this.background.currentBackground();
-      if (this.isBrowser && this.renderer && newStyle !== this.currentBackgroundStyle) {
-        this.switchEffect(newStyle);
+      if (this.isBrowser && this.worker) {
+        this.worker.postMessage({ type: 'style', style: newStyle });
       }
     });
 
     // Angular v20 / SSR Standard: Use afterNextRender for browser-only initialization
     afterNextRender(() => {
-      this.initThree();
+      this.initWorker();
       
       const container = this.canvasContainer()?.nativeElement;
       if (container) {
@@ -90,8 +63,11 @@ export class WebglBackgroundComponent implements OnDestroy {
           }, 100);
       }
       
-      window.addEventListener('mousemove', this.onMouseMove);
-      window.addEventListener('scroll', this.onScroll, { passive: true });
+      this.ngZone.runOutsideAngular(() => {
+        window.addEventListener('mousemove', this.onMouseMove);
+        window.addEventListener('scroll', this.onScroll, { passive: true });
+        window.addEventListener('resize', this.onWindowResize);
+      });
     });
   }
 
@@ -101,132 +77,63 @@ export class WebglBackgroundComponent implements OnDestroy {
       window.removeEventListener('scroll', this.onScroll);
       window.removeEventListener('resize', this.onWindowResize);
       
-      if (this.animationFrameId !== null) {
-        cancelAnimationFrame(this.animationFrameId);
-      }
-      
-      this.currentEffect?.dispose();
-      this.renderer?.dispose();
+      this.worker?.terminate();
     }
   }
 
-  private initThree() {
+  private initWorker() {
     const canvas = this.canvasRef()?.nativeElement;
-    if (!canvas) return;
+    if (!canvas || !window.Worker) return;
 
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-
-    // SCENE
-    this.scene = new Scene();
-    
-    // CAMERA
-    this.camera = new PerspectiveCamera(75, width / height, 0.1, 1000);
-    this.camera.position.z = 50;
-
-    // RENDERER - optimized settings
-    const isMobile = window.innerWidth < 768;
-    this.renderer = new WebGLRenderer({
-      canvas: canvas,
-      alpha: true,
-      antialias: !isMobile, // Disable antialias on mobile for performance
-      powerPreference: 'high-performance'
-    });
-    this.renderer.setSize(width, height);
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // Cap at 1.5
-
-    // Load initial effect
-    this.currentBackgroundStyle = this.background.currentBackground();
-    this.loadEffect(this.currentBackgroundStyle);
-
-    // Listeners
-    window.addEventListener('resize', this.onWindowResize);
-    
-    // Start loop
-    this.animate();
-  }
-
-  private loadEffect(style: BackgroundStyle) {
-    if (style === 'none') {
-      this.currentEffect = null;
+    // Feature detect OffscreenCanvas
+    if (!canvas.transferControlToOffscreen) {
+      console.warn('OffscreenCanvas not supported');
       return;
     }
 
-    switch (style) {
-      case 'aurora':
-        this.currentEffect = new AuroraEffect();
-        break;
-      case 'crystal':
-        this.currentEffect = new CrystalEffect();
-        break;
-      case 'waves':
-        this.currentEffect = new WavesEffect();
-        break;
-      case 'blobs':
-        this.currentEffect = new BlobsEffect();
-        break;
-      case 'terrain':
-        this.currentEffect = new TerrainEffect();
-        break;
-      case 'galaxy':
-        this.currentEffect = new GalaxyEffect();
-        break;
-      default:
-        this.currentEffect = new AuroraEffect();
-    }
+    try {
+      const offscreen = canvas.transferControlToOffscreen();
+      
+      this.worker = new Worker(new URL('./webgl.worker', import.meta.url));
+      
+      this.worker.postMessage({
+        type: 'init',
+        canvas: offscreen,
+        width: window.innerWidth,
+        height: window.innerHeight,
+        pixelRatio: window.devicePixelRatio,
+        theme: this.theme.currentTheme(),
+        style: this.background.currentBackground()
+      }, [offscreen]);
 
-    this.currentEffect.init(this.scene, this.camera, this.renderer);
-    this.currentEffect.updateColors(this.theme.currentTheme());
+    } catch (err) {
+      console.error('Failed to initialize WebGL worker:', err);
+    }
   }
-
-  private switchEffect(newStyle: BackgroundStyle) {
-    // Dispose current effect
-    if (this.currentEffect) {
-      this.currentEffect.dispose();
-      // Clear scene
-      while (this.scene.children.length > 0) {
-        this.scene.remove(this.scene.children[0]);
-      }
-    }
-
-    this.currentBackgroundStyle = newStyle;
-    this.loadEffect(newStyle);
-  }
-
-  private animate = () => {
-    this.animationFrameId = requestAnimationFrame(this.animate);
-    
-    // Smooth interpolation
-    this.mouseX += (this.targetMouseX - this.mouseX) * 0.05;
-    this.mouseY += (this.targetMouseY - this.mouseY) * 0.05;
-    this.scrollY += (this.targetScrollY - this.scrollY) * 0.05;
-    
-    const time = Date.now() * 0.001;
-    
-    if (this.currentEffect) {
-      this.currentEffect.animate(time, this.mouseX, this.mouseY, this.scrollY);
-    }
-
-    this.renderer.render(this.scene, this.camera);
-  };
 
   private onWindowResize = () => {
-    if (!this.camera || !this.renderer) return;
-    
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    
-    this.camera.aspect = width / height;
-    this.camera.updateProjectionMatrix();
-    this.renderer.setSize(width, height);
+    if (!this.worker) return;
+    this.worker.postMessage({
+      type: 'resize',
+      width: window.innerWidth,
+      height: window.innerHeight
+    });
   };
 
   private onMouseMove = (event: MouseEvent) => {
-    this.targetMouseX = event.clientX - window.innerWidth / 2;
-    this.targetMouseY = event.clientY - window.innerHeight / 2;
+    if (!this.worker) return;
+    this.worker.postMessage({
+      type: 'mouse',
+      x: event.clientX - window.innerWidth / 2,
+      y: event.clientY - window.innerHeight / 2
+    });
   };
   
   private onScroll = () => {
-    this.targetScrollY = window.scrollY;
+    if (!this.worker) return;
+    this.worker.postMessage({
+      type: 'scroll',
+      y: window.scrollY
+    });
   };
 }

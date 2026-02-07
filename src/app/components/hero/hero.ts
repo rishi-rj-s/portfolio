@@ -1,5 +1,5 @@
 import { Component, ElementRef, afterNextRender, viewChild, OnDestroy } from '@angular/core';
-import gsap from 'gsap';
+// GSAP loaded dynamically for better TBT
 
 @Component({
   selector: 'app-hero',
@@ -82,14 +82,16 @@ export class Hero implements OnDestroy {
       
       if (!titleEl || !sectionEl) return;
       
-      // Initial Text Reveal
-      gsap.from(titleEl.children, {
-        y: 100,
-        opacity: 0,
-        duration: 1.5,
-        stagger: 0.2,
-        ease: 'power4.out',
-        delay: 0.2
+      // Initial Text Reveal - load GSAP dynamically without blocking render
+      import('gsap').then(({ default: gsap }) => {
+        gsap.from(titleEl.children, {
+          y: 100,
+          opacity: 0,
+          duration: 1.5,
+          stagger: 0.2,
+          ease: 'power4.out',
+          delay: 0.2
+        });
       });
       
       // Set up Intersection Observer - only track mouse when hero is visible
@@ -120,28 +122,31 @@ export class Hero implements OnDestroy {
           const rotateX = ((y / innerHeight) - 0.5) * -30;
           const rotateY = ((x / innerWidth) - 0.5) * 30;
 
-          gsap.to(titleEl, {
-            rotateX,
-            rotateY,
-            duration: 1,
-            ease: 'power3.out',
-            overwrite: 'auto'
-          });
+          // Non-blocking GSAP import
+          import('gsap').then(({ default: gsap }) => {
+            gsap.to(titleEl, {
+              rotateX,
+              rotateY,
+              duration: 1,
+              ease: 'power3.out',
+              overwrite: 'auto'
+            });
 
-          gsap.to(line1El, {
-            x: (x - innerWidth / 2) * 0.05,
-            y: (y - innerHeight / 2) * 0.05,
-            duration: 1,
-            ease: 'power3.out',
-            overwrite: 'auto'
-          });
+            gsap.to(line1El, {
+              x: (x - innerWidth / 2) * 0.05,
+              y: (y - innerHeight / 2) * 0.05,
+              duration: 1,
+              ease: 'power3.out',
+              overwrite: 'auto'
+            });
 
-          gsap.to(line2El, {
-            x: (x - innerWidth / 2) * -0.05,
-            y: (y - innerHeight / 2) * -0.05,
-            duration: 1,
-            ease: 'power3.out',
-            overwrite: 'auto'
+            gsap.to(line2El, {
+              x: (x - innerWidth / 2) * -0.05,
+              y: (y - innerHeight / 2) * -0.05,
+              duration: 1,
+              ease: 'power3.out',
+              overwrite: 'auto'
+            });
           });
         });
       };
