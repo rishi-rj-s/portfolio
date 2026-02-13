@@ -39,13 +39,11 @@
     "@angular/platform-server": "^20.3.0",
     "@angular/router": "^20.3.0",
     "@angular/ssr": "^20.3.9",
-    "@tailwindcss/postcss": "^4.1.17",
     "express": "^5.1.0",
     "gsap": "^3.14.2",
     "ng-hcaptcha": "^2.7.0",
     "rxjs": "~7.8.0",
     "tagtics-client": "^1.4.0",
-    "tailwindcss": "^4.0.0",
     "three": "^0.182.0",
     "tslib": "^2.3.0"
   },
@@ -53,6 +51,7 @@
     "@angular/build": "^20.3.9",
     "@angular/cli": "^20.3.9",
     "@angular/compiler-cli": "^20.3.0",
+    "@tailwindcss/postcss": "^4.1.17",
     "@types/express": "^5.0.1",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^20.17.19",
@@ -64,6 +63,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "tailwindcss": "^4.0.0",
     "typescript": "~5.9.2"
   },
   "packageManager": "pnpm@10.28.1+sha512.7d7dbbca9e99447b7c3bf7a73286afaaf6be99251eb9498baefa7d406892f67b879adb3a1d7e687fc4ccc1a388c7175fbaae567a26ab44d1067b54fcb0d6a316"
