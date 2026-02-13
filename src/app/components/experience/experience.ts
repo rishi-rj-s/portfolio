@@ -15,7 +15,7 @@ import { Component } from '@angular/core';
           
           <div class="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
             <h4 class="text-xl font-bold text-[var(--color-text)]">Full Stack Engineering (Independent)</h4>
-            <div class="flex shrink-0 items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--color-card-hover)]/40 border border-[var(--color-border)] backdrop-blur-sm">
+            <div class="w-fit flex shrink-0 items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--color-card-hover)]/40 border border-[var(--color-border)] backdrop-blur-sm">
                 <span class="relative flex h-2 w-2">
                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -38,7 +38,7 @@ import { Component } from '@angular/core';
           
           <div class="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
             <h4 class="text-xl font-bold text-[var(--color-text)]">Open Source Contributor (Ever-Gauzy)</h4>
-            <div class="flex shrink-0 items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--color-card-hover)]/40 border border-[var(--color-border)] backdrop-blur-sm">
+            <div class="w-fit flex shrink-0 items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--color-card-hover)]/40 border border-[var(--color-border)] backdrop-blur-sm">
                 <span class="relative flex h-2 w-2">
                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
