@@ -6,7 +6,7 @@ import { isPlatformBrowser } from '@angular/common';
   selector: 'app-projects-grid',
   imports: [],
   template: `
-    <section id="projects" class="projects-wrapper relative h-[100dvh] overflow-hidden flex flex-col justify-start pt-24 md:pt-32 pb-4 bg-[var(--color-background)]">
+    <section id="projects" class="projects-wrapper relative h-[100dvh] overflow-hidden flex flex-col justify-start pt-24 md:pt-32 pb-4">
       
       <!-- Section Header (Static Layout) -->
       <div class="w-full px-6 py-2 md:px-16 md:py-4 flex-shrink-0 z-20 relative pointer-events-none select-none text-center md:text-left">
