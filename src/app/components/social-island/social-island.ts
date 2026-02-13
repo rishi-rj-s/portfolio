@@ -4,9 +4,10 @@ import { isPlatformBrowser } from '@angular/common';
 @Component({
   selector: 'app-social-island',
   template: `
-    <!-- Mobile: Static between contact & footer, Desktop: Fixed on left -->
+    <!-- Mobile: Fixed bottom (footer-aware), Desktop: Fixed on left -->
     <aside 
-      class="z-40 bg-[var(--color-card)]/90 backdrop-blur-md border border-[var(--color-border)] shadow-2xl flex w-fit items-center justify-center rounded-full transition-all duration-200 relative mx-auto mt-4 mb-6 flex-row p-2 gap-2 md:fixed md:flex-col md:pb-3 md:gap-3 md:left-6 md:top-1/2 md:-translate-y-1/2 md:mx-0 md:my-0 md:w-auto"
+      class="z-40 bg-[var(--color-card)]/90 backdrop-blur-md border border-[var(--color-border)] shadow-2xl flex w-fit items-center justify-center rounded-full transition-[bottom] duration-200 ease-out fixed left-1/2 -translate-x-1/2 flex-row p-2 gap-2 md:left-6 md:top-1/2 md:-translate-y-1/2 md:translate-x-0 md:flex-col md:pb-3 md:gap-3 md:w-auto"
+      style="bottom: 32px"
       #islandContainer>
       
       <!-- Resume Button -->
@@ -97,24 +98,83 @@ export class SocialIsland implements OnDestroy {
   dropdownPosition = { x: 0, y: 0 };
   
   private resizeHandler: (() => void) | null = null;
+  private scrollHandler: (() => void) | null = null;
+  private footerEl: HTMLElement | null = null;
+  private ticking = false;
 
   constructor() {
     afterNextRender(() => {
       this.checkDesktop();
+      
+      // Find the footer element — try multiple selectors
+      this.footerEl = document.querySelector('app-footer footer') as HTMLElement
+                   || document.querySelector('footer') as HTMLElement;
+      
       this.resizeHandler = () => {
         this.checkDesktop();
         this.closeDropdown();
+        this.updateIslandBottom();
       };
+      
+      this.scrollHandler = () => {
+        if (!this.ticking) {
+          this.ticking = true;
+          requestAnimationFrame(() => {
+            this.updateIslandBottom();
+            this.ticking = false;
+          });
+        }
+      };
+      
       window.addEventListener('resize', this.resizeHandler);
+      window.addEventListener('scroll', this.scrollHandler, { passive: true });
+      
+      // Initial position calc
+      this.updateIslandBottom();
     });
   }
 
   ngOnDestroy() {
     if (this.resizeHandler) window.removeEventListener('resize', this.resizeHandler);
+    if (this.scrollHandler) window.removeEventListener('scroll', this.scrollHandler);
   }
 
   private checkDesktop() {
     this.isDesktop = window.innerWidth >= 768;
+  }
+
+  private updateIslandBottom() {
+    const asideEl = this.elementRef.nativeElement.querySelector('aside') as HTMLElement;
+    if (!asideEl) return;
+    
+    // On desktop, clear inline bottom so md:top-1/2 class takes effect
+    if (this.isDesktop) {
+      asideEl.style.removeProperty('bottom');
+      return;
+    }
+    
+    // Re-query footer in case it wasn't available initially
+    if (!this.footerEl) {
+      this.footerEl = document.querySelector('app-footer footer') as HTMLElement
+                   || document.querySelector('footer') as HTMLElement;
+    }
+    if (!this.footerEl) {
+      asideEl.style.bottom = '32px'; // 2rem default
+      return;
+    }
+    
+    const defaultBottom = 32;  // 2rem
+    const gap = 16;            // 1rem gap above footer
+    const viewportHeight = window.innerHeight;
+    const footerRect = this.footerEl.getBoundingClientRect();
+    
+    // If footer top is within the viewport, push island up
+    if (footerRect.top < viewportHeight) {
+      const footerVisibleHeight = viewportHeight - footerRect.top;
+      asideEl.style.bottom = `${defaultBottom + footerVisibleHeight + gap}px`;
+    } else {
+      asideEl.style.bottom = '32px';
+    }
   }
 
   toggleDropdown(event: MouseEvent) {
@@ -160,3 +220,4 @@ export class SocialIsland implements OnDestroy {
     this.closeDropdown();
   }
 }
+
