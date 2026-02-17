@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-education',
-  standalone: true,
   template: `
     <div class="h-full flex flex-col justify-center">
       <h3 class="text-3xl font-bold text-[var(--color-text)] mb-8 flex items-center gap-3">
@@ -16,7 +15,7 @@ import { Component } from '@angular/core';
           
           <div class="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
             <h4 class="text-xl font-bold text-[var(--color-text)]">Bachelor of Computer Science</h4>
-            <div class="flex shrink-0 items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--color-card-hover)]/40 border border-[var(--color-border)] backdrop-blur-sm">
+            <div class="w-fit flex shrink-0 items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--color-card-hover)]/40 border border-[var(--color-border)] backdrop-blur-sm">
                 <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-text-muted)]"></span>
                 <span class="text-xs font-bold tracking-wider text-[var(--color-text)] uppercase whitespace-nowrap">2020 – 2023</span>
             </div>

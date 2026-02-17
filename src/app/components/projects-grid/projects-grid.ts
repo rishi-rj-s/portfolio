@@ -1,60 +1,59 @@
-import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, ElementRef, OnDestroy, PLATFORM_ID, inject, viewChild, afterNextRender } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
+// GSAP loaded dynamically for better TBT
 
 @Component({
   selector: 'app-projects-grid',
   imports: [],
   template: `
-    <section id="projects" class="projects-wrapper relative h-screen overflow-hidden bg-[var(--color-background)] flex flex-col justify-center">
+    <section id="projects" class="projects-wrapper relative h-[100dvh] overflow-hidden flex flex-col justify-start pt-24 md:pt-32 pb-4">
       
-      <!-- Section Header (Fixed Top Left) -->
-      <div class="absolute top-32 left-6 md:top-20 md:left-16 z-0 pointer-events-none select-none">
-        <h2 class="text-4xl md:text-8xl font-black tracking-tighter text-[var(--color-text)] opacity-30 relative">SELECTED WORKS</h2>
-        <p class="text-[var(--color-text-muted)] mt-2 font-mono text-xs uppercase tracking-widest relative opacity-80"> &lt; Horizontal Scroll /&gt;</p>
+      <!-- Section Header (Static Layout) -->
+      <div class="w-full px-6 py-2 md:px-16 md:py-4 flex-shrink-0 z-20 relative pointer-events-none select-none text-center md:text-left">
+        <h2 class="text-3xl md:text-6xl lg:text-8xl font-black tracking-tighter text-[var(--color-text)] relative">SELECTED WORKS</h2>
+        <p class="text-[var(--color-text-muted)] mt-1 md:mt-2 font-mono text-[10px] md:text-xs uppercase tracking-widest relative"> &lt; Horizontal Scroll /&gt;</p>
       </div>
 
       <!-- Horizontal Track -->
-      <div class="projects-track flex h-auto items-stretch pl-8 md:pl-32 pr-[20vw] gap-8 md:gap-24 will-change-transform z-10 relative mt-8 md:mt-56" #track>
+      <div class="projects-track flex flex-1 min-h-0 w-full items-center pl-6 md:pl-16 lg:pl-32 pr-[20vw] gap-6 md:gap-16 lg:gap-24 will-change-transform z-10 relative my-2 md:my-4" #track>
         
         <!-- Project Cards -->
         @for (project of projects; track project.title) {
-          <article class="project-card relative w-[90vw] md:w-[800px] h-full flex-shrink-0 bg-[var(--color-card)] border border-[var(--color-border)] rounded-3xl overflow-hidden group hover:border-[var(--color-primary)] transition-colors duration-500 flex flex-col md:flex-row shadow-2xl">
+          <article class="project-card relative w-[85vw] md:w-[700px] lg:w-[800px] h-full max-h-[500px] md:max-h-[700px] flex-shrink-0 bg-[var(--color-card)] border border-[var(--color-border)] rounded-3xl overflow-hidden group hover:border-[var(--color-primary)] transition-colors duration-500 flex flex-col md:flex-row shadow-2xl">
              
              <!-- Image / Visual Area (Left or Top) -->
-             <div class="w-full h-44 md:h-auto md:w-1/2 bg-neutral-900 border-b md:border-b-0 md:border-r border-[var(--color-border)] relative overflow-hidden group flex-shrink-0">
+             <div class="w-full h-36 md:h-auto md:w-1/2 bg-[var(--color-card)]/30 backdrop-blur-sm border-b md:border-b-0 md:border-r border-[var(--color-border)] relative overflow-hidden group flex-shrink-0">
                 
                 @if (project.image) {
-                   <img [src]="project.image" [alt]="project.title" class="absolute inset-0 w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-105" loading="lazy" />
-                   <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500"></div>
+                   <img [src]="project.image" [alt]="project.title" 
+                        class="absolute inset-0 w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-105" 
+                        loading="lazy" decoding="async" width="400" height="300" />
+                   <div class="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-500"></div>
                 } @else {
                   <!-- Fallback/Placeholder -->
-                  <div class="absolute inset-0 bg-gradient-to-br from-neutral-800 to-neutral-950 flex items-center justify-center">
-                      <div class="absolute inset-0 bg-[url('/assets/noise.svg')] opacity-20"></div>
-                      <span class="text-[8rem] md:text-[12rem] font-black text-white/5 absolute -bottom-10 -left-10 leading-none select-none">{{project.year}}</span>
+                  <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-card)] to-[var(--color-background)] flex items-center justify-center">
+                      <div class="absolute inset-0 opacity-20" style="background-image: url('assets/noise.svg')"></div>
+                      <span class="text-[8rem] md:text-[12rem] font-black text-[var(--color-text)] opacity-5 absolute -bottom-10 -left-10 leading-none select-none">{{project.year}}</span>
                   </div>
                 }
                 
              </div>
              
              <!-- Content Area (Right or Bottom) -->
-             <div class="w-full md:w-1/2 p-5 md:p-10 flex flex-col justify-between flex-1 bg-[var(--color-card)]">
-                <div>
-                  <div class="flex items-start justify-between mb-4 gap-4">
-                     <h3 class="text-2xl md:text-5xl font-black tracking-tighter text-[var(--color-text)] mb-2">{{project.title}}</h3>
-                     <span class="text-xs px-3 py-1 border border-[var(--color-primary)] text-[var(--color-primary)] rounded-full uppercase tracking-wider bg-[var(--color-card)] whitespace-nowrap shrink-0">{{project.type}}</span>
+             <div class="w-full md:w-1/2 p-4 md:p-8 flex flex-col h-full bg-[var(--color-card)] overflow-hidden">
+                <div class="flex-1 overflow-y-auto scrollbar-none">
+                  <div class="flex items-start justify-between mb-2 md:mb-4 gap-4">
+                     <h3 class="text-xl md:text-3xl lg:text-4xl font-black tracking-tighter text-[var(--color-text)] mb-1">{{project.title}}</h3>
+                     <span class="text-[10px] md:text-xs px-2 py-0.5 md:px-3 md:py-1 border border-[var(--color-primary)] text-[var(--color-primary)] rounded-full uppercase tracking-wider bg-[var(--color-card)] whitespace-nowrap shrink-0">{{project.type}}</span>
                   </div>
                   
-                  <p class="text-[var(--color-text-secondary)] mb-4 md:mb-8 leading-relaxed text-sm md:text-base">{{project.description}}</p>
+                  <p class="text-[var(--color-text-secondary)] mb-3 md:mb-6 leading-relaxed text-xs md:text-sm lg:text-base line-clamp-3 md:line-clamp-none">{{project.description}}</p>
                   
-                  <div class="mb-4 md:mb-8">
-                     <h4 class="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 md:mb-3">Tech Matrix</h4>
-                     <div class="flex flex-nowrap gap-2 overflow-x-auto pb-2 scrollbar-none">
+                  <div class="mb-3 md:mb-6">
+                     <h4 class="text-[10px] md:text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2">Tech Matrix</h4>
+                     <div class="flex flex-wrap gap-2">
                         @for (stack of project.stack; track stack) {
-                          <span class="text-xs font-mono text-[var(--color-text-muted)] bg-[var(--color-card-hover)] px-2 py-1 rounded border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors cursor-default whitespace-nowrap">
+                          <span class="text-[10px] md:text-xs font-mono text-[var(--color-text-muted)] bg-[var(--color-card-hover)] px-2 py-1 rounded border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors cursor-default whitespace-nowrap">
                               {{stack}}
                           </span>
                         }
@@ -62,15 +61,15 @@ gsap.registerPlugin(ScrollTrigger);
                   </div>
                 </div>
   
-                <div class="flex gap-6 mt-4 pt-4 border-t border-[var(--color-border)]">
+                <div class="flex gap-4 md:gap-6 mt-2 pt-3 border-t border-[var(--color-border)] relative z-30 pointer-events-auto shrink-0">
                    @if (project.links.source) {
-                     <a [href]="project.links.source" target="_blank" class="text-sm font-bold hover:text-[var(--color-primary)] flex items-center gap-2 group/link">
+                     <a [href]="project.links.source" target="_blank" class="text-xs md:text-sm font-bold text-[var(--color-text)] hover:text-[var(--color-primary)] flex items-center gap-2 group/link cursor-pointer">
                         SOURCE CODE 
                         <span class="group-hover/link:translate-x-1 transition-transform">&rarr;</span>
                      </a>
                    }
                    @if (project.links.live) {
-                     <a [href]="project.links.live" target="_blank" class="text-sm font-bold hover:text-[var(--color-primary)] flex items-center gap-2 group/link">
+                     <a [href]="project.links.live" target="_blank" class="text-xs md:text-sm font-bold text-[var(--color-text)] hover:text-[var(--color-primary)] flex items-center gap-2 group/link cursor-pointer">
                         {{ project.demoLabel || 'LIVE DEMO' }}
                         <span class="group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5 transition-transform">&#8599;</span>
                      </a>
@@ -84,8 +83,8 @@ gsap.registerPlugin(ScrollTrigger);
   `,
   styles: []
 })
-export class ProjectsGrid implements AfterViewInit, OnDestroy {
-  @ViewChild('track') track!: ElementRef<HTMLElement>;
+export class ProjectsGrid implements OnDestroy {
+  track = viewChild<ElementRef<HTMLElement>>('track');
   
   projects = [
     {
@@ -139,21 +138,20 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
     }
   ];
 
-  ctx: gsap.Context | undefined;
-  isBrowser: boolean;
-
-  constructor(@Inject(PLATFORM_ID) platformId: Object) {
-    this.isBrowser = isPlatformBrowser(platformId);
-  }
-
-  ngAfterViewInit() {
-    // Only run GSAP in browser
-    if (this.isBrowser) {
+  ctx: any;
+  
+  private platformId = inject(PLATFORM_ID);
+  
+  constructor() {
+    afterNextRender(() => {
         // Use ResizeObserver to detect when the track actually has dimensions
+        const trackEl = this.track()?.nativeElement;
+        if (!trackEl) return;
+
         const resizeObserver = new ResizeObserver((entries) => {
           for (const entry of entries) {
             if (entry.contentBoxSize) {
-              const trackWidth = this.track.nativeElement.scrollWidth;
+              const trackWidth = trackEl.scrollWidth;
               const windowWidth = window.innerWidth;
               
               if (trackWidth > windowWidth) {
@@ -164,29 +162,36 @@ export class ProjectsGrid implements AfterViewInit, OnDestroy {
           }
         });
         
-        resizeObserver.observe(this.track.nativeElement);
-     }
+        resizeObserver.observe(trackEl);
+    });
   }
 
-  private initScroll(trackWidth: number, windowWidth: number) {
-     this.ctx = gsap.context(() => {
-        const xMove = -(trackWidth - windowWidth);
+    private async initScroll(trackWidth: number, windowWidth: number) {
+    // Dynamic import for better TBT
+    const gsapModule = await import('gsap');
+    const scrollTriggerModule = await import('gsap/ScrollTrigger');
+    const gsap = gsapModule.default;
+    gsap.registerPlugin(scrollTriggerModule.ScrollTrigger);
 
-        gsap.to(this.track.nativeElement, {
-           x: xMove,
-           ease: 'none',
-           scrollTrigger: {
-              trigger: '.projects-wrapper',
-              pin: true,
-              start: 'top top',
-              scrub: 1,
-              end: () => "+=" + (trackWidth - windowWidth),
-              invalidateOnRefresh: true,
-              preventOverlaps: true
-           }
-        });
-     });
-     ScrollTrigger.refresh();
+    this.ctx = gsap.context(() => {
+      const xMove = -(trackWidth - windowWidth);
+      const trackEl = this.track()!.nativeElement;
+
+      gsap.to(trackEl, {
+        x: xMove,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.projects-wrapper',
+          pin: true,
+          start: 'center center', // Pin when the section is centered
+          scrub: 1,
+          end: () => "+=" + (trackWidth - windowWidth),
+          invalidateOnRefresh: true,
+          preventOverlaps: true
+        }
+      });
+    });
+    scrollTriggerModule.ScrollTrigger.refresh();
   }
 
   ngOnDestroy() {

@@ -1,4 +1,4 @@
-import { Component, signal, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, signal, computed, inject, PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgHcaptchaModule } from 'ng-hcaptcha';
 import { ContactMail } from '../../services/contact';
@@ -9,7 +9,7 @@ import { isPlatformBrowser } from '@angular/common';
   selector: 'app-contact-form',
   imports: [ReactiveFormsModule, NgHcaptchaModule],
   template: `
-    <section id="contact" class="flex flex-col justify-center items-center bg-[var(--color-background)] px-6 min-h-screen relative overflow-hidden">
+    <section id="contact" class="flex flex-col justify-center items-center px-6 min-h-screen relative overflow-hidden">
       
       <!-- Content Container -->
       <div class="w-full max-w-xl relative z-10">
@@ -53,8 +53,8 @@ import { isPlatformBrowser } from '@angular/common';
                   </label>
                 </div>
 
-                <!-- hCaptcha (Centered) -->
-                @if (isBrowser) {
+                <!-- hCaptcha (only in production, not localhost) -->
+                @if (showCaptcha()) {
                   <div class="flex justify-center transform scale-90">
                      <ng-hcaptcha 
                         [siteKey]="siteKey"
@@ -65,7 +65,7 @@ import { isPlatformBrowser } from '@angular/common';
 
                 <!-- Submit Button -->
                 <div>
-                  <button type="submit" [disabled]="contactForm.invalid || isSubmitting() || !captchaToken()"
+                  <button type="submit" [disabled]="contactForm.invalid || isSubmitting() || !canSubmit()"
                           class="group relative w-full overflow-hidden rounded-full border border-[var(--color-text)] bg-transparent py-3 md:py-4 text-lg font-bold uppercase tracking-widest text-[var(--color-text)] transition-colors hover:border-[var(--color-primary)] disabled:cursor-not-allowed disabled:opacity-50">
                     
                     <!-- Hover Slide Effect (Primary Color) -->
@@ -101,26 +101,36 @@ import { isPlatformBrowser } from '@angular/common';
   `
 })
 export class ContactForm {
-  contactForm: FormGroup;
+  // v20 inject() instead of constructor DI
+  private fb = inject(FormBuilder);
+  private contactService = inject(ContactMail);
+  private platformId = inject(PLATFORM_ID);
+  
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
+  private readonly isLocalhost = this.isBrowser && (
+    typeof window !== 'undefined' && (
+      window.location.hostname === 'localhost' || 
+      window.location.hostname === '127.0.0.1'
+    )
+  );
+  
+  contactForm: FormGroup = this.fb.group({
+    name: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    message: ['', Validators.required]
+  });
+  
   isSubmitting = signal(false);
   isSubmitted = signal(false);
   errorMessage = signal('');
   captchaToken = signal('');
   siteKey = environment.hcaptchaSiteKey;
-  isBrowser: boolean;
 
-  constructor(
-      private fb: FormBuilder,
-      private contactService: ContactMail,
-      @Inject(PLATFORM_ID) platformId: Object
-  ) {
-    this.isBrowser = isPlatformBrowser(platformId);
-    this.contactForm = this.fb.group({
-      name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      message: ['', Validators.required]
-    });
-  }
+  // Show captcha only in browser and not localhost
+  readonly showCaptcha = computed(() => this.isBrowser && !this.isLocalhost);
+  
+  // Can submit if: (has captcha token) OR (is localhost, so captcha skipped)
+  readonly canSubmit = computed(() => !!this.captchaToken() || this.isLocalhost);
 
   autoResize(event: Event) {
     const textarea = event.target as HTMLTextAreaElement;
@@ -133,7 +143,7 @@ export class ContactForm {
   }
 
   onSubmit() {
-    if (this.contactForm.valid && this.captchaToken()) {
+    if (this.contactForm.valid && this.canSubmit()) {
       this.isSubmitting.set(true);
       this.errorMessage.set('');
 
@@ -142,11 +152,14 @@ export class ContactForm {
          subject: `Portfolio Contact from ${this.contactForm.value.name}`
       };
       
-      this.contactService.sendForm(payload, this.captchaToken()).subscribe({
+      // Use 'localhost-dev' as dummy token for localhost
+      const token = this.captchaToken() || 'localhost-dev-bypass';
+      
+      this.contactService.sendForm(payload, token).subscribe({
          next: () => {
             this.isSubmitting.set(false);
             this.isSubmitted.set(true);
-            this.captchaToken.set(''); // Reset captcha
+            this.captchaToken.set('');
          },
          error: (err) => {
             this.isSubmitting.set(false);

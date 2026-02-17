@@ -12,22 +12,24 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(
       routes,
-      withViewTransitions(),
+      withViewTransitions({ skipInitialTransition: true }),
       withInMemoryScrolling({
         scrollPositionRestoration: 'enabled',
         anchorScrolling: 'enabled'
       })
-
-    ), provideClientHydration(
+    ),
+    provideClientHydration(
       withEventReplay(),
       withIncrementalHydration()
     ),
     provideHttpClient(
       withFetch()
     ),
-    importProvidersFrom(NgHcaptchaModule.forRoot({
-      siteKey: environment.hcaptchaSiteKey,
-      languageCode: 'en' // Optional
-    }))
+    // Properly configure hCaptcha with forRoot
+    importProvidersFrom(
+      NgHcaptchaModule.forRoot({
+        siteKey: environment.hcaptchaSiteKey
+      })
+    )
   ]
 };
