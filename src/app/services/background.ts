@@ -18,8 +18,8 @@ export class Background {
   private isBrowser = isPlatformBrowser(this.platformId);
   
   readonly availableBackgrounds: BackgroundOption[] = [
-    { id: 'terrain', name: 'Terrain', description: 'Noise-based landscape', icon: '🏔️' },
     { id: 'aurora', name: 'Aurora', description: 'Flowing northern lights', icon: '🌌' },
+    { id: 'terrain', name: 'Terrain', description: 'Noise-based landscape', icon: '🏔️' },
     { id: 'crystal', name: 'Crystal', description: 'Prismatic rotating structure', icon: '💎' },
     { id: 'waves', name: 'Waves', description: 'Flowing curved lines', icon: '〰️' },
     { id: 'blobs', name: 'Blobs', description: 'Morphing organic shapes', icon: '🫧' },
@@ -37,12 +37,12 @@ export class Background {
   );
 
   private loadSavedBackground(): BackgroundStyle {
-    if (!this.isBrowser) return 'terrain';
+    if (!this.isBrowser) return 'aurora';
     const saved = localStorage.getItem('portfolio-background');
     if (saved && this.availableBackgrounds.some(b => b.id === saved)) {
       return saved as BackgroundStyle;
     }
-    return 'terrain'; // Default
+    return 'aurora'; // Default
   }
 
   setBackground(style: BackgroundStyle) {

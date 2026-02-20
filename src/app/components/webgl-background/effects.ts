@@ -21,6 +21,8 @@ import {
   Vector3,
   ShaderMaterial,
   Color,
+  PlaneGeometry,
+  DoubleSide
 } from 'three';
 
 // Base interface for all effects
@@ -32,100 +34,156 @@ export interface WebGLEffect {
 }
 
 // ============================================
-// AURORA EFFECT - Vertical light curtains using particles
+// AURORA EFFECT - Shader-based light curtains
 // ============================================
 export class AuroraEffect implements WebGLEffect {
-  private points!: Points;
-  private material!: PointsMaterial;
-  private geometry!: BufferGeometry;
-  private basePositions!: Float32Array;
-  private count = 0;
+  private meshes: Mesh[] = [];
+  private materials: ShaderMaterial[] = [];
+  private geometry!: PlaneGeometry;
 
-  init(scene: Scene) {
-    // Create vertical curtains of particles
-    const curtains = 5;
-    const particlesPerCurtain = 500;
-    this.count = curtains * particlesPerCurtain;
-    
-    const positions = new Float32Array(this.count * 3);
-    this.basePositions = new Float32Array(this.count * 3);
+  init(scene: Scene, _camera: PerspectiveCamera, _renderer: WebGLRenderer) {
+    // Wide, high-resolution planes for the curtain layers
+    this.geometry = new PlaneGeometry(300, 150, 64, 32);
 
-    for (let c = 0; c < curtains; c++) {
-      const curtainZ = -30 - c * 8;
-      const curtainX = (c - 2) * 30;
-      
-      for (let p = 0; p < particlesPerCurtain; p++) {
-        const idx = (c * particlesPerCurtain + p) * 3;
-        
-        const x = curtainX + (Math.random() - 0.5) * 60;
-        const y = (Math.random() - 0.5) * 80;
-        const z = curtainZ + (Math.random() - 0.5) * 5;
-        
-        positions[idx] = x;
-        positions[idx + 1] = y;
-        positions[idx + 2] = z;
-        
-        this.basePositions[idx] = x;
-        this.basePositions[idx + 1] = y;
-        this.basePositions[idx + 2] = z;
-      }
+    const layerCount = 3;
+
+    for (let i = 0; i < layerCount; i++) {
+      const material = new ShaderMaterial({
+        uniforms: {
+          uTime: { value: 0 },
+          uColor: { value: new Color(0x00ff88) },
+          uColor2: { value: new Color(0x0088ff) },
+          uIndex: { value: i },
+          uAlpha: { value: 0.35 - i * 0.08 }
+        },
+        vertexShader: `
+          varying vec2 vUv;
+          varying float vElevation;
+          uniform float uTime;
+          uniform float uIndex;
+
+          void main() {
+            vUv = uv;
+            vec3 pos = position;
+
+            // Slow, rolling wave motion
+            float time = uTime * 0.15;
+
+            // Layered sine waves for organic curtain undulation
+            float wave = sin(pos.x * 0.02 + time + uIndex * 1.5) * 18.0;
+            wave += sin(pos.x * 0.04 + time * 1.3 + uIndex * 2.5) * 7.0;
+            wave += sin(pos.x * 0.07 + time * 0.8) * 3.0;
+
+            // Z-depth undulation
+            pos.z += wave;
+
+            // Vertical ripple
+            pos.y += sin(pos.x * 0.025 + time * 0.6) * 6.0;
+            pos.y += cos(pos.x * 0.01 + time * 0.3 + uIndex) * 3.0;
+
+            vElevation = wave;
+
+            vec4 modelViewPosition = modelViewMatrix * vec4(pos, 1.0);
+            gl_Position = projectionMatrix * modelViewPosition;
+          }
+        `,
+        fragmentShader: `
+          uniform vec3 uColor;
+          uniform vec3 uColor2;
+          uniform float uAlpha;
+          uniform float uTime;
+          varying vec2 vUv;
+          varying float vElevation;
+
+          void main() {
+            // Vertical fade — strong in the middle, fading at top and bottom
+            float vertFade = smoothstep(0.0, 0.35, vUv.y) * smoothstep(1.0, 0.55, vUv.y);
+
+            // Horizontal fade at edges
+            float horizFade = smoothstep(0.0, 0.15, vUv.x) * smoothstep(1.0, 0.85, vUv.x);
+
+            // Vertical streaks — characteristic of real auroras
+            float streaks = sin(vUv.x * 90.0 + vElevation * 0.08) * 0.5 + 0.5;
+            streaks = pow(streaks, 4.0);
+
+            // Secondary finer streaks
+            float fineStreaks = sin(vUv.x * 200.0 + vElevation * 0.15 + uTime * 0.3) * 0.5 + 0.5;
+            fineStreaks = pow(fineStreaks, 6.0) * 0.3;
+
+            // Combine streak layers
+            float intensity = 0.5 + streaks * 0.35 + fineStreaks;
+
+            // Color gradient — blend two colors based on vertical position
+            float colorMix = smoothstep(0.2, 0.8, vUv.y) + sin(vUv.x * 5.0 + uTime * 0.2) * 0.15;
+            vec3 color = mix(uColor, uColor2, clamp(colorMix, 0.0, 1.0));
+
+            // Brightness boost near the center band
+            float centerGlow = exp(-pow((vUv.y - 0.45) * 3.0, 2.0)) * 0.4;
+
+            float finalAlpha = vertFade * horizFade * uAlpha * intensity + centerGlow * uAlpha * 0.5;
+
+            gl_FragColor = vec4(color, finalAlpha);
+          }
+        `,
+        transparent: true,
+        blending: AdditiveBlending,
+        side: DoubleSide,
+        depthWrite: false
+      });
+
+      const mesh = new Mesh(this.geometry, material);
+
+      // Position layers with depth and slight vertical offsets
+      mesh.position.z = -50 - (i * 18);
+      mesh.position.y = 8 - i * 3;
+      // Tilt slightly towards camera for a more dramatic look
+      mesh.rotation.x = -0.25;
+
+      scene.add(mesh);
+      this.meshes.push(mesh);
+      this.materials.push(material);
     }
-
-    this.geometry = new BufferGeometry();
-    this.geometry.setAttribute('position', new BufferAttribute(positions, 3));
-
-    // Simple PointsMaterial - reliable
-    this.material = new PointsMaterial({
-      color: 0x00ff88,
-      size: 2,
-      transparent: true,
-      opacity: 0.6,
-      blending: AdditiveBlending,
-      sizeAttenuation: true
-    });
-
-    this.points = new Points(this.geometry, this.material);
-    scene.add(this.points);
   }
 
   animate(time: number, mouseX: number, _mouseY: number, _scrollY: number) {
-    const posAttr = this.geometry.attributes['position'] as BufferAttribute;
-    
-    // Wave the particles
-    for (let i = 0; i < this.count; i++) {
-      const i3 = i * 3;
-      const baseX = this.basePositions[i3];
-      const baseY = this.basePositions[i3 + 1];
-      
-      // Flowing wave motion
-      const wave = Math.sin(baseX * 0.05 + time) * 3 + Math.cos(baseY * 0.03 + time * 0.7) * 2;
-      posAttr.array[i3] = baseX + wave;
-      posAttr.array[i3 + 2] = this.basePositions[i3 + 2] + Math.sin(baseY * 0.02 + time * 1.3) * 2;
-    }
-    posAttr.needsUpdate = true;
-    
-    this.points.rotation.y = mouseX * 0.00003;
+    this.materials.forEach((mat) => {
+      mat.uniforms['uTime'].value = time;
+    });
+
+    this.meshes.forEach((mesh, i) => {
+      // Gentle constant drift per layer
+      mesh.position.x = Math.sin(time * 0.04 + i * 1.2) * 6;
+    });
   }
 
   updateColors(theme: string) {
-    this.material.color.setHex(this.getThemeColor(theme));
+    const [primary, secondary] = this.getThemeColors(theme);
+    const color1 = new Color(primary);
+    const color2 = new Color(secondary);
+
+    this.materials.forEach(mat => {
+      mat.uniforms['uColor'].value.copy(color1);
+      mat.uniforms['uColor2'].value.copy(color2);
+    });
   }
 
-  private getThemeColor(theme: string): number {
+  private getThemeColors(theme: string): [number, number] {
     switch (theme) {
-      case 'light': return 0x6366f1;
-      case 'dark': return 0x00ff88;
-      case 'ocean': return 0x0ea5e9;
-      case 'sunset': return 0xf43f5e;
-      case 'cyberpunk': return 0xd946ef;
-      case 'forest': return 0x10b981;
-      default: return 0x00ff88;
+      case 'light': return [0x818cf8, 0xc084fc]; // Indigo → Purple
+      case 'dark': return [0x00ffaa, 0x0088ff]; // Green → Blue (classic aurora)
+      case 'ocean': return [0x22d3ee, 0x3b82f6]; // Cyan → Blue
+      case 'sunset': return [0xf472b6, 0xfb923c]; // Pink → Orange
+      case 'cyberpunk': return [0xd946ef, 0x06b6d4]; // Magenta → Cyan
+      case 'forest': return [0x34d399, 0xa3e635]; // Emerald → Lime
+      default: return [0x00ffaa, 0x0088ff];
     }
   }
 
   dispose() {
     this.geometry?.dispose();
-    this.material?.dispose();
+    this.materials.forEach(m => m.dispose());
+    this.meshes = [];
+    this.materials = [];
   }
 }
 
