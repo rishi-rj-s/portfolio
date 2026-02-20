@@ -1,0 +1,386 @@
+/* ===================================
+   NON-CRITICAL CSS — Loaded Async
+   Does NOT block first paint
+   =================================== */
+
+/* Global Noise Overlay */
+.noise-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Custom Cursor - FPS Style Crosshair */
+
+/* DEFAULT: Touch/Mobile - Native Cursor Only */
+body, a, button, input, select, textarea {
+  cursor: auto;
+}
+.custom-cursor {
+  display: none;
+}
+
+/* DESKTOP/MOUSE - Custom Cursor Only */
+@media (hover: hover) and (pointer: fine) {
+  /* Aggressively hide native cursor on EVERYTHING */
+  *, *::before, *::after {
+    cursor: none !important;
+  }
+  
+  .custom-cursor {
+    display: block !important;
+  }
+
+  body {
+    /* Ensure we can still select text if needed, but no cursor shows */
+    cursor: none;
+  }
+}
+
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  /* Critical: Position using hardware-accelerated transform */
+  transform: translate3d(var(--cursor-x, -100px), var(--cursor-y, -100px), 0);
+  pointer-events: none;
+  z-index: 20000;
+  /* High contrast drop-shadow ensuring visibility on white backgrounds */
+  filter: drop-shadow(0 0 1px rgba(0,0,0,1)) drop-shadow(0 0 2px rgba(0,0,0,0.5));
+}
+
+/* 1. Center Dot (High Visibility Core) */
+.cursor-dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  /* Mix Blend Mode for High Contrast Visibility */
+  mix-blend-mode: difference;
+  z-index: 2;
+  transition: transform 0.1s;
+}
+
+/* 2. Reticle Container (Large 60px) */
+.cursor-reticle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60px;
+  height: 60px;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s;
+  z-index: 1;
+  /* Mix Blend Mode for High Contrast Visibility */
+  mix-blend-mode: difference;
+  pointer-events: none;
+}
+
+/* Reticle Lines */
+.cursor-reticle::before,
+.cursor-reticle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #ffffff; /* White to invert against background via difference mode */
+  /* Remove colored glow in favor of high contrast inversion */
+  box-shadow: 0 0 2px rgba(255, 255, 255, 0.5); 
+  transition: all 0.2s cubic-bezier(0.1, 1, 0.3, 1);
+  opacity: 0.9;
+}
+
+/* Horizontal Hairs (Wider) */
+.cursor-reticle::before {
+  width: 36px;
+  height: 3px;
+  /* Cut center */
+  -webkit-mask-image: linear-gradient(to right, black 0%, black 40%, transparent 40%, transparent 60%, black 60%, black 100%);
+  mask-image: linear-gradient(to right, black 0%, black 40%, transparent 40%, transparent 60%, black 60%, black 100%);
+}
+
+/* Vertical Hairs (Taller) */
+.cursor-reticle::after {
+  width: 3px;
+  height: 36px;
+  /* Cut center */
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 40%, transparent 40%, transparent 60%, black 60%, black 100%);
+  mask-image: linear-gradient(to bottom, black 0%, black 40%, transparent 40%, transparent 60%, black 60%, black 100%);
+}
+
+
+/* --- STATE: HOVER (Aim/Spread) --- */
+.cursor-hover .cursor-reticle::before {
+  width: 50px;
+}
+
+.cursor-hover .cursor-reticle::after {
+  height: 50px;
+}
+
+.cursor-hover .cursor-dot {
+  transform: translate(-50%, -50%) scale(1.4);
+  box-shadow: 0 0 10px 3px var(--color-primary), 0 0 20px 6px var(--color-primary);
+}
+
+
+/* --- STATE: FIRE (Hold to Spread) --- */
+/* Muzzle Flash (Instant impact on click start) */
+/* --- STATE: FIRE (Hold to Spread) --- */
+/* Muzzle Flash (Instant impact on click start) */
+@keyframes muzzle-flash {
+  0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 4px 1px var(--color-primary); background: #ffffff; }
+  10% { transform: translate(-50%, -50%) scale(3); box-shadow: 0 0 30px 10px var(--color-primary); background: #ffffff; }
+  100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 4px 1px var(--color-primary); background: #ffffff; }
+}
+
+.cursor-active .cursor-reticle::before {
+  width: 65px; /* Max spread limit */
+  /* Maintain primary color, just expand */
+  background: var(--color-primary);
+  box-shadow: 0 0 15px var(--color-primary);
+  transition: width 1s cubic-bezier(0.1, 1, 0.1, 1); /* Expand over 1s */
+}
+
+.cursor-active .cursor-reticle::after {
+  height: 65px; /* Max spread limit */
+  /* Maintain primary color, just expand */
+  background: var(--color-primary);
+  box-shadow: 0 0 15px var(--color-primary);
+  transition: height 1s cubic-bezier(0.1, 1, 0.1, 1); /* Expand over 1s */
+}
+
+/* Flash dot instantly */
+.cursor-active .cursor-dot {
+  animation: muzzle-flash 0.1s ease-out;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+
+/* Selection */
+::selection {
+  background-color: #3b82f6;
+  color: white;
+}
+
+:root.dark ::selection {
+  background-color: #3b82f6;
+  color: white;
+}
+
+/* Focus visible */
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes gradient-shift {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Utilities */
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.5s ease-out forwards;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.6s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.6s ease-out forwards;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.glow-box {
+  box-shadow: 0 0 40px var(--glow-primary), 0 0 80px var(--glow-accent);
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+  display: block;
+}
+
+::view-transition-image-pair(root) {
+  isolation: isolate;
+}
+
+/* Theme Icon Visibility */
+.theme-icon-light {
+  display: block;
+}
+
+.theme-icon-dark {
+  display: none;
+}
+
+:root.dark .theme-icon-light {
+  display: none;
+}
+
+:root.dark .theme-icon-dark {
+  display: block;
+}
+
+/* Invert colors in dark mode (for black logos) */
+:root.dark .theme-inverse {
+  filter: brightness(0) invert(1) !important;
+}
