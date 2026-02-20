@@ -1,15 +1,10 @@
 import { Component, ElementRef, viewChildren, signal, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Theme } from '../../services/theme';
-import { RouterLink, Router } from '@angular/router';
-// GSAP loaded dynamically for better TBT
-import { ThemeSelectorComponent } from '../theme-selector/theme-selector';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
-  imports: [
-    RouterLink
-  ],
   template: `
     <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300">
       <div 
@@ -23,7 +18,7 @@ import { ThemeSelectorComponent } from '../theme-selector/theme-selector';
         <!-- Content Layer (Relative) -->
         <div class="relative z-10 flex items-center gap-6">
           <!-- Logo -->
-          <a routerLink="/" (click)="handleLogoClick($event)" class="nav-item group relative font-bold text-xl tracking-tighter text-[var(--color-text)]" #navItem>
+          <a (click)="handleLogoClick($event)" class="nav-item group relative font-bold text-xl tracking-tighter text-[var(--color-text)] cursor-pointer select-none" #navItem>
             RS
           </a>
 
@@ -185,22 +180,28 @@ export class Navbar {
     }
   }
 
-  async handleLogoClick(e: Event) {
+  handleLogoClick(e: Event) {
     e.preventDefault();
+    if (!isPlatformBrowser(this.platformId)) return;
+
     if (this.router.url === '/') {
-      if (isPlatformBrowser(this.platformId)) {
-        const gsapModule = await import('gsap');
-        const scrollToModule = await import('gsap/ScrollToPlugin');
-        const gsap = gsapModule.default;
-        gsap.registerPlugin(scrollToModule.ScrollToPlugin);
-        gsap.to(window, {
-          duration: 1,
-          scrollTo: { y: 0, autoKill: false },
-          ease: 'power3.inOut'
-        });
-      }
+      // Already on home — smooth scroll to top
+      this.smoothScrollToTop();
     } else {
-      this.router.navigate(['/']);
+      // On 404 or other page — navigate home via Angular router
+      this.router.navigateByUrl('/');
     }
+  }
+
+  private async smoothScrollToTop() {
+    const gsapModule = await import('gsap');
+    const scrollToModule = await import('gsap/ScrollToPlugin');
+    const gsap = gsapModule.default;
+    gsap.registerPlugin(scrollToModule.ScrollToPlugin);
+    gsap.to(window, {
+      duration: 1,
+      scrollTo: { y: 0, autoKill: false },
+      ease: 'power3.inOut'
+    });
   }
 }

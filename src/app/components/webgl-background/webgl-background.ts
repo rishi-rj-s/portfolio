@@ -7,19 +7,12 @@ import { Background, BackgroundStyle } from '../../services/background';
   selector: 'app-webgl-background',
   template: `
     <div #canvasContainer class="fixed inset-0 -z-10 pointer-events-none transition-opacity duration-1000 opacity-0">
-      <canvas #canvas></canvas>
+      <canvas #canvas class="w-full h-full block"></canvas>
     </div>
   `,
   styles: [`
     :host {
-      display: block;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      overflow: hidden;
+      display: contents;
     }
   `]
 })

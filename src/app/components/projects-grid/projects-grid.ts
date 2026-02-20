@@ -9,13 +9,13 @@ import { isPlatformBrowser } from '@angular/common';
     <section id="projects" class="projects-wrapper relative h-[100dvh] overflow-hidden flex flex-col justify-start pt-24 md:pt-32 pb-4">
       
       <!-- Section Header (Static Layout) -->
-      <div class="w-full px-6 py-2 md:px-16 md:py-4 flex-shrink-0 z-20 relative pointer-events-none select-none text-center md:text-left">
+      <div class="w-full px-6 py-2 md:px-28 md:py-4 flex-shrink-0 z-20 relative pointer-events-none select-none text-center md:text-left">
         <h2 class="text-3xl md:text-6xl lg:text-8xl font-black tracking-tighter text-[var(--color-text)] relative">SELECTED WORKS</h2>
         <p class="text-[var(--color-text-muted)] mt-1 md:mt-2 font-mono text-[10px] md:text-xs uppercase tracking-widest relative"> &lt; Horizontal Scroll /&gt;</p>
       </div>
 
       <!-- Horizontal Track -->
-      <div class="projects-track flex flex-1 min-h-0 w-full items-center pl-6 md:pl-16 lg:pl-32 pr-[20vw] gap-6 md:gap-16 lg:gap-24 will-change-transform z-10 relative my-2 md:my-4" #track>
+      <div class="projects-track flex flex-1 min-h-0 w-full items-center pl-6 md:pl-28 pr-[20vw] gap-6 md:gap-16 lg:gap-24 will-change-transform z-10 relative my-2 md:my-4" #track>
         
         <!-- Project Cards -->
         @for (project of projects; track project.title) {
@@ -139,62 +139,72 @@ export class ProjectsGrid implements OnDestroy {
   ];
 
   ctx: any;
+  private resizeHandler: (() => void) | null = null;
+  private ScrollTrigger: any;
   
   private platformId = inject(PLATFORM_ID);
   
   constructor() {
     afterNextRender(() => {
-        // Use ResizeObserver to detect when the track actually has dimensions
-        const trackEl = this.track()?.nativeElement;
-        if (!trackEl) return;
+      const trackEl = this.track()?.nativeElement;
+      if (!trackEl) return;
 
-        const resizeObserver = new ResizeObserver((entries) => {
-          for (const entry of entries) {
-            if (entry.contentBoxSize) {
-              const trackWidth = trackEl.scrollWidth;
-              const windowWidth = window.innerWidth;
-              
-              if (trackWidth > windowWidth) {
-                this.initScroll(trackWidth, windowWidth);
-                resizeObserver.disconnect(); // Initialize once
-              }
+      // Wait for images/fonts to settle, then init
+      const resizeObserver = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.contentBoxSize) {
+            const trackWidth = trackEl.scrollWidth;
+            const windowWidth = window.innerWidth;
+            
+            if (trackWidth > windowWidth) {
+              this.initScroll();
+              resizeObserver.disconnect();
             }
           }
-        });
-        
-        resizeObserver.observe(trackEl);
+        }
+      });
+      
+      resizeObserver.observe(trackEl);
     });
   }
 
-    private async initScroll(trackWidth: number, windowWidth: number) {
-    // Dynamic import for better TBT
+  private async initScroll() {
     const gsapModule = await import('gsap');
     const scrollTriggerModule = await import('gsap/ScrollTrigger');
     const gsap = gsapModule.default;
-    gsap.registerPlugin(scrollTriggerModule.ScrollTrigger);
+    this.ScrollTrigger = scrollTriggerModule.ScrollTrigger;
+    gsap.registerPlugin(this.ScrollTrigger);
+
+    const trackEl = this.track()?.nativeElement;
+    if (!trackEl) return;
 
     this.ctx = gsap.context(() => {
-      const xMove = -(trackWidth - windowWidth);
-      const trackEl = this.track()!.nativeElement;
-
       gsap.to(trackEl, {
-        x: xMove,
+        x: () => -(trackEl.scrollWidth - window.innerWidth),
         ease: 'none',
         scrollTrigger: {
           trigger: '.projects-wrapper',
           pin: true,
-          start: 'center center', // Pin when the section is centered
-          scrub: 1,
-          end: () => "+=" + (trackWidth - windowWidth),
+          anticipatePin: 1,
+          start: 'top top',
+          scrub: 0.5,
+          end: () => '+=' + (trackEl.scrollWidth - window.innerWidth),
           invalidateOnRefresh: true,
-          preventOverlaps: true
         }
       });
     });
-    scrollTriggerModule.ScrollTrigger.refresh();
+
+    // Handle resize — recalculate scroll distance
+    this.resizeHandler = () => {
+      this.ScrollTrigger.refresh();
+    };
+    window.addEventListener('resize', this.resizeHandler);
   }
 
   ngOnDestroy() {
     this.ctx?.revert();
+    if (this.resizeHandler) {
+      window.removeEventListener('resize', this.resizeHandler);
+    }
   }
 }

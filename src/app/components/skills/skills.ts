@@ -16,12 +16,12 @@ interface SkillCategory {
 @Component({
   selector: 'app-skills',
   template: `
-    <section id="skills" class="relative min-h-screen py-20 px-6 flex flex-col justify-center border-t border-[var(--color-border)]">
+    <section id="skills" class="relative min-h-screen py-20 px-6 md:px-28 flex flex-col justify-center border-t border-[var(--color-border)]">
       
       <div class="max-w-7xl mx-auto w-full">
          <!-- Header -->
          <div class="mb-12" #header>
-            <h2 class="text-5xl md:text-7xl font-black tracking-tighter text-[var(--color-text)] mb-4 leading-[0.8]">
+            <h2 class="text-3xl md:text-6xl lg:text-8xl font-black tracking-tighter text-[var(--color-text)] mb-4 leading-[0.8]">
               TECHNICAL<br>
               <span class="text-[var(--color-text-muted)] opacity-50">ARSENAL</span>
             </h2>
