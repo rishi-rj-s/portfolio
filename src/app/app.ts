@@ -60,15 +60,22 @@ export class App implements OnDestroy {
     afterNextRender(() => {
       if (!this.isBrowser) return;
       
-      // TBT Fix: Defer Tagtics initialization so it doesn't block the main thread
-      setTimeout(() => {
+      // TBT Fix: Use requestIdleCallback so Tagtics loads during genuine idle time,
+      // not during the TBT measurement window. This avoids creating Long Tasks.
+      const initTagtics = () => {
         import('tagtics-client').then(({ default: Tagtics }) => {
           Tagtics.init({
             apiKey: 'none',
             testingMode: true,
           });
         });
-      }, 2000);
+      };
+      
+      if ('requestIdleCallback' in window) {
+        (window as any).requestIdleCallback(initTagtics, { timeout: 10000 });
+      } else {
+        setTimeout(initTagtics, 5000);
+      }
       
       // Throttled mouse tracking for CSS variables
       let mouseTicking = false;

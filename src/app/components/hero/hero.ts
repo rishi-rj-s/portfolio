@@ -30,8 +30,8 @@ import { Component, ElementRef, afterNextRender, viewChild, OnDestroy } from '@a
         </div>
       </div>
 
-      <!-- Scroll Indicator -->
-      <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-50">
+      <!-- Scroll Indicator — uses opacity-only animation to avoid CLS -->
+      <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-pulse opacity-50">
         <svg class="w-6 h-6 text-[var(--color-text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
         </svg>
@@ -89,15 +89,19 @@ export class Hero implements OnDestroy {
       import('gsap').then(({ default: gsap }) => {
         this.gsapModule = gsap;
         
-        // LCP-safe: Only animate Y-transform, NOT opacity.
-        // Text is visible immediately; animation is a subtle entrance only.
-        gsap.from(titleEl.children, {
-          y: 40,
-          duration: 1.2,
-          stagger: 0.15,
-          ease: 'power4.out',
-          delay: 0.1
-        });
+        // CLS-safe: Use clip-path reveal instead of Y-translation.
+        // The text stays in its final position — only the mask animates,
+        // so Lighthouse doesn't count this as a layout shift.
+        gsap.fromTo(titleEl.children, 
+          { clipPath: 'inset(0 0 100% 0)' },
+          { 
+            clipPath: 'inset(0 0 0% 0)',
+            duration: 1,
+            stagger: 0.15,
+            ease: 'power4.out',
+            delay: 0.1
+          }
+        );
       });
       
       // Set up Intersection Observer - only track mouse when hero is visible
