@@ -5,6 +5,17 @@
    Keep this as small as possible
    =================================== */
 
+/* CLS Prevention: Size-adjusted fallback font to match Clash Display metrics.
+   This ensures text doesn't reflow when the web font loads. */
+@font-face {
+  font-family: 'Clash Display Fallback';
+  src: local('Arial');
+  size-adjust: 105%;
+  ascent-override: 95%;
+  descent-override: 22%;
+  line-height-override: normal;
+}
+
 /* Light mode theme */
 :root {
   --color-background: #ffffff; /* Pure White */
@@ -20,7 +31,7 @@
   --glow-primary: rgba(0, 0, 0, 0.1);
   --glow-accent: rgba(0, 0, 0, 0.05);
   --navbar-height: 64px;
-  --font-sans: 'Clash Display', system-ui, sans-serif;
+  --font-sans: 'Clash Display', 'Clash Display Fallback', system-ui, sans-serif;
 }
 
 /* Dark mode theme - Pure Void */
@@ -108,10 +119,14 @@
 html {
   color-scheme: light dark;
   scroll-padding-top: var(--navbar-height);
+  /* Initial background on html prevents white flash on dark themes.
+     The inline theme script in index.html also sets this immediately. */
+  background-color: var(--color-background);
+  transition: background-color 0.5s ease;
 }
 
 body {
-  background-color: transparent; /* Allow WebGL to provide bg */
+  background-color: transparent; /* Must stay transparent so WebGL canvas at z-index:-10 shows through */
   color: var(--color-text);
   transition: color 0.5s ease;
   font-family: var(--font-sans);

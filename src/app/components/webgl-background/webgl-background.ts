@@ -28,6 +28,12 @@ export class WebglBackgroundComponent implements OnDestroy {
   
   isBrowser = isPlatformBrowser(this.platformId);
 
+  // Performance: Throttle mouse/scroll messages to worker
+  private lastMouseMsgTime = 0;
+  private lastScrollMsgTime = 0;
+  private static readonly MSG_THROTTLE_MS = 50; // ~20 msgs/sec instead of 60+
+  private resizeTimeout: ReturnType<typeof setTimeout> | null = null;
+
   constructor() {
     // Theme reaction effect
     effect(() => {
@@ -57,7 +63,7 @@ export class WebglBackgroundComponent implements OnDestroy {
       }
       
       this.ngZone.runOutsideAngular(() => {
-        window.addEventListener('mousemove', this.onMouseMove);
+        window.addEventListener('mousemove', this.onMouseMove, { passive: true });
         window.addEventListener('scroll', this.onScroll, { passive: true });
         window.addEventListener('resize', this.onWindowResize);
       });
@@ -70,6 +76,7 @@ export class WebglBackgroundComponent implements OnDestroy {
       window.removeEventListener('scroll', this.onScroll);
       window.removeEventListener('resize', this.onWindowResize);
       
+      if (this.resizeTimeout) clearTimeout(this.resizeTimeout);
       this.worker?.terminate();
     }
   }
@@ -104,17 +111,26 @@ export class WebglBackgroundComponent implements OnDestroy {
     }
   }
 
+  // Performance: Debounce resize instead of firing immediately
   private onWindowResize = () => {
     if (!this.worker) return;
-    this.worker.postMessage({
-      type: 'resize',
-      width: window.innerWidth,
-      height: window.innerHeight
-    });
+    if (this.resizeTimeout) clearTimeout(this.resizeTimeout);
+    this.resizeTimeout = setTimeout(() => {
+      this.worker?.postMessage({
+        type: 'resize',
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    }, 150);
   };
 
+  // Performance: Throttle mouse messages to worker
   private onMouseMove = (event: MouseEvent) => {
     if (!this.worker) return;
+    const now = performance.now();
+    if (now - this.lastMouseMsgTime < WebglBackgroundComponent.MSG_THROTTLE_MS) return;
+    this.lastMouseMsgTime = now;
+    
     this.worker.postMessage({
       type: 'mouse',
       x: event.clientX - window.innerWidth / 2,
@@ -122,8 +138,13 @@ export class WebglBackgroundComponent implements OnDestroy {
     });
   };
   
+  // Performance: Throttle scroll messages to worker
   private onScroll = () => {
     if (!this.worker) return;
+    const now = performance.now();
+    if (now - this.lastScrollMsgTime < WebglBackgroundComponent.MSG_THROTTLE_MS) return;
+    this.lastScrollMsgTime = now;
+    
     this.worker.postMessage({
       type: 'scroll',
       y: window.scrollY
