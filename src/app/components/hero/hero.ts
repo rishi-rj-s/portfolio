@@ -8,13 +8,13 @@ import { Component, ElementRef, afterNextRender, viewChild, OnDestroy } from '@a
       
       <!-- Background Elements -->
       <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--color-primary)] rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-pulse-slow"></div>
-        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[var(--color-accent)] rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-pulse-slow" style="animation-delay: 2s"></div>
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--color-primary)] rounded-full mix-blend-multiply filter blur-[80px] opacity-20 animate-pulse-slow"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[var(--color-accent)] rounded-full mix-blend-multiply filter blur-[80px] opacity-20 animate-pulse-slow" style="animation-delay: 2s"></div>
       </div>
 
       <!-- Kinetic Typography Container -->
       <div class="relative z-10 text-center select-none" #heroContainer>
-        <h2 class="text-xl md:text-2xl font-bold tracking-[0.2em] text-[var(--color-text-secondary)] mb-4 animate-fade-in-up">
+        <h2 class="text-xl md:text-2xl font-bold tracking-[0.2em] text-[var(--color-text-secondary)] mb-4">
           DIGITAL CRAFTSMAN
         </h2>
         
@@ -23,7 +23,7 @@ import { Component, ElementRef, afterNextRender, viewChild, OnDestroy } from '@a
           <div class="line" #line2>SAJEEV</div>
         </h1>
 
-        <div class="mt-8 max-w-lg mx-auto animate-fade-in-up" style="animation-delay: 0.3s">
+        <div class="mt-8 max-w-lg mx-auto">
           <p class="text-lg md:text-xl text-[var(--color-text-muted)]">
             Architecting production-grade <span class="text-[var(--color-text)] font-semibold">SaaS</span> & <span class="text-[var(--color-text)] font-semibold">Microservices</span>.
           </p>
@@ -73,6 +73,9 @@ export class Hero implements OnDestroy {
   private isInViewport = false;
   private observer: IntersectionObserver | null = null;
   private mouseMoveHandler: ((e: MouseEvent) => void) | null = null;
+  
+  // Performance: Cache GSAP module to avoid re-importing on every mouse event
+  private gsapModule: any = null;
 
   constructor() {
     // Use afterNextRender for browser-only initialization
@@ -82,15 +85,18 @@ export class Hero implements OnDestroy {
       
       if (!titleEl || !sectionEl) return;
       
-      // Initial Text Reveal - load GSAP dynamically without blocking render
+      // Initial Text Reveal - load GSAP dynamically and cache it
       import('gsap').then(({ default: gsap }) => {
+        this.gsapModule = gsap;
+        
+        // LCP-safe: Only animate Y-transform, NOT opacity.
+        // Text is visible immediately; animation is a subtle entrance only.
         gsap.from(titleEl.children, {
-          y: 100,
-          opacity: 0,
-          duration: 1.5,
-          stagger: 0.2,
+          y: 40,
+          duration: 1.2,
+          stagger: 0.15,
           ease: 'power4.out',
-          delay: 0.2
+          delay: 0.1
         });
       });
       
@@ -103,9 +109,9 @@ export class Hero implements OnDestroy {
       );
       this.observer.observe(sectionEl);
       
-      // Mouse handler with viewport check
+      // Mouse handler with viewport check and cached GSAP
       this.mouseMoveHandler = (e: MouseEvent) => {
-        if (!this.isInViewport) return;
+        if (!this.isInViewport || !this.gsapModule) return;
         
         const containerEl = this.container()?.nativeElement;
         const titleEl = this.title()?.nativeElement;
@@ -122,31 +128,31 @@ export class Hero implements OnDestroy {
           const rotateX = ((y / innerHeight) - 0.5) * -30;
           const rotateY = ((x / innerWidth) - 0.5) * 30;
 
-          // Non-blocking GSAP import
-          import('gsap').then(({ default: gsap }) => {
-            gsap.to(titleEl, {
-              rotateX,
-              rotateY,
-              duration: 1,
-              ease: 'power3.out',
-              overwrite: 'auto'
-            });
+          // Performance: Use cached GSAP reference — no dynamic import overhead
+          const gsap = this.gsapModule;
+          
+          gsap.to(titleEl, {
+            rotateX,
+            rotateY,
+            duration: 1,
+            ease: 'power3.out',
+            overwrite: 'auto'
+          });
 
-            gsap.to(line1El, {
-              x: (x - innerWidth / 2) * 0.05,
-              y: (y - innerHeight / 2) * 0.05,
-              duration: 1,
-              ease: 'power3.out',
-              overwrite: 'auto'
-            });
+          gsap.to(line1El, {
+            x: (x - innerWidth / 2) * 0.05,
+            y: (y - innerHeight / 2) * 0.05,
+            duration: 1,
+            ease: 'power3.out',
+            overwrite: 'auto'
+          });
 
-            gsap.to(line2El, {
-              x: (x - innerWidth / 2) * -0.05,
-              y: (y - innerHeight / 2) * -0.05,
-              duration: 1,
-              ease: 'power3.out',
-              overwrite: 'auto'
-            });
+          gsap.to(line2El, {
+            x: (x - innerWidth / 2) * -0.05,
+            y: (y - innerHeight / 2) * -0.05,
+            duration: 1,
+            ease: 'power3.out',
+            overwrite: 'auto'
           });
         });
       };

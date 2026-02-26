@@ -24,6 +24,11 @@ let targetScrollY = 0;
 let width = 0;
 let height = 0;
 
+// Performance: Target 30 FPS instead of uncapped 60
+const TARGET_FPS = 30;
+const FRAME_INTERVAL = 1000 / TARGET_FPS;
+let lastFrameTime = 0;
+
 addEventListener('message', async ({ data }) => {
   switch (data.type) {
     case 'init':
@@ -65,16 +70,19 @@ async function init(
   camera = new PerspectiveCamera(75, width / height, 0.1, 1000);
   camera.position.z = 50;
 
+  // Performance: Cap pixel ratio more aggressively for low-end devices
+  const effectivePixelRatio = Math.min(pixelRatio, 1.25);
+
   renderer = new WebGLRenderer({
     canvas: canvas,
     alpha: true,
-    antialias: width < 768 ? false : true,
-    powerPreference: 'high-performance',
+    antialias: false, // Performance: Disable antialiasing — saves significant GPU fill-rate
+    powerPreference: 'default', // Let the device choose a balanced GPU mode
     context: canvas.getContext('webgl2') as WebGL2RenderingContext
   });
   
   renderer.setSize(width, height, false);
-  renderer.setPixelRatio(Math.min(pixelRatio, 1.5));
+  renderer.setPixelRatio(effectivePixelRatio);
 
   await loadEffect(style);
   animate();
@@ -147,12 +155,18 @@ async function loadEffect(style: string) {
 function animate() {
   requestAnimationFrame(animate);
 
+  // Performance: Frame-rate limiter — skip frames to stay at TARGET_FPS
+  const now = self.performance.now();
+  const elapsed = now - lastFrameTime;
+  if (elapsed < FRAME_INTERVAL) return;
+  lastFrameTime = now - (elapsed % FRAME_INTERVAL);
+
   // Smooth interpolation
   mouseX += (targetMouseX - mouseX) * 0.05;
   mouseY += (targetMouseY - mouseY) * 0.05;
   scrollY += (targetScrollY - scrollY) * 0.05;
 
-  const time = self.performance.now() * 0.001;
+  const time = now * 0.001;
 
   if (currentEffect) {
     currentEffect.animate(time, mouseX, mouseY, scrollY);

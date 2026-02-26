@@ -71,11 +71,12 @@
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
 
   <!-- Preload the font CSS (non-blocking) -->
-  <link rel="preload" href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" as="style">
+  <link rel="preload" href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" as="style" fetchpriority="high">
 
   <!-- Load font without blocking render -->
   <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap"
     media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap"></noscript>
 
   <!-- Load non-critical CSS asynchronously (via JS to avoid SSR resolution) -->
   <script>
@@ -90,14 +91,19 @@
   <script>
     (function () {
       try {
-        const saved = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-        if (saved === 'dark' || (!saved && prefersDark)) {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
+        var d = document.documentElement;
+        var saved = localStorage.getItem('theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        // Apply ALL theme classes immediately to prevent flash/CLS
+        if (saved === 'ocean') { d.classList.add('dark', 'theme-ocean'); }
+        else if (saved === 'sunset') { d.classList.add('dark', 'theme-sunset'); }
+        else if (saved === 'cyberpunk') { d.classList.add('dark', 'theme-cyberpunk'); }
+        else if (saved === 'forest') { d.classList.add('dark', 'theme-forest'); }
+        else if (saved === 'dark' || (!saved && prefersDark)) { d.classList.add('dark'); }
+        // Set background-color immediately to prevent white flash
+        var bgMap = {dark:'#000',ocean:'#0d1b32',sunset:'#2b0a0a',cyberpunk:'#09090b',forest:'#052e16'};
+        var bg = bgMap[saved];
+        if (bg) d.style.backgroundColor = bg;
       } catch (e) { }
     })();
   </script>

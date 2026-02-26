@@ -1,7 +1,6 @@
 import { Component, OnDestroy, PLATFORM_ID, inject, afterNextRender } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
-import Tagtics from 'tagtics-client';
 import { Navbar } from './components/navbar/navbar';
 import { ThemeSelectorComponent } from './components/theme-selector/theme-selector';
 import { Theme } from './services/theme';
@@ -22,7 +21,7 @@ import { WebglBackgroundComponent } from './components/webgl-background/webgl-ba
     @defer (on idle) {
       <app-webgl-background />
     } @placeholder {
-      <div class="fixed inset-0 -z-10 bg-[var(--color-bg)] transition-colors duration-500"></div>
+      <div class="fixed inset-0 -z-10 bg-[var(--color-background)]"></div>
     }
     <div class="noise-overlay"></div>
     
@@ -61,14 +60,21 @@ export class App implements OnDestroy {
     afterNextRender(() => {
       if (!this.isBrowser) return;
       
-      // Initialize Tagtics
-      Tagtics.init({
-        apiKey: 'none',
-        testingMode: true,
-      });
+      // TBT Fix: Defer Tagtics initialization so it doesn't block the main thread
+      setTimeout(() => {
+        import('tagtics-client').then(({ default: Tagtics }) => {
+          Tagtics.init({
+            apiKey: 'none',
+            testingMode: true,
+          });
+        });
+      }, 2000);
       
       // Throttled mouse tracking for CSS variables
+      let mouseTicking = false;
       this.mouseHandler = (e: MouseEvent) => {
+        if (mouseTicking) return;
+        mouseTicking = true;
         requestAnimationFrame(() => {
           document.documentElement.style.setProperty('--cursor-x', `${e.clientX}px`);
           document.documentElement.style.setProperty('--cursor-y', `${e.clientY}px`);
@@ -82,6 +88,7 @@ export class App implements OnDestroy {
           } else {
             document.documentElement.classList.remove('cursor-hover');
           }
+          mouseTicking = false;
         });
       };
       

@@ -93,17 +93,41 @@ export class Navbar {
   public theme = inject(Theme);
   private router = inject(Router);
 
+  // Performance: Cache GSAP module to avoid repeated dynamic imports
+  private gsapModule: any = null;
+  private gsapLoading: Promise<any> | null = null;
+  
+  // Performance: Throttle magnetic mouse tracking
+  private lastMouseMoveTime = 0;
+  private static readonly MOUSE_THROTTLE_MS = 50; // ~20 updates/sec instead of 60+
 
-
+  private async getGsap() {
+    if (this.gsapModule) return this.gsapModule;
+    if (!this.gsapLoading) {
+      this.gsapLoading = import('gsap').then(({ default: gsap }) => {
+        this.gsapModule = gsap;
+        return gsap;
+      });
+    }
+    return this.gsapLoading;
+  }
 
   handleMouseMove(e: MouseEvent) {
     if (!isPlatformBrowser(this.platformId)) return;
+    
+    // Performance: Throttle mouse move processing
+    const now = performance.now();
+    if (now - this.lastMouseMoveTime < Navbar.MOUSE_THROTTLE_MS) return;
+    this.lastMouseMoveTime = now;
     
     requestAnimationFrame(async () => {
       const mouseX = e.clientX;
       const mouseY = e.clientY;
       
-      this.navItems().forEach(async (item) => {
+      // Performance: Single cached GSAP import for all items
+      const gsap = await this.getGsap();
+      
+      this.navItems().forEach((item) => {
         const el = item.nativeElement;
         const rect = el.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
@@ -119,7 +143,6 @@ export class Navbar {
           const moveX = (mouseX - centerX) * 0.2;
           const moveY = (mouseY - centerY) * 0.2;
           
-          const { default: gsap } = await import('gsap');
           gsap.to(el, {
             x: moveX,
             y: moveY,
@@ -129,7 +152,6 @@ export class Navbar {
             overwrite: 'auto'
           });
         } else {
-          const { default: gsap } = await import('gsap');
           gsap.to(el, {
             x: 0,
             y: 0,
@@ -145,7 +167,7 @@ export class Navbar {
 
   async resetMagnets() {
     if (!isPlatformBrowser(this.platformId)) return;
-    const { default: gsap } = await import('gsap');
+    const gsap = await this.getGsap();
     this.navItems().forEach((item) => {
       gsap.to(item.nativeElement, {
         x: 0,
@@ -168,9 +190,8 @@ export class Navbar {
   async handleNavClick(e: Event, id: string) {
     e.preventDefault();
     if (isPlatformBrowser(this.platformId)) {
-      const gsapModule = await import('gsap');
+      const gsap = await this.getGsap();
       const scrollToModule = await import('gsap/ScrollToPlugin');
-      const gsap = gsapModule.default;
       gsap.registerPlugin(scrollToModule.ScrollToPlugin);
       gsap.to(window, {
         duration: 1,
@@ -194,9 +215,8 @@ export class Navbar {
   }
 
   private async smoothScrollToTop() {
-    const gsapModule = await import('gsap');
+    const gsap = await this.getGsap();
     const scrollToModule = await import('gsap/ScrollToPlugin');
-    const gsap = gsapModule.default;
     gsap.registerPlugin(scrollToModule.ScrollToPlugin);
     gsap.to(window, {
       duration: 1,

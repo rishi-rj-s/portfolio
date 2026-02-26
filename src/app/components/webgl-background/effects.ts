@@ -43,7 +43,8 @@ export class AuroraEffect implements WebGLEffect {
 
   init(scene: Scene, _camera: PerspectiveCamera, _renderer: WebGLRenderer) {
     // Wide, high-resolution planes for the curtain layers
-    this.geometry = new PlaneGeometry(300, 150, 64, 32);
+    // Performance: Reduced from 64×32 → 32×16 segments (75% fewer vertices)
+    this.geometry = new PlaneGeometry(300, 150, 32, 16);
 
     const layerCount = 3;
 
@@ -298,14 +299,16 @@ export class WavesEffect implements WebGLEffect {
   private lines: Line[] = [];
   private materials: LineBasicMaterial[] = [];
   private group!: Group;
-  private lineCount = 20;
+  // Performance: Reduced from 20 → 12 lines
+  private lineCount = 12;
 
   init(scene: Scene) {
     this.group = new Group();
     
     for (let l = 0; l < this.lineCount; l++) {
       const points: Vector3[] = [];
-      const segments = 50;
+      // Performance: Reduced from 50 → 30 segments per line
+      const segments = 30;
       
       // Create flowing curve
       const startX = (Math.random() - 0.5) * 120;
@@ -404,11 +407,13 @@ export class BlobsEffect implements WebGLEffect {
   init(scene: Scene) {
     this.group = new Group();
     
-    const blobCount = 7;
+    // Performance: Reduced from 7 → 4 blobs
+    const blobCount = 4;
     
     for (let i = 0; i < blobCount; i++) {
       const size = 5 + Math.random() * 6;
-      const geometry = new IcosahedronGeometry(size, 4);
+      // Performance: Reduced icosahedron detail from 4 → 3 (significantly fewer triangles)
+      const geometry = new IcosahedronGeometry(size, 3);
       
       const material = new ShaderMaterial({
         uniforms: {
@@ -524,8 +529,9 @@ export class TerrainEffect implements WebGLEffect {
   private count = 0;
 
   init(scene: Scene) {
-    const gridSize = 50;
-    const spacing = 3;
+    // Performance: Reduced from 50×50 (2500) → 35×35 (1225) points
+    const gridSize = 35;
+    const spacing = 4.3; // Adjusted spacing to maintain similar visual spread
     this.count = gridSize * gridSize;
     const positions = new Float32Array(this.count * 3);
     this.basePositions = new Float32Array(this.count * 3);
@@ -612,7 +618,8 @@ export class GalaxyEffect implements WebGLEffect {
   private count = 0;
 
   init(scene: Scene) {
-    this.count = 5000;
+    // Performance: Reduced from 5000 → 2000 particles
+    this.count = 2000;
     const positions = new Float32Array(this.count * 3);
     this.basePositions = new Float32Array(this.count * 3);
 
@@ -662,20 +669,32 @@ export class GalaxyEffect implements WebGLEffect {
     this.points.rotation.x = 0.8 + mouseY * 0.00003;
     this.points.rotation.z = mouseX * 0.00002;
     
-    // Differential rotation for particles
+    // Performance: Pre-compute a small set of sin/cos values instead of per-particle trig
     const positionAttr = this.geometry.attributes['position'] as BufferAttribute;
+    
+    // Batch particles into distance groups to share trig computation
+    const ANGLE_CACHE_SIZE = 32;
+    const angleCacheCos = new Float32Array(ANGLE_CACHE_SIZE);
+    const angleCacheSin = new Float32Array(ANGLE_CACHE_SIZE);
+    for (let g = 0; g < ANGLE_CACHE_SIZE; g++) {
+      const dist = g * 2; // approximate distance bucket
+      const rotSpeed = 0.08 + (1.0 / (dist * 0.05 + 1)) * 0.1;
+      const angle = time * rotSpeed;
+      angleCacheCos[g] = Math.cos(angle);
+      angleCacheSin[g] = Math.sin(angle);
+    }
+    
     for (let i = 0; i < this.count; i++) {
       const i3 = i * 3;
       const x = this.basePositions[i3];
       const z = this.basePositions[i3 + 2];
-      const dist = Math.sqrt(x * x + z * z);
       
-      // Inner stars rotate faster
-      const rotSpeed = 0.08 + (1.0 / (dist * 0.05 + 1)) * 0.1;
-      const angle = time * rotSpeed;
+      // Map distance to a bucket index (avoid per-particle sqrt + trig)
+      const distApprox = Math.abs(x) + Math.abs(z); // Manhattan distance is much cheaper
+      const bucket = Math.min((distApprox * 0.5) | 0, ANGLE_CACHE_SIZE - 1);
       
-      const cos = Math.cos(angle);
-      const sin = Math.sin(angle);
+      const cos = angleCacheCos[bucket];
+      const sin = angleCacheSin[bucket];
       
       positionAttr.array[i3] = x * cos - z * sin;
       positionAttr.array[i3 + 2] = x * sin + z * cos;

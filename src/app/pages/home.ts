@@ -31,8 +31,25 @@ import { Education } from '../components/education/education';
       </section>
 
       <app-skills />
-      <app-projects-grid />
-      <app-contact-form />
+
+      <!-- Defer heavy GSAP-dependent section until user scrolls near it -->
+      @defer (on viewport) {
+        <app-projects-grid />
+      } @placeholder {
+        <section id="projects" class="relative h-[100dvh] flex items-center justify-center">
+          <h2 class="text-3xl md:text-6xl lg:text-8xl font-black tracking-tighter text-[var(--color-text)]">SELECTED WORKS</h2>
+        </section>
+      }
+
+      <!-- Defer contact form until visible -->
+      @defer (on viewport) {
+        <app-contact-form />
+      } @placeholder {
+        <section id="contact" class="min-h-screen flex items-center justify-center">
+          <h2 class="text-4xl md:text-6xl font-black text-[var(--color-text)]">LET'S TALK</h2>
+        </section>
+      }
+
       <app-social-island />
     </main>
   `
