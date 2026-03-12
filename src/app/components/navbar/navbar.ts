@@ -18,7 +18,7 @@ import { Router } from '@angular/router';
         <!-- Content Layer (Relative) -->
         <div class="relative z-10 flex items-center gap-6">
           <!-- Logo -->
-          <a (click)="handleLogoClick($event)" class="nav-item group relative font-bold text-xl tracking-tighter text-[var(--color-text)] cursor-pointer select-none" #navItem>
+          <a href="/" (click)="handleLogoClick($event)" class="nav-item group relative font-bold text-xl tracking-tighter text-[var(--color-text)] cursor-pointer select-none" #navItem>
             RS
           </a>
 

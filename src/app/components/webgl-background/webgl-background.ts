@@ -2,6 +2,7 @@ import { Component, ElementRef, OnDestroy, PLATFORM_ID, effect, afterNextRender,
 import { isPlatformBrowser } from '@angular/common';
 import { Theme } from '../../services/theme';
 import { Background, BackgroundStyle } from '../../services/background';
+import { LoaderService } from '../../services/loader';
 
 @Component({
   selector: 'app-webgl-background',
@@ -24,6 +25,7 @@ export class WebglBackgroundComponent implements OnDestroy {
   private platformId = inject(PLATFORM_ID);
   private theme = inject(Theme);
   private background = inject(Background);
+  private loaderService = inject(LoaderService);
   private ngZone = inject(NgZone);
   
   isBrowser = isPlatformBrowser(this.platformId);
@@ -83,11 +85,15 @@ export class WebglBackgroundComponent implements OnDestroy {
 
   private initWorker() {
     const canvas = this.canvasRef()?.nativeElement;
-    if (!canvas || !window.Worker) return;
+    if (!canvas || !window.Worker) {
+      this.loaderService.setWebglReady(); // Fallback: Proceed without WebGL
+      return;
+    }
 
     // Feature detect OffscreenCanvas
     if (!canvas.transferControlToOffscreen) {
       console.warn('OffscreenCanvas not supported');
+      this.loaderService.setWebglReady(); // Fallback
       return;
     }
 
@@ -105,9 +111,16 @@ export class WebglBackgroundComponent implements OnDestroy {
         theme: this.theme.currentTheme(),
         style: this.background.currentBackground()
       }, [offscreen]);
+      
+      this.worker.onmessage = ({ data }) => {
+        if (data.type === 'ready') {
+          this.loaderService.setWebglReady();
+        }
+      };
 
     } catch (err) {
       console.error('Failed to initialize WebGL worker:', err);
+      this.loaderService.setWebglReady(); // Fallback
     }
   }
 

@@ -17,11 +17,11 @@ import { isPlatformBrowser } from '@angular/common';
             <div class="animate-fade-in-up">
               <h2 class="text-4xl md:text-6xl font-black mb-8 text-[var(--color-text)] tracking-tight">LET'S TALK</h2>
               
-              <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="space-y-6">
+              <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" autocomplete="on" class="space-y-6">
                 
                 <!-- Name Field -->
                 <div class="group relative">
-                  <input type="text" formControlName="name" id="name" placeholder=" "
+                  <input type="text" formControlName="name" id="name" name="name" autocomplete="name" placeholder=" "
                          style="outline: none !important; box-shadow: none !important;"
                          class="block w-full bg-transparent border-b-2 border-[var(--color-border)] py-3 text-lg md:text-xl text-[var(--color-text)] focus:border-[var(--color-text)] transition-colors peer">
                   <label for="name" 
@@ -32,24 +32,24 @@ import { isPlatformBrowser } from '@angular/common';
 
                 <!-- Email Field -->
                 <div class="group relative">
-                  <input type="email" formControlName="email" id="email" placeholder=" "
+                  <input type="email" formControlName="email" id="email" name="email" autocomplete="email" placeholder=" "
                          style="outline: none !important; box-shadow: none !important;"
                          class="block w-full bg-transparent border-b-2 border-[var(--color-border)] py-3 text-lg md:text-xl text-[var(--color-text)] focus:border-[var(--color-text)] transition-colors peer">
                   <label for="email" 
                          class="absolute left-0 top-3 text-lg text-[var(--color-text-muted)] duration-300 transform -translate-y-7 scale-75 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-7 cursor-text">
-                    Your email address
+                    How about your email?
                   </label>
                 </div>
 
                 <!-- Message Field -->
                 <div class="group relative">
-                  <textarea formControlName="message" id="message" rows="1" placeholder=" "
+                  <textarea formControlName="message" id="message" name="message" autocomplete="off" rows="1" placeholder=" "
                             (input)="autoResize($event)"
                             style="outline: none !important; box-shadow: none !important;"
                             class="block w-full bg-transparent border-b-2 border-[var(--color-border)] py-3 text-lg md:text-xl text-[var(--color-text)] focus:border-[var(--color-text)] transition-colors peer resize-none overflow-hidden"></textarea>
                   <label for="message" 
                          class="absolute left-0 top-3 text-lg text-[var(--color-text-muted)] duration-300 transform -translate-y-7 scale-75 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-7 cursor-text">
-                    Tell me about your project
+                    How can I help you?
                   </label>
                 </div>
 
@@ -57,6 +57,8 @@ import { isPlatformBrowser } from '@angular/common';
                 @if (showCaptcha()) {
                   <div class="flex justify-center transform scale-90">
                      <ng-hcaptcha 
+                        id="h-captcha"
+                        name="h-captcha"
                         [siteKey]="siteKey"
                         (verify)="onCaptchaResolved($event)">
                      </ng-hcaptcha>
@@ -65,7 +67,7 @@ import { isPlatformBrowser } from '@angular/common';
 
                 <!-- Submit Button -->
                 <div>
-                  <button type="submit" [disabled]="contactForm.invalid || isSubmitting() || !canSubmit()"
+                  <button type="submit" id="submit-button" name="submit-button" [disabled]="contactForm.invalid || isSubmitting() || !canSubmit()"
                           class="group relative w-full overflow-hidden rounded-full border border-[var(--color-text)] bg-transparent py-3 md:py-4 text-lg font-bold uppercase tracking-widest text-[var(--color-text)] transition-colors hover:border-[var(--color-primary)] disabled:cursor-not-allowed disabled:opacity-50">
                     
                     <!-- Hover Slide Effect (Primary Color) -->

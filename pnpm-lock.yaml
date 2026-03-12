@@ -45,8 +45,8 @@ importers:
         specifier: ~7.8.0
         version: 7.8.2
       tagtics-client:
-        specifier: ^1.4.0
-        version: 1.4.0
+        specifier: ^1.4.1
+        version: 1.4.1
       three:
         specifier: ^0.182.0
         version: 0.182.0
@@ -2864,8 +2864,8 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  tagtics-client@1.4.0:
-    resolution: {integrity: sha512-omjdmWS256E38SFBg0yWtE6Pee/xkZLCAxcruYirA0mYYFZeq4ueXUP1COfqo1kmWl+bjd1cMDkiaRByMbIpzw==}
+  tagtics-client@1.4.1:
+    resolution: {integrity: sha512-KteaOl9SMdW8gwZniGbLm56yg4QksagzVEUQxr7YsnuSk2ekLpRs6aKY5m9k3oW1pZo5AHeuLRpDep0Uz4QU+g==}
 
   tailwindcss@4.0.0:
     resolution: {integrity: sha512-ULRPI3A+e39T7pSaf1xoi58AqqJxVCLg8F/uM5A3FadUbnyDTgltVnXJvdkTjwCOGA6NazqHVcwPJC5h2vRYVQ==}
@@ -6003,7 +6003,7 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  tagtics-client@1.4.0: {}
+  tagtics-client@1.4.1: {}
 
   tailwindcss@4.0.0: {}
 

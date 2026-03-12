@@ -86,6 +86,9 @@ async function init(
 
   await loadEffect(style);
   animate();
+  
+  // Signal main thread that WebGL is ready
+  self.postMessage({ type: 'ready' });
 }
 
 function resize(w: number, h: number) {
@@ -106,9 +109,7 @@ function updateTheme(theme: string) {
 async function switchEffect(style: string) {
   if (currentEffect) {
     currentEffect.dispose();
-    while (scene.children.length > 0) {
-      scene.remove(scene.children[0]);
-    }
+    scene.clear();
   }
   currentStyle = style;
   await loadEffect(style);

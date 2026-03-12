@@ -155,3 +155,19 @@ section:not(#about) {
     --navbar-height: 56px;
   }
 }
+
+/* Entrance Animation States — Hidden by default, shown when .app-loaded is active */
+html:not(.app-loaded) app-navbar, 
+html:not(.app-loaded) section {
+  opacity: 0;
+}
+
+app-navbar, 
+section {
+  transition: opacity 0.8s ease;
+}
+
+.app-loaded app-navbar,
+.app-loaded section {
+  opacity: 1;
+}

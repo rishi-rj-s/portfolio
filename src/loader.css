@@ -1,0 +1,148 @@
+:root {
+  --loader-bg: #000000;
+  --loader-color: #ffffff;
+  --loader-accent: #6366f1;
+}
+
+#app-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--loader-bg);
+  color: var(--loader-color);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  overflow: hidden;
+  perspective: 1200px;
+  will-change: opacity, transform;
+}
+
+#app-loader.fade-out {
+  opacity: 0;
+  transform: scale(1.1) translate3d(0,0,100px);
+  transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  pointer-events: none;
+}
+
+/* Decor */
+.loader-grid {
+  position: absolute;
+  inset: -100% -50%;
+  background-image: 
+    linear-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  mask-image: radial-gradient(circle at center, black, transparent 70%);
+  transform: translate3d(0,0,-200px) rotateX(45deg);
+  opacity: 0.2;
+}
+
+.loader-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+  z-index: 10;
+  transform: translate3d(0,0,0);
+}
+
+/* Focus Optics */
+.loader-optic {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.optic-ring {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 50%;
+}
+
+.optic-ring-inner {
+  position: absolute;
+  inset: 15px;
+  border: 2px solid var(--loader-accent);
+  border-radius: 50%;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  animation: l-spin 3s linear infinite;
+}
+
+.optic-scan {
+  position: absolute;
+  width: 2px;
+  height: 50%;
+  top: 0;
+  left: 50%;
+  background: linear-gradient(to top, var(--loader-accent), transparent);
+  transform-origin: bottom center;
+  animation: l-spin 6s linear infinite;
+  margin-left: -1px;
+}
+
+/* Typography */
+.brand-main {
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 0.6em;
+  text-indent: 0.6em;
+  color: #fff;
+  text-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+  animation: l-pulse 2.5s ease-in-out infinite;
+}
+
+.loader-progress-track {
+  width: 240px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.loader-progress-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--loader-accent);
+  transform: translate3d(-100%,0,0);
+  box-shadow: 0 0 15px var(--loader-accent);
+  animation: l-progress 1.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+.loader-status {
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  opacity: 0.6;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+}
+
+.status-dot {
+  width: 5px;
+  height: 5px;
+  background: var(--loader-accent);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--loader-accent);
+  animation: l-blink 0.8s infinite alternate;
+}
+
+/* Scroll lock */
+html:not(.app-loaded), 
+html:not(.app-loaded) body {
+  overflow: hidden !important;
+  height: 100vh !important;
+  position: fixed !important;
+  width: 100% !important;
+}

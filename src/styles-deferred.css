@@ -17,8 +17,6 @@
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
-
-
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
@@ -54,184 +52,75 @@
   outline-offset: 2px;
 }
 
-/* CLS-safe Animations — use transform-only to avoid layout shifts */
+/* Base Animations */
 @keyframes fadeInUp {
   from {
-    opacity: 0.01;
-    transform: translateY(20px);
+    opacity: 0;
+    transform: translateY(30px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-@keyframes fadeIn {
+@keyframes slideInDown {
   from {
     opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0.01;
-    transform: scale(0.95);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0.01;
-    transform: translateX(-30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideInRight {
-  from {
-    opacity: 0.01;
-    transform: translateX(30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes float {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
     transform: translateY(-20px);
   }
-}
-
-@keyframes pulse {
-
-  0%,
-  100% {
+  to {
     opacity: 1;
-  }
-
-  50% {
-    opacity: 0.5;
+    transform: translateY(0);
   }
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: -1000px 0;
+@keyframes slideInUpMask {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+    clip-path: inset(100% 0 0 0);
   }
-
-  100% {
-    background-position: 1000px 0;
-  }
-}
-
-@keyframes gradient-shift {
-
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    clip-path: inset(0% 0 0 0);
   }
 }
 
-/* Utilities */
-.animate-fade-in-up {
-  animation: fadeInUp 0.6s ease-out forwards;
+/* Entrance Animations - Triggered by .app-loaded class on <html> */
+.app-loaded app-navbar {
+  animation: slideInDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.6s ease-out forwards;
+.app-loaded section#hero {
+  animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
 }
 
-.animate-scale-in {
-  animation: scaleIn 0.5s ease-out forwards;
+.app-loaded .hero-title .line:nth-child(1) {
+  animation: slideInUpMask 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
 }
 
-.animate-slide-in-left {
-  animation: slideInLeft 0.6s ease-out forwards;
-}
-
-.animate-slide-in-right {
-  animation: slideInRight 0.6s ease-out forwards;
-}
-
-.text-gradient {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.glow-box {
-  box-shadow: 0 0 40px var(--glow-primary), 0 0 80px var(--glow-accent);
+.app-loaded .hero-title .line:nth-child(2) {
+  animation: slideInUpMask 1s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
 }
 
 /* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
-
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
 }
 
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-  display: block;
-}
-
-::view-transition-image-pair(root) {
-  isolation: isolate;
-}
-
 /* Theme Icon Visibility */
-.theme-icon-light {
-  display: block;
-}
+.theme-icon-light { display: block; }
+.theme-icon-dark { display: none; }
+:root.dark .theme-icon-light { display: none; }
+:root.dark .theme-icon-dark { display: block; }
 
-.theme-icon-dark {
-  display: none;
-}
-
-:root.dark .theme-icon-light {
-  display: none;
-}
-
-:root.dark .theme-icon-dark {
-  display: block;
-}
-
-/* Invert colors in dark mode (for black logos) */
+/* Invert colors in dark mode */
 :root.dark .theme-inverse {
   filter: brightness(0) invert(1) !important;
 }
