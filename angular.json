@@ -22,6 +22,9 @@
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
+              "src/loader.css",
+              "src/theme-init.js",
+              "src/styles-deferred.css",
               {
                 "glob": "**/*",
                 "input": "public"

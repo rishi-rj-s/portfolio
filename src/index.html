@@ -4,14 +4,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <!-- Primary Meta Tags -->
+  <!-- ===================================
+       PRIMARY SEO & META TAGS
+       =================================== -->
   <title>Rishiraj Sajeev - Full Stack Engineer | SaaS & Microservices Architect</title>
   <meta name="title" content="Rishiraj Sajeev - Full Stack Engineer | SaaS & Microservices Architect">
-  <meta name="description"
-    content="Full Stack Engineer specializing in architecting production-grade SaaS platforms and microservices. Expert in Angular, React, NestJS, and Node.js ecosystems.">
+  <meta name="description" content="Full Stack Engineer specializing in architecting production-grade SaaS platforms and microservices. Expert in Angular, React, NestJS, and Node.js ecosystems.">
   <meta name="keywords" content="Full Stack Engineer, SaaS Architect, Microservices, Angular, React, NestJS, Node.js, PostgreSQL, RLS, AWS, Docker, AI Integration, Gemini LLM">
   <meta name="author" content="Rishiraj Sajeev">
   <meta name="robots" content="index, follow">
@@ -20,17 +20,15 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.rishiraj-sajeev.space/">
   <meta property="og:title" content="Rishiraj Sajeev - Full Stack Engineer | SaaS & Microservices Architect">
-  <meta property="og:description"
-    content="Full Stack Engineer specializing in architecting production-grade SaaS platforms and microservices. Expert in Angular, React, and NestJS.">
-  <meta property="og:image" content="https://www.rishiraj-sajeev.space/assets/og-image.jpeg">
+  <meta property="og:description" content="Full Stack Engineer specializing in architecting production-grade SaaS platforms and microservices. Expert in Angular, React, and NestJS.">
+  <meta property="og:image" content="assets/seo/og-image.jpeg">
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://www.rishiraj-sajeev.space/">
   <meta property="twitter:title" content="Rishiraj Sajeev - Full Stack Engineer | SaaS & Microservices Architect">
-  <meta property="twitter:description"
-    content="Full Stack Engineer specializing in architecting production-grade SaaS platforms and microservices. Expert in Angular, React, and NestJS.">
-  <meta property="twitter:image" content="https://www.rishiraj-sajeev.space/assets/og-image.jpeg">
+  <meta property="twitter:description" content="Full Stack Engineer specializing in architecting production-grade SaaS platforms and microservices. Expert in Angular, React, and NestJS.">
+  <meta property="twitter:image" content="assets/seo/og-image.jpeg">
 
   <!-- Canonical URL -->
   <link rel="canonical" href="https://www.rishiraj-sajeev.space/">
@@ -42,7 +40,7 @@
       "@type": "Person",
       "name": "Rishiraj Sajeev",
       "url": "https://www.rishiraj-sajeev.space/",
-      "image": "https://www.rishiraj-sajeev.space/assets/Rishi.jpeg",
+      "image": "assets/seo/Rishi.jpeg",
       "sameAs": [
         "https://www.linkedin.com/in/rishiraj-sajeev",
         "https://github.com/rishi-rj-s"
@@ -56,73 +54,219 @@
     }
   </script>
 
-  <!-- Base URL -->
   <base href="/">
-
-  <!-- Favicon -->
   <link rel="icon" type="image/gif" href="r.gif">
-  <link rel="apple-touch-icon" sizes="180x180" href="src/assets/seo/Rishi.jpeg">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/seo/Rishi.jpeg">
+  <meta name="theme-color" content="#000000">
 
-  <!-- Theme Color -->
-  <meta name="theme-color" content="#ffffff">
-
-  <!-- Preconnect to Fontshare -->
-  <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
-  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
-
-  <!-- Preload the font CSS (non-blocking) -->
-  <link rel="preload" href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" as="style" fetchpriority="high">
-
-  <!-- Load font without blocking render -->
-  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap"
-    media="print" onload="this.media='all'">
-  <noscript><link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap"></noscript>
-
-  <!-- Load non-critical CSS asynchronously (via JS to avoid SSR resolution) -->
-  <script>
-    (function() {
-      var l = document.createElement('link');
-      l.rel = 'stylesheet';
-      l.href = 'styles-deferred.css';
-      document.head.appendChild(l);
-    })();
-  </script>
-
+  <!-- ===================================
+       CRITICAL THEME & LOADER SYSTEM
+       =================================== -->
   <script>
     (function () {
       try {
         var d = document.documentElement;
         var saved = localStorage.getItem('theme');
         var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        // Apply ALL theme classes immediately to prevent flash/CLS
-        if (saved === 'ocean') { d.classList.add('dark', 'theme-ocean'); }
-        else if (saved === 'sunset') { d.classList.add('dark', 'theme-sunset'); }
-        else if (saved === 'cyberpunk') { d.classList.add('dark', 'theme-cyberpunk'); }
-        else if (saved === 'forest') { d.classList.add('dark', 'theme-forest'); }
-        else if (saved === 'dark' || (!saved && prefersDark)) { d.classList.add('dark'); }
-        // Set background-color immediately to prevent white flash
-        var bgMap = {dark:'#000',ocean:'#0d1b32',sunset:'#2b0a0a',cyberpunk:'#09090b',forest:'#052e16'};
-        var bg = bgMap[saved];
-        if (bg) d.style.backgroundColor = bg;
-      } catch (e) { }
+        var theme = saved || (prefersDark ? 'dark' : 'light');
+        if (theme !== 'light') d.classList.add('dark');
+        if (['ocean','sunset','cyberpunk','forest'].includes(saved)) d.classList.add('theme-' + saved);
+        var bgMap = {dark:'#000',ocean:'#0d1b32',sunset:'#2b0a0a',cyberpunk:'#09090b',forest:'#052e16',light:'#fff'};
+        d.style.backgroundColor = bgMap[theme] || '#000';
+      } catch (e) {}
     })();
   </script>
 
+  <style>
+    :root { 
+      --l-accent: #6366f1; 
+      --l-bg: #000;
+      color-scheme: dark;
+    }
+    
+    #app-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--l-bg) !important;
+      color: #fff;
+      font-family: ui-monospace, SFMono-Regular, monospace;
+      overflow: hidden;
+      perspective: 1200px;
+    }
+
+    #app-loader.fade-out {
+      opacity: 0;
+      transform: scale(1.1) translate3d(0, 0, 100px);
+      transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+      pointer-events: none;
+    }
+
+    .loader-grid {
+      position: absolute;
+      inset: -100% -50%;
+      background-image: 
+        linear-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+      mask-image: radial-gradient(circle at center, black, transparent 70%);
+      transform: translate3d(0,0,-200px) rotateX(45deg);
+      opacity: 0.2;
+    }
+
+    .loader-content {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2.5rem;
+      z-index: 10;
+    }
+
+    .l-optic {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .l-ring {
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 50%;
+    }
+
+    .l-ring-active {
+      position: absolute;
+      inset: 15px;
+      border: 2px solid var(--l-accent);
+      border-radius: 50%;
+      border-top-color: transparent;
+      border-bottom-color: transparent;
+      animation: l-spin 3s linear infinite;
+    }
+
+    .l-scan {
+      position: absolute;
+      width: 2px;
+      height: 50%;
+      top: 0;
+      left: 50%;
+      background: linear-gradient(to top, var(--l-accent), transparent);
+      transform-origin: bottom center;
+      animation: l-spin 6s linear infinite;
+      margin-left: -1px;
+    }
+
+    .l-brand {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 0.6em;
+      text-indent: 0.6em;
+      text-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+      animation: l-pulse 2.5s ease-in-out infinite;
+    }
+
+    .l-bar-track {
+      width: 240px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .l-bar-fill {
+      position: absolute;
+      inset: 0;
+      background: var(--l-accent);
+      transform: translate3d(-100%, 0, 0);
+      box-shadow: 0 0 15px var(--l-accent);
+      animation: l-progress 1.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+    }
+
+    .l-status {
+      font-size: 10px;
+      letter-spacing: 0.4em;
+      opacity: 0.6;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+    }
+
+    .l-dot {
+      width: 5px;
+      height: 5px;
+      background: var(--l-accent);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--l-accent);
+      animation: l-blink 0.8s infinite alternate;
+    }
+
+    @keyframes l-spin { to { transform: rotate(360deg); } }
+    @keyframes l-progress { 0% { transform: translate3d(-100%,0,0); } 50% { transform: translate3d(0,0,0); } 100% { transform: translate3d(100%,0,0); } }
+    @keyframes l-pulse { 0%, 100% { opacity: 0.7; transform: scale(0.98); } 50% { opacity: 1; transform: scale(1); } }
+    @keyframes l-blink { from { opacity: 1; } to { opacity: 0.3; } }
+
+    html:not(.app-loaded), html:not(.app-loaded) body {
+      overflow: hidden !important;
+      height: 100vh !important;
+    }
+  </style>
+
+  <!-- External Assets & Fonts -->
+  <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap">
 </head>
 
 <body>
+  <!-- Precision Cyber-Optic Loader -->
+  <div id="app-loader" aria-label="System Initializing">
+    <div class="loader-grid"></div>
+    <div class="loader-content">
+      <div class="l-optic">
+        <div class="l-ring"></div>
+        <div class="l-ring-active"></div>
+        <div class="l-scan"></div>
+        <svg width="40" height="40" viewBox="0 0 40 40" style="position:relative;z-index:5">
+          <path d="M20 5V35M5 20H35" stroke="#6366f1" stroke-width="1" stroke-dasharray="2 2" />
+          <circle cx="20" cy="20" r="3" fill="#6366f1" />
+        </svg>
+      </div>
+
+      <div class="l-brand">RISHIRAJ.S</div>
+
+      <div class="l-bar-track">
+        <div class="l-bar-fill"></div>
+      </div>
+
+      <div class="l-status">
+        <div class="l-dot"></div>
+        <span id="loader-status">INITIALIZING SYSTEM</span>
+      </div>
+    </div>
+  </div>
+
   <app-root></app-root>
 
-  <!-- Noscript fallback -->
   <noscript>
-    <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
-      <h1>Rishiraj Sajeev - Full Stack Developer</h1>
-      <p>This website requires JavaScript to be enabled. Please enable JavaScript in your browser settings.</p>
-      <p>Contact: <a href="mailto:rishirajsajeev@gmail.com">rishirajsajeev@gmail.com</a></p>
-      <p>
-        <a href="https://www.linkedin.com/in/rishiraj-sajeev">LinkedIn</a> |
-        <a href="https://github.com/rishi-rj-s">GitHub</a>
-      </p>
+    <div style="text-align:center;padding:50px;color:#fff;background:#000;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+      <h1 style="font-family:sans-serif;letter-spacing:4px">RISHIRAJ SAJEEV</h1>
+      <p style="opacity:0.6;font-family:monospace;margin-bottom:20px">JAVASCRIPT REQUIRED FOR SYSTEM BOOT</p>
+      <div style="display:flex;gap:20px;font-family:monospace">
+        <a href="https://github.com/rishi-rj-s" style="color:#6366f1;text-decoration:none">GITHUB</a>
+        <a href="https://linkedin.com/in/rishiraj-sajeev" style="color:#6366f1;text-decoration:none">LINKEDIN</a>
+        <a href="mailto:rishirajsajeev@gmail.com" style="color:#6366f1;text-decoration:none">EMAIL</a>
+      </div>
     </div>
   </noscript>
 </body>
