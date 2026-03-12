@@ -16,7 +16,7 @@ export interface ThemeDef {
 })
 export class Theme {
   readonly availableThemes: ThemeDef[] = [
-    { id: 'light', name: 'Pure Light', background: '#ffffff', primary: '#ffffff' }, 
+    { id: 'light', name: 'Pure Light', background: '#ffffff', primary: '#6366f1' }, 
     { id: 'dark', name: 'Pure Void', background: '#000000', primary: '#000000' }, 
     { id: 'ocean', name: 'Ocean', background: '#0d1b32', primary: '#38bdf8' },
     { id: 'sunset', name: 'Sunset', background: '#2b0a0a', primary: '#fb7185' },
@@ -142,9 +142,12 @@ export class Theme {
        }
     }
 
-    // Update Console Art
+    // 3. Sync Inline Background (Overrides any script-set background from index.html)
     const currentThemeDef = this.availableThemes.find(t => t.id === theme);
     if (currentThemeDef) {
+       document.documentElement.style.backgroundColor = currentThemeDef.background;
+       
+       // Update Console Art
        console.clear();
        printAsciiArt(currentThemeDef.primary);
     }

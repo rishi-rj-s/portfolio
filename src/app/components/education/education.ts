@@ -4,9 +4,9 @@ import { Component } from '@angular/core';
   selector: 'app-education',
   template: `
     <div class="h-full flex flex-col justify-center">
-      <h3 class="text-3xl font-bold text-[var(--color-text)] mb-8 flex items-center gap-3">
+      <h2 class="text-3xl font-bold text-[var(--color-text)] mb-8 flex items-center gap-3">
         <span class="text-5xl text-[var(--color-text)]">02</span> EDUCATION
-      </h3>
+      </h2>
 
       <div class="relative pl-8 border-l border-[var(--color-border)] space-y-12">
         <!-- Education Item 1 -->
@@ -14,14 +14,14 @@ import { Component } from '@angular/core';
           <div class="absolute -left-[37px] top-0 w-4 h-4 rounded-full bg-[var(--color-background)] border-2 border-[var(--color-text)] group-hover:scale-125 transition-transform duration-300"></div>
           
           <div class="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-            <h4 class="text-xl font-bold text-[var(--color-text)]">Bachelor of Computer Science</h4>
+            <h3 class="text-xl font-bold text-[var(--color-text)]">Bachelor of Computer Science</h3>
             <div class="w-fit flex shrink-0 items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--color-card-hover)]/40 border border-[var(--color-border)] backdrop-blur-sm">
                 <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-text-muted)]"></span>
                 <span class="text-xs font-bold tracking-wider text-[var(--color-text)] uppercase whitespace-nowrap">2020 – 2023</span>
             </div>
           </div>
           
-          <h5 class="text-base text-[var(--color-text-secondary)] mb-4">University of Kerala, India</h5>
+          <h4 class="text-base text-[var(--color-text-secondary)] mb-4">University of Kerala, India</h4>
         </div>
 
         <!-- Certification Item -->
@@ -29,7 +29,7 @@ import { Component } from '@angular/core';
           <div class="absolute -left-[37px] top-0 w-4 h-4 rounded-full bg-[var(--color-background)] border-2 border-[var(--color-text)] group-hover:scale-125 transition-transform duration-300"></div>
           
           <div class="mb-2">
-            <h4 class="text-xl font-bold text-[var(--color-text)]">Japanese Language Certificate</h4>
+            <h3 class="text-xl font-bold text-[var(--color-text)]">Japanese Language Certificate</h3>
             <span class="text-sm text-[var(--color-text-secondary)] block mt-1">(Upper-Beginner Level)</span>
           </div>
           

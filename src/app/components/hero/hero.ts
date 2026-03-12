@@ -8,8 +8,8 @@ import { Component, ElementRef, afterNextRender, viewChild, OnDestroy } from '@a
       
       <!-- Background Elements -->
       <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--color-primary)] rounded-full mix-blend-multiply filter blur-[80px] opacity-20 animate-pulse-slow"></div>
-        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[var(--color-accent)] rounded-full mix-blend-multiply filter blur-[80px] opacity-20 animate-pulse-slow" style="animation-delay: 2s"></div>
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--color-primary)] rounded-full mix-blend-normal filter blur-[80px] opacity-[0.03] animate-pulse-slow"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[var(--color-accent)] rounded-full mix-blend-normal filter blur-[80px] opacity-[0.03] animate-pulse-slow" style="animation-delay: 2s"></div>
       </div>
 
       <!-- Kinetic Typography Container -->

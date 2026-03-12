@@ -50,10 +50,10 @@ import { isPlatformBrowser } from '@angular/common';
                   <p class="text-[var(--color-text-secondary)] mb-3 md:mb-6 leading-relaxed text-xs md:text-sm lg:text-base line-clamp-3 md:line-clamp-none">{{project.description}}</p>
                   
                   <div class="mb-3 md:mb-6">
-                     <h4 class="text-[10px] md:text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2">Tech Matrix</h4>
+                     <h4 class="text-[10px] md:text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-wider mb-2">Tech Matrix</h4>
                      <div class="flex flex-wrap gap-2">
                         @for (stack of project.stack; track stack) {
-                          <span class="text-[10px] md:text-xs font-mono text-[var(--color-text-muted)] bg-[var(--color-card-hover)] px-2 py-1 rounded border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors cursor-default whitespace-nowrap">
+                          <span class="text-[10px] md:text-xs font-mono text-[var(--color-text)] bg-[var(--color-card-hover)] px-2 py-1 rounded border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors cursor-default whitespace-nowrap">
                               {{stack}}
                           </span>
                         }
@@ -63,15 +63,21 @@ import { isPlatformBrowser } from '@angular/common';
   
                 <div class="flex gap-4 md:gap-6 mt-2 pt-3 border-t border-[var(--color-border)] relative z-30 pointer-events-auto shrink-0">
                    @if (project.links.source) {
-                     <a [href]="project.links.source" target="_blank" class="text-xs md:text-sm font-bold text-[var(--color-text)] hover:text-[var(--color-primary)] flex items-center gap-2 group/link cursor-pointer">
+                     <a [href]="project.links.source" 
+                        target="_blank" 
+                        [attr.aria-label]="'View source code for ' + project.title"
+                        class="text-xs md:text-sm font-bold text-[var(--color-text)] hover:text-[var(--color-primary)] flex items-center gap-2 group/link cursor-pointer">
                         SOURCE CODE 
-                        <span class="group-hover/link:translate-x-1 transition-transform">&rarr;</span>
+                        <span class="group-hover/link:translate-x-1 transition-transform" aria-hidden="true">&rarr;</span>
                      </a>
                    }
                    @if (project.links.live) {
-                     <a [href]="project.links.live" target="_blank" class="text-xs md:text-sm font-bold text-[var(--color-text)] hover:text-[var(--color-primary)] flex items-center gap-2 group/link cursor-pointer">
+                     <a [href]="project.links.live" 
+                        target="_blank" 
+                        [attr.aria-label]="(project.demoLabel || 'Live demo') + ' for ' + project.title"
+                        class="text-xs md:text-sm font-bold text-[var(--color-text)] hover:text-[var(--color-primary)] flex items-center gap-2 group/link cursor-pointer">
                         {{ project.demoLabel || 'LIVE DEMO' }}
-                        <span class="group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5 transition-transform">&#8599;</span>
+                        <span class="group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5 transition-transform" aria-hidden="true">&#8599;</span>
                      </a>
                    }
                 </div>
