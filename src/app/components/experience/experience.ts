@@ -4,9 +4,9 @@ import { Component } from '@angular/core';
   selector: 'app-experience',
   template: `
     <div class="h-full flex flex-col justify-center">
-      <h3 class="text-3xl font-bold text-[var(--color-text)] mb-8 flex items-center gap-3">
+      <h2 class="text-3xl font-bold text-[var(--color-text)] mb-8 flex items-center gap-3">
         <span class="text-5xl text-[var(--color-text)]">01</span> EXPERIENCE
-      </h3>
+      </h2>
 
       <div class="relative pl-8 border-l border-[var(--color-border)] space-y-12">
         <!-- Experience Item 1 -->
@@ -14,7 +14,7 @@ import { Component } from '@angular/core';
           <div class="absolute -left-[37px] top-0 w-4 h-4 rounded-full bg-[var(--color-background)] border-2 border-[var(--color-text)] group-hover:scale-125 transition-transform duration-300"></div>
           
           <div class="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-            <h4 class="text-xl font-bold text-[var(--color-text)]">Full Stack Engineering (Independent)</h4>
+            <h3 class="text-xl font-bold text-[var(--color-text)]">Full Stack Engineering (Independent)</h3>
             <div class="w-fit flex shrink-0 items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--color-card-hover)]/40 border border-[var(--color-border)] backdrop-blur-sm">
                 <span class="relative flex h-2 w-2">
                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -24,7 +24,7 @@ import { Component } from '@angular/core';
             </div>
           </div>
           
-          <h5 class="text-base text-[var(--color-text-secondary)] mb-4 italic">Remote Engineering Sabbatical</h5>
+          <h4 class="text-base text-[var(--color-text-secondary)] mb-4 italic">Remote Engineering Sabbatical</h4>
           
           <ul class="text-[var(--color-text-muted)] space-y-2 list-disc list-outside ml-4">
             <li>Specialization: System Design, Microservices, and Cloud Deployment (AWS).</li>
@@ -37,17 +37,17 @@ import { Component } from '@angular/core';
           <div class="absolute -left-[37px] top-0 w-4 h-4 rounded-full bg-[var(--color-background)] border-2 border-[var(--color-text)] group-hover:scale-125 transition-transform duration-300"></div>
           
           <div class="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-            <h4 class="text-xl font-bold text-[var(--color-text)]">Open Source Contributor (Ever-Gauzy)</h4>
+            <h3 class="text-xl font-bold text-[var(--color-text)]">Open Source Contributor (Ever-Gauzy)</h3>
             <div class="w-fit flex shrink-0 items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--color-card-hover)]/40 border border-[var(--color-border)] backdrop-blur-sm">
                 <span class="relative flex h-2 w-2">
                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
-                <span class="text-xs font-bold tracking-wider text-[var(--color-text)] uppercase whitespace-nowrap">Nov 2025 – Present</span>
+                <span class="text-xs font-bold tracking-wider text-[var(--color-text)] uppercase whitespace-nowrap">Nov 2025 – Feb 2026</span>
             </div>
           </div>
           
-          <h5 class="text-base text-[var(--color-text-secondary)] mb-4 italic">Enterprise ERP System</h5>
+          <h4 class="text-base text-[var(--color-text-secondary)] mb-4 italic">Enterprise ERP System</h4>
           
           <ul class="text-[var(--color-text-muted)] space-y-2 list-disc list-outside ml-4">
             <li>Contributed to a 100k+ LoC ERP, navigating a complex NestJS and Angular codebase to improve Auth UI.</li>

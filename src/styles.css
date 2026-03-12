@@ -18,18 +18,18 @@
 
 /* Light mode theme */
 :root {
-  --color-background: #ffffff; /* Pure White */
-  --color-card: #f5f5f5;
-  --color-card-hover: #e5e5e5;
-  --color-border: #e5e7eb;
-  --color-text: #000000;
-  --color-text-muted: #000000;
-  --color-text-secondary: #000000;
-  --color-primary: #000000;
-  --color-accent: #666666;
-  --color-success: #10b981;
-  --glow-primary: rgba(0, 0, 0, 0.1);
-  --glow-accent: rgba(0, 0, 0, 0.05);
+  --color-background: #ffffff;
+  --color-card: #f8fafc;
+  --color-card-hover: #f1f5f9;
+  --color-border: #e2e8f0;
+  --color-text: #020617;
+  --color-text-muted: #475569;
+  --color-text-secondary: #334155;
+  --color-primary: #4f46e5; /* Slightly darker indigo for contrast */
+  --color-accent: #7c3aed;
+  --color-success: #059669;
+  --glow-primary: rgba(99, 102, 241, 0.1);
+  --glow-accent: rgba(139, 92, 246, 0.05);
   --navbar-height: 64px;
   --font-sans: 'Clash Display', 'Clash Display Fallback', system-ui, sans-serif;
 }
