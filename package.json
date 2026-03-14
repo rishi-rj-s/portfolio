@@ -41,6 +41,7 @@
     "@angular/ssr": "^20.3.9",
     "express": "^5.1.0",
     "gsap": "^3.14.2",
+    "lenis": "^1.3.18",
     "ng-hcaptcha": "^2.7.0",
     "rxjs": "~7.8.0",
     "tagtics-client": "^1.4.1",
