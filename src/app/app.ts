@@ -9,6 +9,7 @@ import { Footer } from './components/footer/footer';
 import { WebglBackgroundComponent } from './components/webgl-background/webgl-background';
 import { LoaderService } from './services/loader';
 import { printAsciiArt } from './utils/console-art';
+import { ScrollService } from './services/scroll';
 
 @Component({
   selector: 'app-root',
@@ -43,6 +44,7 @@ export class App {
   
   public theme = inject(Theme);
   private loaderService = inject(LoaderService);
+  private scrollService = inject(ScrollService); // Injected to initialize Lenis smooth scroll
   
   constructor() {
     afterNextRender(() => {

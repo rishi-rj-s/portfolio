@@ -2,6 +2,7 @@ import { Component, ElementRef, viewChildren, signal, inject, PLATFORM_ID } from
 import { isPlatformBrowser } from '@angular/common';
 import { Theme } from '../../services/theme';
 import { Router } from '@angular/router';
+import { ScrollService } from '../../services/scroll';
 
 @Component({
   selector: 'app-navbar',
@@ -92,6 +93,7 @@ export class Navbar {
   private platformId = inject(PLATFORM_ID);
   public theme = inject(Theme);
   private router = inject(Router);
+  private scrollService = inject(ScrollService);
 
   // Performance: Cache GSAP module to avoid repeated dynamic imports
   private gsapModule: any = null;
@@ -190,14 +192,7 @@ export class Navbar {
   async handleNavClick(e: Event, id: string) {
     e.preventDefault();
     if (isPlatformBrowser(this.platformId)) {
-      const gsap = await this.getGsap();
-      const scrollToModule = await import('gsap/ScrollToPlugin');
-      gsap.registerPlugin(scrollToModule.ScrollToPlugin);
-      gsap.to(window, {
-        duration: 1,
-        scrollTo: { y: id, autoKill: false },
-        ease: 'power3.inOut'
-      });
+      this.scrollService.scrollTo(id);
     }
   }
 
@@ -215,13 +210,8 @@ export class Navbar {
   }
 
   private async smoothScrollToTop() {
-    const gsap = await this.getGsap();
-    const scrollToModule = await import('gsap/ScrollToPlugin');
-    gsap.registerPlugin(scrollToModule.ScrollToPlugin);
-    gsap.to(window, {
-      duration: 1,
-      scrollTo: { y: 0, autoKill: false },
-      ease: 'power3.inOut'
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      this.scrollService.scrollTo(0);
+    }
   }
 }
