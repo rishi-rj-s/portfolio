@@ -37,7 +37,7 @@ import { ScrollService } from '../../services/scroll';
             <!-- Palette Selector -->
             <button 
               #navItem
-              class="nav-item p-2 rounded-full text-[var(--color-text)] hover:scale-110 transition-transform hover:bg-[var(--color-card-hover)]"
+              class="nav-item p-2 rounded-full text-[var(--color-text)] hover:bg-[var(--color-card-hover)] transition-colors duration-300"
               (click)="theme.toggleSelector()"
               aria-label="Select theme"
             >
@@ -45,7 +45,7 @@ import { ScrollService } from '../../services/scroll';
             </button>
 
             <!-- CTA / Mobile Menu Toggle -->
-             <a href="#contact" (click)="handleNavClick($event, '#contact')" class="hidden md:block nav-item px-5 py-2 bg-[var(--color-text)] text-[var(--color-background)] rounded-full text-sm font-bold hover:scale-105 transition-transform" #navItem>
+             <a href="#contact" (click)="handleNavClick($event, '#contact')" class="hidden md:block nav-item px-5 py-2 bg-[var(--color-text)] text-[var(--color-background)] rounded-full text-sm font-bold" #navItem>
               Let's Talk
             </a>
 
@@ -101,7 +101,7 @@ export class Navbar {
   
   // Performance: Throttle magnetic mouse tracking
   private lastMouseMoveTime = 0;
-  private static readonly MOUSE_THROTTLE_MS = 50; // ~20 updates/sec instead of 60+
+  private static readonly MOUSE_THROTTLE_MS = 20; // More responsive, fluid animation
 
   private async getGsap() {
     if (this.gsapModule) return this.gsapModule;
@@ -131,35 +131,40 @@ export class Navbar {
       
       this.navItems().forEach((item) => {
         const el = item.nativeElement;
+        
+        // Get current translation to calculate original center
+        const currentX = gsap.getProperty(el, 'x') as number || 0;
+        const currentY = gsap.getProperty(el, 'y') as number || 0;
+        
         const rect = el.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
+        const centerX = (rect.left - currentX) + rect.width / 2;
+        const centerY = (rect.top - currentY) + rect.height / 2;
 
         // Calculate distance from mouse to center of item
         const dist = Math.sqrt(Math.pow(mouseX - centerX, 2) + Math.pow(mouseY - centerY, 2));
         
         // Magnetic effect calculation
         // Only effect closer items
-        if (dist < 100) {
-          const pull = (100 - dist) * 0.15; // Strength
-          const moveX = (mouseX - centerX) * 0.2;
-          const moveY = (mouseY - centerY) * 0.2;
+        if (dist < 65) {
+          const moveX = (mouseX - centerX) * 0.35;
+          const moveY = (mouseY - centerY) * 0.35;
           
           gsap.to(el, {
             x: moveX,
             y: moveY,
-            scale: 1 + (pull * 0.005), // Subtle scale up
-            duration: 0.2,
+            scale: 1.1, // Fixed scale for better predictability
+            duration: 0.3,
             ease: 'power2.out',
             overwrite: 'auto'
           });
         } else {
+          // Smooth return when mouse is outside the immediate magnetic radius
           gsap.to(el, {
             x: 0,
             y: 0,
             scale: 1,
-            duration: 0.5,
-            ease: 'elastic.out(1, 0.3)',
+            duration: 0.4,
+            ease: 'power3.out',
             overwrite: 'auto'
           });
         }
