@@ -192,4 +192,10 @@ html.lenis body {
 
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
+}:root.dark .theme-inverse,
+:root.theme-ocean .theme-inverse,
+:root.theme-sunset .theme-inverse,
+:root.theme-cyberpunk .theme-inverse,
+:root.theme-forest .theme-inverse {
+  filter: invert(1) brightness(1) !important;
 }

@@ -42,13 +42,13 @@ interface SkillCategory {
                     <!-- Skills Items -->
                     <div class="flex flex-wrap gap-x-6 gap-y-3">
                        @for (item of category.items; track item.name) {
-                         <div class="flex items-center gap-3 group/item">
-                            <div class="w-10 h-10 md:w-12 md:h-12 bg-[var(--color-card)] rounded-full flex items-center justify-center border border-[var(--color-border)] group-hover/item:border-[var(--color-primary)] transition-all duration-300 group-hover/item:scale-110">
+                         <div class="flex items-center gap-3 group/item cursor-pointer">
+                            <div class="w-10 h-10 md:w-12 md:h-12 bg-[var(--color-card)] rounded-full flex items-center justify-center border border-[var(--color-border)] group-hover/item:border-[var(--color-primary)] transition-all duration-500 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] group-hover/item:scale-110 group-hover/item:-translate-y-1.5 group-hover/item:shadow-[0_15px_30px_-10px_var(--color-primary)]">
                                <img [src]="item.logo" [alt]="item.name" [class.theme-inverse]="item.invertDark" 
-                                    class="w-5 h-5 md:w-6 md:h-6 object-contain opacity-70 group-hover/item:opacity-100 transition-opacity" 
+                                    class="w-5 h-5 md:w-6 md:h-6 object-contain transition-all duration-500 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] group-hover/item:scale-110" 
                                     loading="lazy" decoding="async" width="24" height="24">
                             </div>
-                            <span class="text-base md:text-lg font-medium text-[var(--color-text-secondary)] group-hover/item:text-[var(--color-text)] transition-colors">{{item.name}}</span>
+                            <span class="text-base md:text-lg font-medium text-[var(--color-text-secondary)] group-hover/item:text-[var(--color-primary)] group-hover/item:translate-x-2 transition-all duration-500 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)]">{{item.name}}</span>
                          </div>
                        }
                     </div>
@@ -77,11 +77,10 @@ export class Skills {
       color: '#3b82f6',
       items: [
         { name: 'Angular v20', logo: 'assets/icons/angular.svg' },
-        { name: 'Vue 3', logo: 'assets/icons/vue-3.svg' },
+        { name: 'Next.js', logo: 'assets/icons/nextjs.svg', invertDark: true },
         { name: 'React', logo: 'assets/icons/react.svg' },
         { name: 'Tailwind CSS', logo: 'assets/icons/tailwind-css.svg' },
         { name: 'Vite', logo: 'assets/icons/vite.svg' },
-        { name: 'GSAP', logo: 'assets/icons/gsap.svg' }
       ],
     },
     {
@@ -121,6 +120,15 @@ export class Skills {
         { name: 'Kubernetes', logo: 'assets/icons/kubernetes.svg' },
         { name: 'AWS (EC2/S3)', logo: 'assets/icons/aws-ec2-s3.svg', invertDark: true },
         { name: 'CI/CD Pipelines', logo: 'assets/icons/github-actions.svg', invertDark: true },
+      ],
+    },
+    {
+      category: 'Observability Stack',
+      color: '#f97316',
+      items: [
+        { name: 'Prometheus', logo: 'assets/icons/prometheus.svg', invertDark: true },
+        { name: 'Loki', logo: 'assets/icons/loki.svg' },
+        { name: 'Grafana', logo: 'assets/icons/grafana.svg', invertDark: true },
       ],
     },
   ]);
