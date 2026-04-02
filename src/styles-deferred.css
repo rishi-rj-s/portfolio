@@ -120,7 +120,3 @@
 :root.dark .theme-icon-light { display: none; }
 :root.dark .theme-icon-dark { display: block; }
 
-/* Invert colors in dark mode */
-:root.dark .theme-inverse {
-  filter: brightness(0) invert(1) !important;
-}
