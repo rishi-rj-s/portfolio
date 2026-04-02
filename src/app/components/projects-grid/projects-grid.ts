@@ -1,6 +1,5 @@
-import { Component, ElementRef, OnDestroy, PLATFORM_ID, inject, viewChild, afterNextRender } from '@angular/core';
+import { Component, ElementRef, OnDestroy, PLATFORM_ID, inject, viewChild, viewChildren, afterNextRender, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-// GSAP loaded dynamically for better TBT
 
 @Component({
   selector: 'app-projects-grid',
@@ -15,10 +14,10 @@ import { isPlatformBrowser } from '@angular/common';
       </div>
 
       <!-- Horizontal Track -->
-      <div class="projects-track flex flex-1 min-h-0 w-full items-center pl-6 md:pl-28 pr-[20vw] gap-6 md:gap-16 lg:gap-24 will-change-transform z-10 relative my-2 md:my-4" #track>
+      <div class="projects-track flex flex-1 min-h-0 w-full items-center pl-6 md:pl-28 pr-[80vw] gap-6 md:gap-16 lg:gap-24 will-change-transform z-10 relative my-2 md:my-4" #track>
         
         <!-- Project Cards -->
-        @for (project of projects; track project.title) {
+        @for (project of projects; track project.title; let i = $index) {
           <article class="project-card relative w-[85vw] md:w-[700px] lg:w-[800px] h-full max-h-[500px] md:max-h-[700px] flex-shrink-0 bg-[var(--color-card)] border border-[var(--color-border)] rounded-3xl overflow-hidden group hover:border-[var(--color-primary)] transition-colors duration-500 flex flex-col md:flex-row shadow-2xl">
              
              <!-- Image / Visual Area (Left or Top) -->
@@ -40,8 +39,24 @@ import { isPlatformBrowser } from '@angular/common';
              </div>
              
              <!-- Content Area (Right or Bottom) -->
-             <div class="w-full md:w-1/2 p-4 md:p-8 flex flex-col h-full bg-[var(--color-card)] overflow-hidden">
-                <div class="flex-1 overflow-y-auto scrollbar-none">
+             <div class="w-full md:w-1/2 p-4 md:p-8 flex flex-col h-full bg-[var(--color-card)] relative">
+                
+                <!-- Scroll Arrows -->
+                @if (scrollStates()[i]?.showUp) {
+                  <button (click)="scrollContent(i, 'up')" 
+                    class="absolute top-4 left-1/2 -translate-x-1/2 z-50 animate-bounce cursor-pointer p-1.5 bg-[var(--color-card)]/90 backdrop-blur rounded-full border border-[var(--color-border)] shadow-lg hover:text-[var(--color-primary)] transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+                  </button>
+                }
+                
+                @if (scrollStates()[i]?.showDown) {
+                  <button (click)="scrollContent(i, 'down')" 
+                    class="absolute bottom-20 left-1/2 -translate-x-1/2 z-50 animate-bounce cursor-pointer p-1.5 bg-[var(--color-card)]/90 backdrop-blur rounded-full border border-[var(--color-border)] shadow-lg hover:text-[var(--color-primary)] transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                  </button>
+                }
+
+                <div class="flex-1 overflow-y-auto scrollbar-none content-body" #contentBody (scroll)="onContentScroll(i, $event)">
                   <div class="flex items-start justify-between mb-2 md:mb-4 gap-4">
                      <h3 class="text-xl md:text-3xl lg:text-4xl font-black tracking-tighter text-[var(--color-text)] mb-1">{{project.title}}</h3>
                      <span class="text-[10px] md:text-xs px-2 py-0.5 md:px-3 md:py-1 border border-[var(--color-primary)] text-[var(--color-primary)] rounded-full uppercase tracking-wider bg-[var(--color-card)] whitespace-nowrap shrink-0">{{project.type}}</span>
@@ -60,7 +75,7 @@ import { isPlatformBrowser } from '@angular/common';
                      </div>
                   </div>
                 </div>
-  
+   
                 <div class="flex gap-4 md:gap-6 mt-2 pt-3 border-t border-[var(--color-border)] relative z-30 pointer-events-auto shrink-0">
                    @if (project.links.source) {
                      <a [href]="project.links.source" 
@@ -87,10 +102,19 @@ import { isPlatformBrowser } from '@angular/common';
       </div>
     </section>
   `,
-  styles: []
+  styles: [`
+    .scrollbar-none {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .scrollbar-none::-webkit-scrollbar {
+      display: none;
+    }
+  `]
 })
 export class ProjectsGrid implements OnDestroy {
   track = viewChild<ElementRef<HTMLElement>>('track');
+  contentBodies = viewChildren<ElementRef<HTMLElement>>('contentBody');
   
   projects = [
     {
@@ -98,7 +122,7 @@ export class ProjectsGrid implements OnDestroy {
       type: 'SaaS',
       year: '2025',
       image: 'assets/projects/tagtics.png',
-      description: 'A framework-agnostic UI tagging tool for real-time feedback. Features serverless architecture on Supabase Edge Functions (Deno) and strict RLS security.',
+      description: 'A framework-agnostic UI tagging tool for real-time feedback. Features serverless architecture on Supabase Edge Functions (Deno) and strict RLS security. This tool allows developers to collect feedback directly on their components, making the iteration cycle faster and more transparent. It integrates with existing CI/CD pipelines and provides a central dashboard for project managers to track bug reports and feature requests. Built with high performance and security in mind, it utilizes the latest web standards and features.',
       stack: ['React', 'Supabase', 'PostgreSQL', 'RLS'],
       links: { source: 'https://github.com/tagtics/tagtics-frontend', live: 'https://www.tagtics.online' },
       demoLabel: 'LIVE'
@@ -108,7 +132,7 @@ export class ProjectsGrid implements OnDestroy {
       type: 'ERP',
       year: '2025',
       image: 'assets/projects/ever-gauzy.png',
-      description: 'Contributed to a 100k+ LoC enterprise ERP. Improved Auth UI and navigated complex NestJS/Angular monorepo architecture.',
+      description: 'Contributed to a 100k+ LoC enterprise ERP. Improved Auth UI and navigated complex NestJS/Angular monorepo architecture. Work included refactoring the entire administrative dashboard for better accessibility and implementing a new real-time notification system using WebSockets. Also optimized database queries for critical reporting modules, reducing load times by over 40%. The project involved close collaboration with a global team of developers and stakeholders to ensure seamless integration of new features.',
       stack: ['NestJS', 'Angular', 'Nx', 'CQRS'],
       links: { source: 'https://github.com/ever-co/ever-gauzy', live: 'https://app.gauzy.co/#/auth/login' },
       demoLabel: 'LIVE'
@@ -118,7 +142,7 @@ export class ProjectsGrid implements OnDestroy {
       type: 'Microservices',
       year: '2024',
       image: 'assets/projects/eezy-cabs.png',
-      description: 'Scalable ride-hailing platform with distributed systems architecture. Orchestrated via API Gateway with Redis/Kafka for real-time tracking.',
+      description: 'Scalable ride-hailing platform with distributed systems architecture. Orchestrated via API Gateway with Redis/Kafka for real-time tracking. The system architecture was designed for high availability and low latency, handling thousands of concurrent requests during peak hours. Implemented complex routing algorithms and an automated billing system that supports multiple payment gateways. Utilized Docker and Kubernetes for container orchestration and automated scaling based on traffic patterns.',
       stack: ['NestJS', 'Kafka', 'Redis', 'MongoDB'],
       links: { source: 'https://github.com/eezy-cabs-rrjs/EC-Backend-MR', live: 'https://raw.githubusercontent.com/eezy-cabs-rrjs/EC-Backend-MR/refs/heads/main/Arch-Diagram.png' },
       demoLabel: 'ARCH. IMG'
@@ -128,7 +152,7 @@ export class ProjectsGrid implements OnDestroy {
       type: 'AI Agent',
       year: '2025',
       image: 'assets/projects/career-comeback-coach.jpg',
-      description: 'Voice-interactive AI agent using Gemini LLM and ElevenLabs. Achieved sub-500ms latency via WebSockets and sliding-window context.',
+      description: 'Voice-interactive AI agent using Gemini LLM and ElevenLabs. Achieved sub-500ms latency via WebSockets and sliding-window context. This project demonstrates cutting-edge AI capabilities, allowing users to practice interview skills and receive real-time feedback through a natural voice interface. The backend manages complex conversation states and integrates with multiple third-party APIs for speech-to-text and text-to-speech synthesis. Focused on creating an empathetic and helpful coaching experience.',
       stack: ['Angular', 'Gemini', 'ElevenLabs', 'WebSockets'],
       links: { source: 'https://github.com/raseenaanwar/hackathon-accelerateInnovation-careerComebackCoach', live: 'https://career-comeback-coach.vercel.app/' },
       demoLabel: 'LIVE'
@@ -138,12 +162,13 @@ export class ProjectsGrid implements OnDestroy {
       type: 'E-Commerce',
       year: '2024',
       image: 'assets/projects/fashion-studio.png',
-      description: 'Production E-commerce backend deployed on AWS EC2 with Nginx. Secure payments integration via Razorpay.',
+      description: 'Production E-commerce backend deployed on AWS EC2 with Nginx. Secure payments integration via Razorpay. Features a robust product catalog management system, user authentication, and order processing workflows. The application was optimized for search engine visibility and mobile performance. Implemented advanced caching strategies to ensure fast content delivery and handled complex inventory management logic to prevent overselling of high-demand items.',
       stack: ['Node.js', 'MongoDB', 'AWS EC2', 'Nginx'],
       links: { source: 'https://github.com/rishi-rj-s/RSBackend' }
     }
   ];
 
+  scrollStates = signal<{ showUp: boolean, showDown: boolean }[]>([]);
   ctx: any;
   private resizeHandler: (() => void) | null = null;
   private ScrollTrigger: any;
@@ -151,6 +176,8 @@ export class ProjectsGrid implements OnDestroy {
   private platformId = inject(PLATFORM_ID);
   
   constructor() {
+    this.scrollStates.set(this.projects.map(() => ({ showUp: false, showDown: false })));
+
     afterNextRender(() => {
       const trackEl = this.track()?.nativeElement;
       if (!trackEl) return;
@@ -164,6 +191,7 @@ export class ProjectsGrid implements OnDestroy {
             
             if (trackWidth > windowWidth) {
               this.initScroll();
+              this.checkAllScrolls();
               resizeObserver.disconnect();
             }
           }
@@ -185,8 +213,16 @@ export class ProjectsGrid implements OnDestroy {
     if (!trackEl) return;
 
     this.ctx = gsap.context(() => {
+      // Precise calculation to center the last card
+      const cards = Array.from(trackEl.querySelectorAll('.project-card')) as HTMLElement[];
+      const lastCard = cards[cards.length - 1];
+      
+      const lastCardCenter = lastCard.offsetLeft + lastCard.offsetWidth / 2;
+      const windowCenter = window.innerWidth / 2;
+      const targetX = -(lastCardCenter - windowCenter);
+
       gsap.to(trackEl, {
-        x: () => -(trackEl.scrollWidth - window.innerWidth),
+        x: targetX,
         ease: 'none',
         scrollTrigger: {
           trigger: '.projects-wrapper',
@@ -194,17 +230,56 @@ export class ProjectsGrid implements OnDestroy {
           anticipatePin: 1,
           start: 'top top',
           scrub: 0.5,
-          end: () => '+=' + (trackEl.scrollWidth - window.innerWidth),
+          end: () => '+=' + Math.abs(targetX),
           invalidateOnRefresh: true,
         }
       });
     });
 
-    // Handle resize — recalculate scroll distance
     this.resizeHandler = () => {
       this.ScrollTrigger.refresh();
+      this.checkAllScrolls();
     };
     window.addEventListener('resize', this.resizeHandler);
+  }
+
+  onContentScroll(index: number, event: Event) {
+    const el = event.target as HTMLElement;
+    this.updateScrollState(index, el);
+  }
+
+  async scrollContent(index: number, direction: 'up' | 'down') {
+    const el = this.contentBodies()[index]?.nativeElement;
+    if (!el) return;
+
+    const scrollAmount = el.clientHeight * 0.8;
+    const targetScroll = el.scrollTop + (direction === 'up' ? -scrollAmount : scrollAmount);
+
+    // Import GSAP dynamically for better TBT
+    const gsapModule = await import('gsap');
+    const gsap = gsapModule.default;
+
+    gsap.to(el, {
+      scrollTop: targetScroll,
+      duration: 0.6,
+      ease: 'power3.inOut',
+      overwrite: 'auto'
+    });
+  }
+
+  private checkAllScrolls() {
+    this.contentBodies().forEach((ref, i) => {
+      this.updateScrollState(i, ref.nativeElement);
+    });
+  }
+
+  private updateScrollState(index: number, el: HTMLElement) {
+    const states = [...this.scrollStates()];
+    states[index] = {
+      showUp: el.scrollTop > 10,
+      showDown: el.scrollHeight > el.clientHeight + el.scrollTop + 10
+    };
+    this.scrollStates.set(states);
   }
 
   ngOnDestroy() {
