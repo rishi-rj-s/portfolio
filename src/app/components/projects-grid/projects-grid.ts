@@ -25,7 +25,7 @@ import { isPlatformBrowser } from '@angular/common';
                 
                 @if (project.image) {
                    <img [src]="project.image" [alt]="project.title" 
-                        class="absolute inset-0 w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-105" 
+                        class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                         loading="lazy" decoding="async" width="400" height="300" />
                    <div class="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-500"></div>
                 } @else {
@@ -148,13 +148,13 @@ export class ProjectsGrid implements OnDestroy {
       demoLabel: 'ARCH. IMG'
     },
     {
-      title: 'Career Coach',
-      type: 'AI Agent',
-      year: '2025',
-      image: 'assets/projects/career-comeback-coach.jpg',
-      description: 'Voice-interactive AI agent using Gemini LLM and ElevenLabs. Achieved sub-500ms latency via WebSockets and sliding-window context. This project demonstrates cutting-edge AI capabilities, allowing users to practice interview skills and receive real-time feedback through a natural voice interface. The backend manages complex conversation states and integrates with multiple third-party APIs for speech-to-text and text-to-speech synthesis. Focused on creating an empathetic and helpful coaching experience.',
-      stack: ['Angular', 'Gemini', 'ElevenLabs', 'WebSockets'],
-      links: { source: 'https://github.com/raseenaanwar/hackathon-accelerateInnovation-careerComebackCoach', live: 'https://career-comeback-coach.vercel.app/' },
+      title: 'Green Power India',
+      type: 'Corporate',
+      year: '2026',
+      image: 'assets/projects/green-power-india.png',
+      description: 'A high-performance sustainable engineering corporate platform built with Next.js App Router and deployed on Vercel. Architected a Supabase and PostgreSQL backend with bucket storage for dynamic assets. Designed a fluid, bento-style UI gallery utilizing Tailwind CSS and Framer Motion for immersive visual storytelling. The platform showcases decentralized bio-waste processors and technical systems for a sustainable bio-energy legacy.',
+      stack: ['Next.js 15', 'React 19', 'Supabase', 'Tailwind CSS', 'Framer Motion'],
+      links: { live: 'https://greenpowerindia.com/' },
       demoLabel: 'LIVE'
     },
     {
