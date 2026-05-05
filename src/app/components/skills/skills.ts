@@ -66,44 +66,24 @@ export class Skills {
   // v20 signal-based queries
   header = viewChild<ElementRef<HTMLElement>>('header');
   grid = viewChild<ElementRef<HTMLElement>>('grid');
-  
+
   // v20 inject() instead of constructor DI
   private platformId = inject(PLATFORM_ID);
   readonly isBrowser = isPlatformBrowser(this.platformId);
 
   skills = signal<SkillCategory[]>([
     {
-      category: 'Frontend Engineering',
-      color: '#3b82f6',
-      items: [
-        { name: 'Angular v20', logo: 'assets/icons/angular.svg' },
-        { name: 'Next.js', logo: 'assets/icons/nextjs.svg', invertDark: true },
-        { name: 'React', logo: 'assets/icons/react.svg' },
-        { name: 'Tailwind CSS', logo: 'assets/icons/tailwind-css.svg' },
-        { name: 'Vite', logo: 'assets/icons/vite.svg' },
-      ],
-    },
-    {
       category: 'Backend & Architecture',
       color: '#10b981',
       items: [
-        { name: 'Node.js', logo: 'assets/icons/node-js.svg' },
         { name: 'NestJS', logo: 'assets/icons/nestjs.svg' },
-        { name: 'Microservices', logo: 'assets/icons/express.svg', invertDark: true },
-        { name: 'GraphQL', logo: 'assets/icons/graphql.svg' },
+        { name: 'Node.js', logo: 'assets/icons/node-js.svg' },
+        { name: 'Express', logo: 'assets/icons/express.svg', invertDark: true },
+        { name: 'REST APIs', logo: 'assets/icons/nestjs.svg' },
       ],
     },
     {
-      category: 'Realtime Systems',
-      color: '#ef4444',
-      items: [
-        { name: 'Apache Kafka', logo: 'assets/icons/kafka.svg', invertDark: true },
-        { name: 'Socket.io', logo: 'assets/icons/socket-io.svg', invertDark: true },
-        { name: 'Redis Pub/Sub', logo: 'assets/icons/redis-pub-sub.svg' },
-      ],
-    },
-    {
-      category: 'Database Engine',
+      category: 'Database & Security',
       color: '#8b5cf6',
       items: [
         { name: 'PostgreSQL', logo: 'assets/icons/postgresql.svg' },
@@ -117,18 +97,28 @@ export class Skills {
       color: '#f59e0b',
       items: [
         { name: 'Docker', logo: 'assets/icons/docker.svg' },
-        { name: 'Kubernetes', logo: 'assets/icons/kubernetes.svg' },
         { name: 'AWS (EC2/S3)', logo: 'assets/icons/aws-ec2-s3.svg', invertDark: true },
         { name: 'CI/CD Pipelines', logo: 'assets/icons/github-actions.svg', invertDark: true },
+        { name: 'Vercel', logo: 'assets/icons/vercel.svg', invertDark: true },
       ],
     },
     {
-      category: 'Observability Stack',
-      color: '#f97316',
+      category: 'Realtime Systems',
+      color: '#ef4444',
       items: [
-        { name: 'Prometheus', logo: 'assets/icons/prometheus.svg', invertDark: true },
-        { name: 'Loki', logo: 'assets/icons/loki.svg' },
-        { name: 'Grafana', logo: 'assets/icons/grafana.svg', invertDark: true },
+        { name: 'WebSockets', logo: 'assets/icons/socket-io.svg', invertDark: true },
+        { name: 'Redis Pub/Sub', logo: 'assets/icons/redis-pub-sub.svg' },
+      ],
+    },
+    {
+      category: 'Frontend Engineering',
+      color: '#3b82f6',
+      items: [
+        { name: 'Angular v20', logo: 'assets/icons/angular.svg' },
+        { name: 'React', logo: 'assets/icons/react.svg' },
+        { name: 'Next.js', logo: 'assets/icons/nextjs.svg', invertDark: true },
+        { name: 'Tailwind CSS', logo: 'assets/icons/tailwind-css.svg' },
+        { name: 'TypeScript', logo: 'assets/icons/typescript.svg' },
       ],
     },
   ]);

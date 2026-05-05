@@ -115,46 +115,44 @@ import { isPlatformBrowser } from '@angular/common';
 export class ProjectsGrid implements OnDestroy {
   track = viewChild<ElementRef<HTMLElement>>('track');
   contentBodies = viewChildren<ElementRef<HTMLElement>>('contentBody');
-  
+
   projects = [
     {
       title: 'Tagtics',
       type: 'SaaS',
       year: '2025',
       image: 'assets/projects/tagtics.png',
-      description: 'A framework-agnostic UI tagging tool for real-time feedback. Features serverless architecture on Supabase Edge Functions (Deno) and strict RLS security. This tool allows developers to collect feedback directly on their components, making the iteration cycle faster and more transparent. It integrates with existing CI/CD pipelines and provides a central dashboard for project managers to track bug reports and feature requests. Built with high performance and security in mind, it utilizes the latest web standards and features.',
-      stack: ['React', 'Supabase', 'PostgreSQL', 'RLS'],
-      links: { source: 'https://github.com/tagtics/tagtics-frontend', live: 'https://www.tagtics.online' },
+      description: 'A multi-tenant UI feedback SaaS. Users click any element on any web app and submit contextual feedback — no changes needed to the target app\'s code. Designed with PostgreSQL Row-Level Security (RLS) enforcing strict data isolation at the database layer per tenant. Frontend is live; backend integration with Supabase Edge Functions is in active development.',
+      stack: ['React', 'Supabase', 'PostgreSQL', 'RLS', 'TypeScript'],
+      links: {
+        source: 'https://github.com/tagtics/tagtics-frontend',
+        live: 'https://www.tagtics.online'
+      },
+      demoLabel: 'LIVE'
+    },
+    {
+      title: 'Green Power India',
+      type: 'Client Contract',
+      year: '2026',
+      image: 'assets/projects/green-power-india.png',
+      description: 'Delivered end-to-end for a sustainable energy company — full stack corporate platform built with Next.js 15 App Router, deployed on Vercel. Designed and implemented a Supabase and PostgreSQL backend with structured bucket storage for dynamic media assets. Owned both the frontend (bento-style UI with Tailwind CSS and Framer Motion) and the backend schema and API layer.',
+      stack: ['Next.js 15', 'React 19', 'Supabase', 'PostgreSQL', 'Tailwind CSS', 'Framer Motion'],
+      links: {
+        live: 'https://greenpowerindia.com/'
+      },
       demoLabel: 'LIVE'
     },
     {
       title: 'Ever-Gauzy',
-      type: 'ERP',
+      type: 'Open Source',
       year: '2025',
       image: 'assets/projects/ever-gauzy.png',
-      description: 'Contributed to a 100k+ LoC enterprise ERP. Improved Auth UI and navigated complex NestJS/Angular monorepo architecture. Work included refactoring the entire administrative dashboard for better accessibility and implementing a new real-time notification system using WebSockets. Also optimized database queries for critical reporting modules, reducing load times by over 40%. The project involved close collaboration with a global team of developers and stakeholders to ensure seamless integration of new features.',
-      stack: ['NestJS', 'Angular', 'Nx', 'CQRS'],
-      links: { source: 'https://github.com/ever-co/ever-gauzy', live: 'https://app.gauzy.co/#/auth/login' },
-      demoLabel: 'LIVE'
-    },
-    {
-      title: 'Eezy-Cabs',
-      type: 'Microservices',
-      year: '2024',
-      image: 'assets/projects/eezy-cabs.png',
-      description: 'Scalable ride-hailing platform with distributed systems architecture. Orchestrated via API Gateway with Redis/Kafka for real-time tracking. The system architecture was designed for high availability and low latency, handling thousands of concurrent requests during peak hours. Implemented complex routing algorithms and an automated billing system that supports multiple payment gateways. Utilized Docker and Kubernetes for container orchestration and automated scaling based on traffic patterns.',
-      stack: ['NestJS', 'Kafka', 'Redis', 'MongoDB'],
-      links: { source: 'https://github.com/eezy-cabs-rrjs/EC-Backend-MR', live: 'https://raw.githubusercontent.com/eezy-cabs-rrjs/EC-Backend-MR/refs/heads/main/Arch-Diagram.png' },
-      demoLabel: 'ARCH. IMG'
-    },
-    {
-      title: 'Green Power India',
-      type: 'Corporate',
-      year: '2026',
-      image: 'assets/projects/green-power-india.png',
-      description: 'A high-performance sustainable engineering corporate platform built with Next.js App Router and deployed on Vercel. Architected a Supabase and PostgreSQL backend with bucket storage for dynamic assets. Designed a fluid, bento-style UI gallery utilizing Tailwind CSS and Framer Motion for immersive visual storytelling. The platform showcases decentralized bio-waste processors and technical systems for a sustainable bio-energy legacy.',
-      stack: ['Next.js 15', 'React 19', 'Supabase', 'Tailwind CSS', 'Framer Motion'],
-      links: { live: 'https://greenpowerindia.com/' },
+      description: 'Contributed to a 100,000+ line enterprise ERP built on NestJS and Angular. Navigated a large Nx monorepo to improve the authentication UI — gaining direct exposure to production-grade enterprise patterns including CQRS, Event Sourcing, and Hexagonal Architecture in a live system used by real organisations.',
+      stack: ['NestJS', 'Angular', 'TypeScript', 'Nx', 'CQRS'],
+      links: {
+        source: 'https://github.com/ever-co/ever-gauzy',
+        live: 'https://app.gauzy.co/#/auth/login'
+      },
       demoLabel: 'LIVE'
     },
     {
@@ -162,9 +160,11 @@ export class ProjectsGrid implements OnDestroy {
       type: 'E-Commerce',
       year: '2024',
       image: 'assets/projects/fashion-studio.png',
-      description: 'Production E-commerce backend deployed on AWS EC2 with Nginx. Secure payments integration via Razorpay. Features a robust product catalog management system, user authentication, and order processing workflows. The application was optimized for search engine visibility and mobile performance. Implemented advanced caching strategies to ensure fast content delivery and handled complex inventory management logic to prevent overselling of high-demand items.',
-      stack: ['Node.js', 'MongoDB', 'AWS EC2', 'Nginx'],
-      links: { source: 'https://github.com/rishi-rj-s/RSBackend' }
+      description: 'Production e-commerce backend deployed on a self-managed AWS EC2 instance with Nginx configured as a reverse proxy. Integrated Razorpay payment gateway with webhook signature verification for tamper-proof transaction handling. Covers product catalogue management, user auth, and order processing.',
+      stack: ['Node.js', 'Express', 'MongoDB', 'AWS EC2', 'Nginx'],
+      links: {
+        source: 'https://github.com/rishi-rj-s/RSBackend'
+      }
     }
   ];
 
@@ -172,9 +172,9 @@ export class ProjectsGrid implements OnDestroy {
   ctx: any;
   private resizeHandler: (() => void) | null = null;
   private ScrollTrigger: any;
-  
+
   private platformId = inject(PLATFORM_ID);
-  
+
   constructor() {
     this.scrollStates.set(this.projects.map(() => ({ showUp: false, showDown: false })));
 
@@ -188,7 +188,7 @@ export class ProjectsGrid implements OnDestroy {
           if (entry.contentBoxSize) {
             const trackWidth = trackEl.scrollWidth;
             const windowWidth = window.innerWidth;
-            
+
             if (trackWidth > windowWidth) {
               this.initScroll();
               this.checkAllScrolls();
@@ -197,7 +197,7 @@ export class ProjectsGrid implements OnDestroy {
           }
         }
       });
-      
+
       resizeObserver.observe(trackEl);
     });
   }
@@ -216,7 +216,7 @@ export class ProjectsGrid implements OnDestroy {
       // Precise calculation to center the last card
       const cards = Array.from(trackEl.querySelectorAll('.project-card')) as HTMLElement[];
       const lastCard = cards[cards.length - 1];
-      
+
       const lastCardCenter = lastCard.offsetLeft + lastCard.offsetWidth / 2;
       const windowCenter = window.innerWidth / 2;
       const targetX = -(lastCardCenter - windowCenter);
