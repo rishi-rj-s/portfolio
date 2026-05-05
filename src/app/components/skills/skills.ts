@@ -16,7 +16,7 @@ interface SkillCategory {
 @Component({
   selector: 'app-skills',
   template: `
-    <section id="skills" class="relative min-h-screen py-20 px-6 md:px-28 flex flex-col justify-center border-t border-[var(--color-border)]">
+    <section id="skills" class="relative min-h-screen py-20 px-6 md:px-28 flex flex-col justify-center">
       
       <div class="max-w-7xl mx-auto w-full">
          <!-- Header -->
