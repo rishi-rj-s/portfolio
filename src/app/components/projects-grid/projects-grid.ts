@@ -5,100 +5,98 @@ import { isPlatformBrowser } from '@angular/common';
   selector: 'app-projects-grid',
   imports: [],
   template: `
-    <section id="projects" class="projects-wrapper relative h-[100dvh] overflow-hidden flex flex-col justify-start pt-24 md:pt-32 pb-4">
+    <section id="projects" class="projects-wrapper relative h-screen overflow-hidden flex flex-col pt-24 md:pt-32 pb-12 bg-[var(--color-background)]">
       
-      <!-- Section Header (Static Layout) -->
-      <div class="w-full px-6 py-2 md:px-28 md:py-4 flex-shrink-0 z-20 relative pointer-events-none select-none text-center md:text-left">
-        <h2 class="text-3xl md:text-6xl lg:text-8xl font-black tracking-tighter text-[var(--color-text)] relative">SELECTED WORKS</h2>
-        <p class="text-[var(--color-text-muted)] mt-1 md:mt-2 font-mono text-[10px] md:text-xs uppercase tracking-widest relative"> &lt; Horizontal Scroll /&gt;</p>
+      <!-- Section Header (Horizontal Layout to save space) -->
+      <div class="w-full px-6 md:px-28 z-20 relative flex-shrink-0 mb-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
+          
+          <div class="space-y-1">
+             <h2 class="text-4xl md:text-6xl lg:text-7xl font-serif leading-[1] tracking-tight text-[var(--color-text)]">
+                Selected <span class="italic opacity-80">Works</span>
+             </h2>
+             <div class="h-1 w-20 bg-[var(--color-primary)]"></div>
+          </div>
+          
+          <div class="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-12 pb-1">
+             <p class="text-sm md:text-base text-[var(--color-text-secondary)] leading-relaxed max-w-xs opacity-70">
+                A selection of digital products focusing on SaaS architecture and scalable systems.
+             </p>
+             
+             <div class="flex items-center gap-4">
+                <a href="#contact" class="group flex items-center gap-2 px-5 py-2 rounded-full border border-[var(--color-border)] hover:bg-[var(--color-text)] hover:text-[var(--color-background)] transition-all duration-500">
+                   <span class="text-[10px] font-bold tracking-widest uppercase">Collaborate</span>
+                </a>
+
+                <!-- Navigation Buttons (Minimal) -->
+                <div class="flex gap-2">
+                   <button (click)="navScroll('prev')" class="w-9 h-9 rounded-full border border-[var(--color-border)] flex items-center justify-center hover:bg-[var(--color-text)] hover:text-[var(--color-background)] transition-all duration-500 group disabled:opacity-30" aria-label="Previous Project">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                   </button>
+                   <button (click)="navScroll('next')" class="w-9 h-9 rounded-full border border-[var(--color-border)] flex items-center justify-center hover:bg-[var(--color-text)] hover:text-[var(--color-background)] transition-all duration-500 group disabled:opacity-30" aria-label="Next Project">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                   </button>
+                </div>
+             </div>
+          </div>
+          
+        </div>
       </div>
 
-      <!-- Horizontal Track -->
-      <div class="projects-track flex flex-1 min-h-0 w-full items-center pl-6 md:pl-28 pr-[80vw] gap-6 md:gap-16 lg:gap-24 will-change-transform z-10 relative my-2 md:my-4" #track>
+      <!-- Horizontal Track Container -->
+      <div class="relative flex-1 flex items-center min-h-0">
         
-        <!-- Project Cards -->
-        @for (project of projects; track project.title; let i = $index) {
-          <article class="project-card relative w-[85vw] md:w-[700px] lg:w-[800px] h-full max-h-[500px] md:max-h-[700px] flex-shrink-0 bg-[var(--color-card)] border border-[var(--color-border)] rounded-3xl overflow-hidden group hover:border-[var(--color-primary)] transition-colors duration-500 flex flex-col md:flex-row shadow-2xl">
-             
-             <!-- Image / Visual Area (Left or Top) -->
-             <div class="w-full h-36 md:h-auto md:w-1/2 bg-[var(--color-card)]/30 backdrop-blur-sm border-b md:border-b-0 md:border-r border-[var(--color-border)] relative overflow-hidden group flex-shrink-0">
-                
-                @if (project.image) {
-                   <img [src]="project.image" [alt]="project.title" 
-                        class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                        loading="lazy" decoding="async" width="400" height="300" />
-                   <div class="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-500"></div>
-                } @else {
-                  <!-- Fallback/Placeholder -->
-                  <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-card)] to-[var(--color-background)] flex items-center justify-center">
-                      <div class="absolute inset-0 opacity-20" style="background-image: url('assets/noise.svg')"></div>
-                      <span class="text-[8rem] md:text-[12rem] font-black text-[var(--color-text)] opacity-5 absolute -bottom-10 -left-10 leading-none select-none">{{project.year}}</span>
-                  </div>
-                }
-                
-             </div>
-             
-             <!-- Content Area (Right or Bottom) -->
-             <div class="w-full md:w-1/2 p-4 md:p-8 flex flex-col h-full bg-[var(--color-card)] relative">
-                
-                <!-- Scroll Arrows -->
-                @if (scrollStates()[i]?.showUp) {
-                  <button (click)="scrollContent(i, 'up')" 
-                    class="absolute top-4 left-1/2 -translate-x-1/2 z-50 animate-bounce cursor-pointer p-1.5 bg-[var(--color-card)]/90 backdrop-blur rounded-full border border-[var(--color-border)] shadow-lg hover:text-[var(--color-primary)] transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
-                  </button>
-                }
-                
-                @if (scrollStates()[i]?.showDown) {
-                  <button (click)="scrollContent(i, 'down')" 
-                    class="absolute bottom-20 left-1/2 -translate-x-1/2 z-50 animate-bounce cursor-pointer p-1.5 bg-[var(--color-card)]/90 backdrop-blur rounded-full border border-[var(--color-border)] shadow-lg hover:text-[var(--color-primary)] transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                  </button>
-                }
-
-                <div class="flex-1 overflow-y-auto scrollbar-none content-body" #contentBody (scroll)="onContentScroll(i, $event)">
-                  <div class="flex items-start justify-between mb-2 md:mb-4 gap-4">
-                     <h3 class="text-xl md:text-3xl lg:text-4xl font-black tracking-tighter text-[var(--color-text)] mb-1">{{project.title}}</h3>
-                     <span class="text-[10px] md:text-xs px-2 py-0.5 md:px-3 md:py-1 border border-[var(--color-primary)] text-[var(--color-primary)] rounded-full uppercase tracking-wider bg-[var(--color-card)] whitespace-nowrap shrink-0">{{project.type}}</span>
-                  </div>
-                  
-                  <p class="text-[var(--color-text-secondary)] mb-3 md:mb-6 leading-relaxed text-xs md:text-sm lg:text-base line-clamp-3 md:line-clamp-none">{{project.description}}</p>
-                  
-                  <div class="mb-3 md:mb-6">
-                     <h4 class="text-[10px] md:text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-wider mb-2">Tech Matrix</h4>
-                     <div class="flex flex-wrap gap-2">
-                        @for (stack of project.stack; track stack) {
-                          <span class="text-[10px] md:text-xs font-mono text-[var(--color-text)] bg-[var(--color-card-hover)] px-2 py-1 rounded border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors cursor-default whitespace-nowrap">
-                              {{stack}}
-                          </span>
-                        }
+        <!-- Horizontal Track -->
+        <div class="projects-track flex items-center pl-6 md:pl-28 pr-[80vw] gap-12 md:gap-20 will-change-transform z-10 relative" #track>
+          
+          <!-- Project Cards -->
+          @for (project of projects; track project.title; let i = $index) {
+            <article class="project-card group relative w-[80vw] md:w-[500px] lg:w-[600px] shrink-0 cursor-pointer">
+               <a [href]="project.links.live || project.links.source" target="_blank" rel="noopener noreferrer" class="block">
+                  <!-- Image Container -->
+                  <div class="relative aspect-[16/10] overflow-hidden bg-[var(--color-card)] rounded-sm md:rounded-md mb-6 border border-[var(--color-border)] group-hover:border-[var(--color-primary)] transition-all duration-500 shadow-2xl">
+                     @if (project.image) {
+                        <img [src]="project.image" [alt]="project.title" 
+                             class="w-full h-full object-cover transition-transform duration-1000 [transition-timing-function:cubic-bezier(0.19,1,0.22,1)] group-hover:scale-110" 
+                             loading="lazy" decoding="async" />
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500"></div>
+                     } @else {
+                        <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-card)] to-[var(--color-background)] flex items-center justify-center">
+                           <span class="text-5xl font-black text-[var(--color-text)] opacity-10 select-none">{{project.year}}</span>
+                        </div>
+                     }
+                     
+                     <!-- Type Badge -->
+                     <div class="absolute top-4 left-4 z-20">
+                        <span class="text-[8px] px-2 py-0.5 bg-black/80 text-white backdrop-blur-md rounded-full uppercase tracking-widest font-bold border border-white/10">
+                           {{project.type}}
+                        </span>
                      </div>
                   </div>
-                </div>
-   
-                <div class="flex gap-4 md:gap-6 mt-2 pt-3 border-t border-[var(--color-border)] relative z-30 pointer-events-auto shrink-0">
-                   @if (project.links.source) {
-                     <a [href]="project.links.source" 
-                        target="_blank" 
-                        [attr.aria-label]="'View source code for ' + project.title"
-                        class="text-xs md:text-sm font-bold text-[var(--color-text)] hover:text-[var(--color-primary)] flex items-center gap-2 group/link cursor-pointer">
-                        SOURCE CODE 
-                        <span class="group-hover/link:translate-x-1 transition-transform" aria-hidden="true">&rarr;</span>
-                     </a>
-                   }
-                   @if (project.links.live) {
-                     <a [href]="project.links.live" 
-                        target="_blank" 
-                        [attr.aria-label]="(project.demoLabel || 'Live demo') + ' for ' + project.title"
-                        class="text-xs md:text-sm font-bold text-[var(--color-text)] hover:text-[var(--color-primary)] flex items-center gap-2 group/link cursor-pointer">
-                        {{ project.demoLabel || 'LIVE DEMO' }}
-                        <span class="group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5 transition-transform" aria-hidden="true">&#8599;</span>
-                     </a>
-                   }
-                </div>
-             </div>
-          </article>
-        }
+
+                  <!-- Project Info -->
+                  <div class="flex items-center justify-between gap-4 border-b border-[var(--color-border)] pb-4 group-hover:border-[var(--color-text)] transition-colors duration-500">
+                     <div class="flex-1">
+                        <div class="text-[9px] font-mono text-[var(--color-text-secondary)] uppercase tracking-[0.2em] mb-1 opacity-60">
+                           {{project.year}} &mdash; {{project.stack.slice(0, 3).join(' / ')}}
+                        </div>
+                        <h3 class="text-lg md:text-2xl font-bold tracking-tight text-[var(--color-text)] uppercase leading-none transition-transform duration-500 group-hover:translate-x-1">
+                           {{project.title}}
+                        </h3>
+                     </div>
+                     
+                     <div class="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" 
+                             class="transition-all duration-500 [transition-timing-function:cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-[var(--color-primary)]">
+                           <path d="M7 7h10v10M7 17 17 7"/>
+                        </svg>
+                     </div>
+                  </div>
+               </a>
+            </article>
+          }
+        </div>
+
       </div>
     </section>
   `,
@@ -168,21 +166,18 @@ export class ProjectsGrid implements OnDestroy {
     }
   ];
 
-  scrollStates = signal<{ showUp: boolean, showDown: boolean }[]>([]);
   ctx: any;
   private resizeHandler: (() => void) | null = null;
   private ScrollTrigger: any;
+  private st: any;
 
   private platformId = inject(PLATFORM_ID);
 
   constructor() {
-    this.scrollStates.set(this.projects.map(() => ({ showUp: false, showDown: false })));
-
     afterNextRender(() => {
       const trackEl = this.track()?.nativeElement;
       if (!trackEl) return;
 
-      // Wait for images/fonts to settle, then init
       const resizeObserver = new ResizeObserver((entries) => {
         for (const entry of entries) {
           if (entry.contentBoxSize) {
@@ -191,7 +186,6 @@ export class ProjectsGrid implements OnDestroy {
 
             if (trackWidth > windowWidth) {
               this.initScroll();
-              this.checkAllScrolls();
               resizeObserver.disconnect();
             }
           }
@@ -205,81 +199,66 @@ export class ProjectsGrid implements OnDestroy {
   private async initScroll() {
     const gsapModule = await import('gsap');
     const scrollTriggerModule = await import('gsap/ScrollTrigger');
+    const scrollToModule = await import('gsap/ScrollToPlugin');
     const gsap = gsapModule.default;
     this.ScrollTrigger = scrollTriggerModule.ScrollTrigger;
-    gsap.registerPlugin(this.ScrollTrigger);
+    gsap.registerPlugin(this.ScrollTrigger, scrollToModule.ScrollToPlugin);
 
     const trackEl = this.track()?.nativeElement;
     if (!trackEl) return;
 
     this.ctx = gsap.context(() => {
-      // Precise calculation to center the last card
       const cards = Array.from(trackEl.querySelectorAll('.project-card')) as HTMLElement[];
       const lastCard = cards[cards.length - 1];
 
-      const lastCardCenter = lastCard.offsetLeft + lastCard.offsetWidth / 2;
-      const windowCenter = window.innerWidth / 2;
-      const targetX = -(lastCardCenter - windowCenter);
+      const lastCardCenter = lastCard.offsetLeft + lastCard.offsetWidth;
+      const windowWidth = window.innerWidth;
+      const targetX = -(lastCardCenter - windowWidth + (windowWidth * 0.1)); // Leave some margin at the end
 
-      gsap.to(trackEl, {
-        x: targetX,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: '.projects-wrapper',
-          pin: true,
-          anticipatePin: 1,
-          start: 'top top',
-          scrub: 0.5,
-          end: () => '+=' + Math.abs(targetX),
-          invalidateOnRefresh: true,
-        }
+      this.st = this.ScrollTrigger.create({
+        trigger: '.projects-wrapper',
+        pin: true,
+        start: 'top top',
+        scrub: 1,
+        end: () => '+=' + Math.abs(targetX),
+        invalidateOnRefresh: true,
+        animation: gsap.to(trackEl, {
+          x: targetX,
+          ease: 'none'
+        })
       });
     });
 
     this.resizeHandler = () => {
       this.ScrollTrigger.refresh();
-      this.checkAllScrolls();
     };
     window.addEventListener('resize', this.resizeHandler);
   }
 
-  onContentScroll(index: number, event: Event) {
-    const el = event.target as HTMLElement;
-    this.updateScrollState(index, el);
-  }
-
-  async scrollContent(index: number, direction: 'up' | 'down') {
-    const el = this.contentBodies()[index]?.nativeElement;
-    if (!el) return;
-
-    const scrollAmount = el.clientHeight * 0.8;
-    const targetScroll = el.scrollTop + (direction === 'up' ? -scrollAmount : scrollAmount);
-
-    // Import GSAP dynamically for better TBT
+  async navScroll(direction: 'prev' | 'next') {
+    if (!this.st) return;
+    
     const gsapModule = await import('gsap');
     const gsap = gsapModule.default;
+    
+    const currentProgress = this.st.progress;
+    const step = 1 / (this.projects.length - 1);
+    
+    let targetProgress = direction === 'next' 
+      ? Math.min(1, currentProgress + step) 
+      : Math.max(0, currentProgress - step);
+      
+    // Snap to nearest step
+    targetProgress = Math.round(targetProgress / step) * step;
 
-    gsap.to(el, {
-      scrollTop: targetScroll,
-      duration: 0.6,
-      ease: 'power3.inOut',
-      overwrite: 'auto'
+    const scrollRange = this.st.end - this.st.start;
+    const targetScroll = this.st.start + (targetProgress * scrollRange);
+
+    gsap.to(window, {
+      scrollTo: targetScroll,
+      duration: 0.8,
+      ease: 'power3.inOut'
     });
-  }
-
-  private checkAllScrolls() {
-    this.contentBodies().forEach((ref, i) => {
-      this.updateScrollState(i, ref.nativeElement);
-    });
-  }
-
-  private updateScrollState(index: number, el: HTMLElement) {
-    const states = [...this.scrollStates()];
-    states[index] = {
-      showUp: el.scrollTop > 10,
-      showDown: el.scrollHeight > el.clientHeight + el.scrollTop + 10
-    };
-    this.scrollStates.set(states);
   }
 
   ngOnDestroy() {
