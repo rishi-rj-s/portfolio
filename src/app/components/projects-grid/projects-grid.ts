@@ -1,100 +1,102 @@
 import { Component, ElementRef, OnDestroy, PLATFORM_ID, inject, viewChild, viewChildren, afterNextRender, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { ScrollService } from '../../services/scroll';
 
 @Component({
   selector: 'app-projects-grid',
   imports: [],
   template: `
-    <section id="projects" class="projects-wrapper relative h-screen overflow-hidden flex flex-col pt-24 md:pt-32 pb-12 bg-[var(--color-background)]">
+    <section id="projects" class="projects-wrapper relative h-[100dvh] overflow-hidden flex flex-col pt-28 md:pt-36 pb-28 md:pb-12 bg-transparent">
       
-      <!-- Section Header (Horizontal Layout to save space) -->
-      <div class="w-full px-6 md:px-28 z-20 relative flex-shrink-0 mb-8">
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
-          
-          <div class="space-y-1">
-             <h2 class="text-4xl md:text-6xl lg:text-7xl font-serif leading-[1] tracking-tight text-[var(--color-text)]">
-                Selected <span class="italic opacity-80">Works</span>
-             </h2>
-             <div class="h-1 w-20 bg-[var(--color-primary)]"></div>
-          </div>
-          
-          <div class="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-12 pb-1">
-             <p class="text-sm md:text-base text-[var(--color-text-secondary)] leading-relaxed max-w-xs opacity-70">
-                A selection of digital products focusing on SaaS architecture and scalable systems.
-             </p>
-             
-             <div class="flex items-center gap-4">
-                <a href="#contact" class="group flex items-center gap-2 px-5 py-2 rounded-full border border-[var(--color-border)] hover:bg-[var(--color-text)] hover:text-[var(--color-background)] transition-all duration-500">
-                   <span class="text-[10px] font-bold tracking-widest uppercase">Collaborate</span>
-                </a>
-
-                <!-- Navigation Buttons (Minimal) -->
-                <div class="flex gap-2">
-                   <button (click)="navScroll('prev')" class="w-9 h-9 rounded-full border border-[var(--color-border)] flex items-center justify-center hover:bg-[var(--color-text)] hover:text-[var(--color-background)] transition-all duration-500 group disabled:opacity-30" aria-label="Previous Project">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                   </button>
-                   <button (click)="navScroll('next')" class="w-9 h-9 rounded-full border border-[var(--color-border)] flex items-center justify-center hover:bg-[var(--color-text)] hover:text-[var(--color-background)] transition-all duration-500 group disabled:opacity-30" aria-label="Next Project">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-                   </button>
-                </div>
-             </div>
-          </div>
-          
-        </div>
-      </div>
-
-      <!-- Horizontal Track Container -->
-      <div class="relative flex-1 flex items-center min-h-0">
+      <!-- Content Wrapper -->
+      <div class="w-full flex-1 flex flex-col justify-between min-h-0">
         
-        <!-- Horizontal Track -->
-        <div class="projects-track flex items-center pl-6 md:pl-28 pr-[80vw] gap-12 md:gap-20 will-change-transform z-10 relative" #track>
-          
-          <!-- Project Cards -->
-          @for (project of projects; track project.title; let i = $index) {
-            <article class="project-card group relative w-[80vw] md:w-[500px] lg:w-[600px] shrink-0 cursor-pointer">
-               <a [href]="project.links.live || project.links.source" target="_blank" rel="noopener noreferrer" class="block">
-                  <!-- Image Container -->
-                  <div class="relative aspect-[16/10] overflow-hidden bg-[var(--color-card)] rounded-sm md:rounded-md mb-6 border border-[var(--color-border)] group-hover:border-[var(--color-primary)] transition-all duration-500 shadow-2xl">
-                     @if (project.image) {
-                        <img [src]="project.image" [alt]="project.title" 
-                             class="w-full h-full object-cover transition-transform duration-1000 [transition-timing-function:cubic-bezier(0.19,1,0.22,1)] group-hover:scale-110" 
-                             loading="lazy" decoding="async" />
-                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500"></div>
-                     } @else {
-                        <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-card)] to-[var(--color-background)] flex items-center justify-center">
-                           <span class="text-5xl font-black text-[var(--color-text)] opacity-10 select-none">{{project.year}}</span>
-                        </div>
-                     }
-                     
-                     <!-- Type Badge -->
-                     <div class="absolute top-4 left-4 z-20">
-                        <span class="text-[8px] px-2 py-0.5 bg-black/80 text-white backdrop-blur-md rounded-full uppercase tracking-widest font-bold border border-white/10">
-                           {{project.type}}
-                        </span>
-                     </div>
-                  </div>
+        <!-- Section Header -->
+        <div class="w-full px-6 md:px-28 z-20 relative flex-shrink-0 mb-4">
+          <div class="flex flex-col md:flex-row md:items-end justify-between gap-2 md:gap-8">
+            
+            <div class="space-y-1">
+               <h2 class="text-4xl md:text-6xl lg:text-7xl font-serif leading-[1] tracking-tight text-[var(--color-text)]">
+                  Selected <span class="italic opacity-80">Works</span>
+               </h2>
+               <div class="h-1 w-20 bg-[var(--color-primary)]"></div>
+            </div>
+            
+            <div class="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-12 pb-1">
+               <p class="text-sm md:text-base text-[var(--color-text-secondary)] leading-relaxed max-w-xs opacity-70">
+                  A selection of digital products focusing on SaaS architecture and scalable systems.
+               </p>
+               
+               <div class="flex items-center gap-4">
+                  <a href="#contact" (click)="handleCollaborateClick($event)" class="group flex items-center gap-2 px-5 py-2 rounded-full border border-[var(--color-border)] hover:bg-[var(--color-text)] hover:text-[var(--color-background)] transition-all duration-500">
+                     <span class="text-[10px] font-bold tracking-widest uppercase">Collaborate</span>
+                  </a>
 
-                  <!-- Project Info -->
-                  <div class="flex items-center justify-between gap-4 border-b border-[var(--color-border)] pb-4 group-hover:border-[var(--color-text)] transition-colors duration-500">
-                     <div class="flex-1">
-                        <div class="text-[9px] font-mono text-[var(--color-text-secondary)] uppercase tracking-[0.2em] mb-1 opacity-60">
-                           {{project.year}} &mdash; {{project.stack.slice(0, 3).join(' / ')}}
-                        </div>
-                        <h3 class="text-lg md:text-2xl font-bold tracking-tight text-[var(--color-text)] uppercase leading-none transition-transform duration-500 group-hover:translate-x-1">
-                           {{project.title}}
-                        </h3>
-                     </div>
-                     
-                     <div class="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" 
-                             class="transition-all duration-500 [transition-timing-function:cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-[var(--color-primary)]">
-                           <path d="M7 7h10v10M7 17 17 7"/>
-                        </svg>
-                     </div>
+                  <!-- Navigation Buttons -->
+                  <div class="flex gap-2">
+                     <button (click)="navScroll('prev')" class="w-9 h-9 rounded-full border border-[var(--color-border)] flex items-center justify-center hover:bg-[var(--color-text)] hover:text-[var(--color-background)] transition-all duration-500 group disabled:opacity-30" aria-label="Previous Project">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                     </button>
+                     <button (click)="navScroll('next')" class="w-9 h-9 rounded-full border border-[var(--color-border)] flex items-center justify-center hover:bg-[var(--color-text)] hover:text-[var(--color-background)] transition-all duration-500 group disabled:opacity-30" aria-label="Next Project">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                     </button>
                   </div>
-               </a>
-            </article>
-          }
+               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Horizontal Track Container -->
+        <div class="relative flex-1 flex items-end min-h-0">
+          <!-- Horizontal Track -->
+          <div class="projects-track flex items-center pl-6 md:pl-28 pr-[80vw] gap-12 md:gap-20 will-change-transform z-10 relative" #track>
+            <!-- Project Cards -->
+            @for (project of projects; track project.title; let i = $index) {
+              <article class="project-card group relative w-[80vw] md:w-[500px] lg:w-[600px] shrink-0 cursor-pointer flex flex-col max-h-full">
+                 <a [href]="project.links.live || project.links.source" target="_blank" rel="noopener noreferrer" class="flex flex-col h-full">
+                    <!-- Image Container -->
+                    <div class="relative aspect-[16/10] max-h-[35dvh] md:max-h-[50dvh] overflow-hidden bg-[var(--color-card)] rounded-sm md:rounded-md mb-4 md:mb-6 border border-[var(--color-border)] group-hover:border-[var(--color-primary)] transition-all duration-500 shadow-2xl flex-shrink-1">
+                       @if (project.image) {
+                          <img [src]="project.image" [alt]="project.title" 
+                               class="w-full h-full object-cover transition-transform duration-1000 [transition-timing-function:cubic-bezier(0.19,1,0.22,1)] group-hover:scale-110" 
+                               loading="lazy" decoding="async" />
+                          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500"></div>
+                       } @else {
+                          <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-card)] to-[var(--color-background)] flex items-center justify-center">
+                             <span class="text-5xl font-black text-[var(--color-text)] opacity-10 select-none">{{project.year}}</span>
+                          </div>
+                       }
+                       
+                       <!-- Type Badge -->
+                       <div class="absolute top-4 left-4 z-20">
+                          <span class="text-[8px] px-2 py-0.5 bg-black/80 text-white backdrop-blur-md rounded-full uppercase tracking-widest font-bold border border-white/10">
+                             {{project.type}}
+                          </span>
+                       </div>
+                    </div>
+
+                    <!-- Project Info -->
+                    <div class="flex items-center justify-between gap-4 border-b border-[var(--color-border)] pb-4 group-hover:border-[var(--color-text)] transition-colors duration-500">
+                       <div class="flex-1">
+                          <div class="text-[9px] font-mono text-[var(--color-text-secondary)] uppercase tracking-[0.2em] mb-1 opacity-60">
+                             {{project.year}} &mdash; {{project.stack.slice(0, 3).join(' / ')}}
+                          </div>
+                          <h3 class="text-lg md:text-2xl font-bold tracking-tight text-[var(--color-text)] uppercase leading-none transition-transform duration-500 group-hover:translate-x-1">
+                             {{project.title}}
+                          </h3>
+                       </div>
+                       
+                       <div class="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center shrink-0">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" 
+                               class="transition-all duration-500 [transition-timing-function:cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-[var(--color-primary)]">
+                             <path d="M7 7h10v10M7 17 17 7"/>
+                          </svg>
+                       </div>
+                    </div>
+                 </a>
+              </article>
+            }
+          </div>
         </div>
 
       </div>
@@ -113,6 +115,9 @@ import { isPlatformBrowser } from '@angular/common';
 export class ProjectsGrid implements OnDestroy {
   track = viewChild<ElementRef<HTMLElement>>('track');
   contentBodies = viewChildren<ElementRef<HTMLElement>>('contentBody');
+  private scrollService = inject(ScrollService);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
 
   projects = [
     {
@@ -171,10 +176,9 @@ export class ProjectsGrid implements OnDestroy {
   private ScrollTrigger: any;
   private st: any;
 
-  private platformId = inject(PLATFORM_ID);
-
   constructor() {
     afterNextRender(() => {
+      if (!this.isBrowser) return;
       const trackEl = this.track()?.nativeElement;
       if (!trackEl) return;
 
@@ -242,6 +246,13 @@ export class ProjectsGrid implements OnDestroy {
     const gsap = gsapModule.default;
     
     const currentProgress = this.st.progress;
+
+    // If we are at the end and click next, scroll down to the next section (contact)
+    if (direction === 'next' && currentProgress >= 0.98) {
+      this.scrollService.scrollTo('#contact');
+      return;
+    }
+
     const step = 1 / (this.projects.length - 1);
     
     let targetProgress = direction === 'next' 
@@ -259,6 +270,11 @@ export class ProjectsGrid implements OnDestroy {
       duration: 0.8,
       ease: 'power3.inOut'
     });
+  }
+
+  handleCollaborateClick(e: Event) {
+    e.preventDefault();
+    this.scrollService.scrollTo('#contact');
   }
 
   ngOnDestroy() {
