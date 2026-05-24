@@ -251,106 +251,25 @@ export class ProjectsGrid implements OnDestroy {
       .slice(0, 3);
   }
 
-  onCardMouseMove(e: MouseEvent) {
-    const card = e.currentTarget as HTMLElement;
+  private handleCardInteraction(card: HTMLElement, clientX: number, clientY: number, checkBounds = false) {
     const inner = card.querySelector('.card-inner') as HTMLElement;
     const isFlipped = inner && inner.style.getPropertyValue('--flip-rotation') === 'rotateY(180deg)';
 
     const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
 
-    // Directly set mouse coordinates for spotlight
-    card.style.setProperty('--mouse-x', `${x}px`);
-    card.style.setProperty('--mouse-y', `${y}px`);
-
-    if (isFlipped) {
-      card.style.setProperty('--rotate-x', '0deg');
-      card.style.setProperty('--rotate-y', '0deg');
-      card.style.setProperty('--text-tx', '0px');
-      card.style.setProperty('--text-ty', '0px');
-      return;
-    }
-
-    // Normalize coordinates to [-1, 1] relative to center
-    const xc = rect.width / 2;
-    const yc = rect.height / 2;
-    const dx = (x - xc) / xc; // range: [-1, 1]
-    const dy = (y - yc) / yc; // range: [-1, 1]
-
-    // Calculate rotation angles (max 10 degrees)
-    const rotateX = -dy * 10;
-    const rotateY = dx * 10;
-
-    // Calculate parallax offsets (max 15px)
-    const textTx = dx * 15;
-    const textTy = dy * 15;
-
-    // Directly set custom properties for peak performance
-    card.style.setProperty('--rotate-x', `${rotateX}deg`);
-    card.style.setProperty('--rotate-y', `${rotateY}deg`);
-    card.style.setProperty('--text-tx', `${textTx}px`);
-    card.style.setProperty('--text-ty', `${textTy}px`);
-  }
-
-  onCardMouseLeave(e: MouseEvent) {
-    const card = e.currentTarget as HTMLElement;
-    card.style.setProperty('--rotate-x', '0deg');
-    card.style.setProperty('--rotate-y', '0deg');
-    card.style.setProperty('--text-tx', '0px');
-    card.style.setProperty('--text-ty', '0px');
-    card.style.setProperty('--spotlight-opacity', '0');
-
-    // Automatically flip back to front when mouse leaves
-    const inner = card.querySelector('.card-inner') as HTMLElement;
-    if (inner) {
-      inner.style.setProperty('--flip-rotation', 'rotateY(0deg)');
-    }
-  }
-
-  onCardTouchStart(e: TouchEvent) {
-    const card = e.currentTarget as HTMLElement;
-    const inner = card.querySelector('.card-inner') as HTMLElement;
-    const isFlipped = inner && inner.style.getPropertyValue('--flip-rotation') === 'rotateY(180deg)';
-    if (isFlipped) return;
-
-    const touch = e.touches[0];
-    const rect = card.getBoundingClientRect();
-    const x = touch.clientX - rect.left;
-    const y = touch.clientY - rect.top;
-
-    const xc = rect.width / 2;
-    const yc = rect.height / 2;
-    const dx = (x - xc) / xc;
-    const dy = (y - yc) / yc;
-
-    const rotateX = -dy * 10;
-    const rotateY = dx * 10;
-    const textTx = dx * 15;
-    const textTy = dy * 15;
-
+    // Spotlight glow coordinates
     card.style.setProperty('--mouse-x', `${x}px`);
     card.style.setProperty('--mouse-y', `${y}px`);
     card.style.setProperty('--spotlight-opacity', '0.15');
-    card.style.setProperty('--rotate-x', `${rotateX}deg`);
-    card.style.setProperty('--rotate-y', `${rotateY}deg`);
-    card.style.setProperty('--text-tx', `${textTx}px`);
-    card.style.setProperty('--text-ty', `${textTy}px`);
-  }
 
-  onCardTouchMove(e: TouchEvent) {
-    const card = e.currentTarget as HTMLElement;
-    const inner = card.querySelector('.card-inner') as HTMLElement;
-    const isFlipped = inner && inner.style.getPropertyValue('--flip-rotation') === 'rotateY(180deg)';
-    if (isFlipped) return;
+    if (isFlipped) {
+      this.resetCardProperties(card);
+      return;
+    }
 
-    const touch = e.touches[0];
-    const rect = card.getBoundingClientRect();
-    const x = touch.clientX - rect.left;
-    const y = touch.clientY - rect.top;
-
-    // Check if touch moved outside card bounds
-    if (x < 0 || x > rect.width || y < 0 || y > rect.height) {
+    if (checkBounds && (x < 0 || x > rect.width || y < 0 || y > rect.height)) {
       this.resetCardProperties(card);
       return;
     }
@@ -360,23 +279,33 @@ export class ProjectsGrid implements OnDestroy {
     const dx = (x - xc) / xc;
     const dy = (y - yc) / yc;
 
-    const rotateX = -dy * 10;
-    const rotateY = dx * 10;
-    const textTx = dx * 15;
-    const textTy = dy * 15;
+    card.style.setProperty('--rotate-x', `${-dy * 10}deg`);
+    card.style.setProperty('--rotate-y', `${dx * 10}deg`);
+    card.style.setProperty('--text-tx', `${dx * 15}px`);
+    card.style.setProperty('--text-ty', `${dy * 15}px`);
+  }
 
-    card.style.setProperty('--mouse-x', `${x}px`);
-    card.style.setProperty('--mouse-y', `${y}px`);
-    card.style.setProperty('--spotlight-opacity', '0.15');
-    card.style.setProperty('--rotate-x', `${rotateX}deg`);
-    card.style.setProperty('--rotate-y', `${rotateY}deg`);
-    card.style.setProperty('--text-tx', `${textTx}px`);
-    card.style.setProperty('--text-ty', `${textTy}px`);
+  onCardMouseMove(e: MouseEvent) {
+    this.handleCardInteraction(e.currentTarget as HTMLElement, e.clientX, e.clientY);
+  }
+
+  onCardMouseLeave(e: MouseEvent) {
+    const card = e.currentTarget as HTMLElement;
+    this.resetCardProperties(card);
+    const inner = card.querySelector('.card-inner') as HTMLElement;
+    if (inner) inner.style.setProperty('--flip-rotation', 'rotateY(0deg)');
+  }
+
+  onCardTouchStart(e: TouchEvent) {
+    this.handleCardInteraction(e.currentTarget as HTMLElement, e.touches[0].clientX, e.touches[0].clientY);
+  }
+
+  onCardTouchMove(e: TouchEvent) {
+    this.handleCardInteraction(e.currentTarget as HTMLElement, e.touches[0].clientX, e.touches[0].clientY, true);
   }
 
   onCardTouchEnd(e: TouchEvent) {
-    const card = e.currentTarget as HTMLElement;
-    this.resetCardProperties(card);
+    this.resetCardProperties(e.currentTarget as HTMLElement);
   }
 
   private resetCardProperties(card: HTMLElement) {
