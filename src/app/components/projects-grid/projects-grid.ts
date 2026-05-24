@@ -23,21 +23,21 @@ import { ScrollService } from '../../services/scroll';
             </div>
             
             <div class="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-12 pb-1">
-               <p class="text-sm md:text-base text-[var(--color-text-secondary)] leading-relaxed max-w-xs opacity-70">
+               <p class="text-sm md:text-base text-[var(--color-text)] font-medium leading-relaxed max-w-xs opacity-95">
                   A selection of digital products focusing on SaaS architecture and scalable systems.
                </p>
                
                <div class="flex items-center gap-4">
-                  <a href="#contact" (click)="handleCollaborateClick($event)" class="group flex items-center gap-2 px-5 py-2 rounded-full border border-[var(--color-border)] hover:bg-[var(--color-text)] hover:text-[var(--color-background)] transition-all duration-500">
+                  <a href="#contact" (click)="handleCollaborateClick($event)" class="group flex items-center gap-2 px-5 py-2 rounded-full border border-[var(--color-border)] bg-[var(--color-card)]/40 backdrop-blur-md hover:bg-[var(--color-text)] hover:text-[var(--color-background)] transition-all duration-500 shadow-sm">
                      <span class="text-[10px] font-bold tracking-widest uppercase">Collaborate</span>
                   </a>
 
                   <!-- Navigation Buttons -->
                   <div class="flex gap-2">
-                     <button (click)="navScroll('prev')" class="w-9 h-9 rounded-full border border-[var(--color-border)] flex items-center justify-center hover:bg-[var(--color-text)] hover:text-[var(--color-background)] transition-all duration-500 group disabled:opacity-30" aria-label="Previous Project">
+                     <button (click)="navScroll('prev')" class="w-9 h-9 rounded-full border border-[var(--color-border)] bg-[var(--color-card)]/40 backdrop-blur-md flex items-center justify-center hover:bg-[var(--color-text)] hover:text-[var(--color-background)] transition-all duration-500 group disabled:opacity-30" aria-label="Previous Project">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                      </button>
-                     <button (click)="navScroll('next')" class="w-9 h-9 rounded-full border border-[var(--color-border)] flex items-center justify-center hover:bg-[var(--color-text)] hover:text-[var(--color-background)] transition-all duration-500 group disabled:opacity-30" aria-label="Next Project">
+                     <button (click)="navScroll('next')" class="w-9 h-9 rounded-full border border-[var(--color-border)] bg-[var(--color-card)]/40 backdrop-blur-md flex items-center justify-center hover:bg-[var(--color-text)] hover:text-[var(--color-background)] transition-all duration-500 group disabled:opacity-30" aria-label="Next Project">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
                      </button>
                   </div>
