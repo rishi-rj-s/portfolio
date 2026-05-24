@@ -57,7 +57,10 @@ import { ScrollService } from '../../services/scroll';
                  <div (click)="onCardClick($event)"
                       (mousemove)="onCardMouseMove($event)" 
                       (mouseleave)="onCardMouseLeave($event)"
-                      class="relative aspect-[2/1] max-h-[25dvh] md:max-h-[35dvh] rounded-sm md:rounded-md mb-4 md:mb-6 border border-[var(--color-border)] group-hover:border-[var(--color-primary)] shadow-2xl flex-shrink-1 cursor-pointer"
+                      (touchstart)="onCardTouchStart($event)"
+                      (touchmove)="onCardTouchMove($event)"
+                      (touchend)="onCardTouchEnd($event)"
+                      class="relative aspect-[16/9] md:aspect-[2/1] max-h-[25dvh] md:max-h-[35dvh] rounded-sm md:rounded-md mb-4 md:mb-6 border border-[var(--color-border)] group-hover:border-[var(--color-primary)] group-active:border-[var(--color-primary)] shadow-2xl flex-shrink-1 cursor-pointer"
                       style="transform: perspective(1000px) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg)); transition: transform 0.25s cubic-bezier(0.1, 1, 0.1, 1), border-color 0.5s; transform-style: preserve-3d; will-change: transform;">
                     
                     <!-- Card Inner (handles the 180deg flip) -->
@@ -71,22 +74,22 @@ import { ScrollService } from '../../services/scroll';
                             <!-- Dot pattern background -->
                             <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.07] bg-[radial-gradient(var(--color-text)_1px,transparent_1px)] [background-size:16px_16px]"></div>
                             
-                            <!-- Mouse Spotlight Glow -->
-                            <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                            <!-- Mouse/Touch Spotlight Glow -->
+                            <div class="absolute inset-0 opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-300 pointer-events-none"
                                  [style.background]="'radial-gradient(220px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), var(--color-primary) 0%, transparent 100%)'"
-                                 style="opacity: 0.15; mix-blend-mode: plus-lighter; will-change: background;"></div>
+                                 style="mix-blend-mode: plus-lighter; opacity: var(--spotlight-opacity, 0); will-change: background, opacity;"></div>
 
                             <!-- Initials (3D Floating Parallax Text) -->
-                            <span class="text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter bg-gradient-to-br from-[var(--color-text)] to-[var(--color-primary)] bg-clip-text text-transparent opacity-25 group-hover:opacity-100 group-hover:drop-shadow-[0_0_20px_var(--glow-primary)] select-none font-sans relative z-10"
+                            <span class="text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter bg-gradient-to-br from-[var(--color-text)] to-[var(--color-primary)] bg-clip-text text-transparent opacity-25 group-hover:opacity-100 group-active:opacity-100 group-hover:drop-shadow-[0_0_20px_var(--glow-primary)] select-none font-sans relative z-10"
                                  style="transform: translate3d(var(--text-tx, 0px), var(--text-ty, 0px), 30px); transition: transform 0.25s cubic-bezier(0.1, 1, 0.1, 1), opacity 0.5s; will-change: transform;">
                               {{ getInitials(project.title) }}
                             </span>
 
                             <!-- Tech corner accents -->
-                            <div class="absolute top-3 left-3 w-1.5 h-1.5 border-t border-l border-[var(--color-border)] group-hover:border-[var(--color-primary)] transition-colors duration-500 opacity-60"></div>
-                            <div class="absolute top-3 right-3 w-1.5 h-1.5 border-t border-r border-[var(--color-border)] group-hover:border-[var(--color-primary)] transition-colors duration-500 opacity-60"></div>
-                            <div class="absolute bottom-3 left-3 w-1.5 h-1.5 border-b border-l border-[var(--color-border)] group-hover:border-[var(--color-primary)] transition-colors duration-500 opacity-60"></div>
-                            <div class="absolute bottom-3 right-3 w-1.5 h-1.5 border-b border-r border-[var(--color-border)] group-hover:border-[var(--color-primary)] transition-colors duration-500 opacity-60"></div>
+                            <div class="absolute top-3 left-3 w-1.5 h-1.5 border-t border-l border-[var(--color-border)] group-hover:border-[var(--color-primary)] group-active:border-[var(--color-primary)] transition-colors duration-500 opacity-60"></div>
+                            <div class="absolute top-3 right-3 w-1.5 h-1.5 border-t border-r border-[var(--color-border)] group-hover:border-[var(--color-primary)] group-active:border-[var(--color-primary)] transition-colors duration-500 opacity-60"></div>
+                            <div class="absolute bottom-3 left-3 w-1.5 h-1.5 border-b border-l border-[var(--color-border)] group-hover:border-[var(--color-primary)] group-active:border-[var(--color-primary)] transition-colors duration-500 opacity-60"></div>
+                            <div class="absolute bottom-3 right-3 w-1.5 h-1.5 border-b border-r border-[var(--color-border)] group-hover:border-[var(--color-primary)] group-active:border-[var(--color-primary)] transition-colors duration-500 opacity-60"></div>
 
                             <!-- Index / Numbering Badge -->
                             <div class="absolute top-4 right-4 z-20 font-mono text-[10px] tracking-widest text-[var(--color-text)] opacity-40 select-none">
@@ -296,12 +299,92 @@ export class ProjectsGrid implements OnDestroy {
     card.style.setProperty('--rotate-y', '0deg');
     card.style.setProperty('--text-tx', '0px');
     card.style.setProperty('--text-ty', '0px');
+    card.style.setProperty('--spotlight-opacity', '0');
 
     // Automatically flip back to front when mouse leaves
     const inner = card.querySelector('.card-inner') as HTMLElement;
     if (inner) {
       inner.style.setProperty('--flip-rotation', 'rotateY(0deg)');
     }
+  }
+
+  onCardTouchStart(e: TouchEvent) {
+    const card = e.currentTarget as HTMLElement;
+    const inner = card.querySelector('.card-inner') as HTMLElement;
+    const isFlipped = inner && inner.style.getPropertyValue('--flip-rotation') === 'rotateY(180deg)';
+    if (isFlipped) return;
+
+    const touch = e.touches[0];
+    const rect = card.getBoundingClientRect();
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+
+    const xc = rect.width / 2;
+    const yc = rect.height / 2;
+    const dx = (x - xc) / xc;
+    const dy = (y - yc) / yc;
+
+    const rotateX = -dy * 10;
+    const rotateY = dx * 10;
+    const textTx = dx * 15;
+    const textTy = dy * 15;
+
+    card.style.setProperty('--mouse-x', `${x}px`);
+    card.style.setProperty('--mouse-y', `${y}px`);
+    card.style.setProperty('--spotlight-opacity', '0.15');
+    card.style.setProperty('--rotate-x', `${rotateX}deg`);
+    card.style.setProperty('--rotate-y', `${rotateY}deg`);
+    card.style.setProperty('--text-tx', `${textTx}px`);
+    card.style.setProperty('--text-ty', `${textTy}px`);
+  }
+
+  onCardTouchMove(e: TouchEvent) {
+    const card = e.currentTarget as HTMLElement;
+    const inner = card.querySelector('.card-inner') as HTMLElement;
+    const isFlipped = inner && inner.style.getPropertyValue('--flip-rotation') === 'rotateY(180deg)';
+    if (isFlipped) return;
+
+    const touch = e.touches[0];
+    const rect = card.getBoundingClientRect();
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+
+    // Check if touch moved outside card bounds
+    if (x < 0 || x > rect.width || y < 0 || y > rect.height) {
+      this.resetCardProperties(card);
+      return;
+    }
+
+    const xc = rect.width / 2;
+    const yc = rect.height / 2;
+    const dx = (x - xc) / xc;
+    const dy = (y - yc) / yc;
+
+    const rotateX = -dy * 10;
+    const rotateY = dx * 10;
+    const textTx = dx * 15;
+    const textTy = dy * 15;
+
+    card.style.setProperty('--mouse-x', `${x}px`);
+    card.style.setProperty('--mouse-y', `${y}px`);
+    card.style.setProperty('--spotlight-opacity', '0.15');
+    card.style.setProperty('--rotate-x', `${rotateX}deg`);
+    card.style.setProperty('--rotate-y', `${rotateY}deg`);
+    card.style.setProperty('--text-tx', `${textTx}px`);
+    card.style.setProperty('--text-ty', `${textTy}px`);
+  }
+
+  onCardTouchEnd(e: TouchEvent) {
+    const card = e.currentTarget as HTMLElement;
+    this.resetCardProperties(card);
+  }
+
+  private resetCardProperties(card: HTMLElement) {
+    card.style.setProperty('--rotate-x', '0deg');
+    card.style.setProperty('--rotate-y', '0deg');
+    card.style.setProperty('--text-tx', '0px');
+    card.style.setProperty('--text-ty', '0px');
+    card.style.setProperty('--spotlight-opacity', '0');
   }
 
   onCardClick(e: MouseEvent) {
@@ -314,11 +397,7 @@ export class ProjectsGrid implements OnDestroy {
       inner.style.setProperty('--flip-rotation', 'rotateY(0deg)');
     } else {
       inner.style.setProperty('--flip-rotation', 'rotateY(180deg)');
-      // Reset tilt when flipping
-      card.style.setProperty('--rotate-x', '0deg');
-      card.style.setProperty('--rotate-y', '0deg');
-      card.style.setProperty('--text-tx', '0px');
-      card.style.setProperty('--text-ty', '0px');
+      this.resetCardProperties(card);
     }
   }
 
