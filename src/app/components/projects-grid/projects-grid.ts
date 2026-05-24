@@ -54,19 +54,24 @@ import { ScrollService } from '../../services/scroll';
             @for (project of projects; track project.title; let i = $index) {
               <article class="project-card group relative w-[80vw] md:w-[500px] lg:w-[600px] shrink-0 cursor-pointer flex flex-col max-h-full">
                  <a [href]="project.links.live || project.links.source" target="_blank" rel="noopener noreferrer" class="flex flex-col h-full">
-                    <!-- Image Container -->
-                    <div class="relative aspect-[16/10] max-h-[35dvh] md:max-h-[50dvh] overflow-hidden bg-[var(--color-card)] rounded-sm md:rounded-md mb-4 md:mb-6 border border-[var(--color-border)] group-hover:border-[var(--color-primary)] transition-all duration-500 shadow-2xl flex-shrink-1">
-                       @if (project.image) {
-                          <img [src]="project.image" [alt]="project.title" 
-                               class="w-full h-full object-cover transition-transform duration-1000 [transition-timing-function:cubic-bezier(0.19,1,0.22,1)] group-hover:scale-110" 
-                               loading="lazy" decoding="async" />
-                          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500"></div>
-                       } @else {
-                          <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-card)] to-[var(--color-background)] flex items-center justify-center">
-                             <span class="text-5xl font-black text-[var(--color-text)] opacity-10 select-none">{{project.year}}</span>
-                          </div>
-                       }
+                    <!-- Initials Container -->
+                    <div class="relative aspect-[2/1] max-h-[25dvh] md:max-h-[35dvh] overflow-hidden bg-gradient-to-br from-[var(--color-card)] to-[var(--color-background)] rounded-sm md:rounded-md mb-4 md:mb-6 border border-[var(--color-border)] group-hover:border-[var(--color-primary)] transition-all duration-500 shadow-2xl flex-shrink-1 flex items-center justify-center">
+                       <!-- Dot pattern background -->
+                       <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.07] bg-[radial-gradient(var(--color-text)_1px,transparent_1px)] [background-size:16px_16px]"></div>
                        
+                       <!-- Hover Glow -->
+                       <div class="absolute w-48 h-48 rounded-full bg-[var(--color-primary)] opacity-0 group-hover:opacity-10 blur-3xl transition-opacity duration-1000"></div>
+
+                       <!-- Initials -->
+                       <span class="text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter bg-gradient-to-br from-[var(--color-text)] to-[var(--color-primary)] bg-clip-text text-transparent opacity-20 group-hover:opacity-90 transition-all duration-700 select-none font-sans relative z-10 group-hover:scale-105 transform">
+                          {{ getInitials(project.title) }}
+                       </span>
+
+                       <!-- Index / Numbering Badge -->
+                       <div class="absolute top-4 right-4 z-20 font-mono text-[10px] tracking-widest text-[var(--color-text)] opacity-40 select-none">
+                          /0{{ i + 1 }}
+                       </div>
+
                        <!-- Type Badge -->
                        <div class="absolute top-4 left-4 z-20">
                           <span class="text-[8px] px-2 py-0.5 bg-black/80 text-white backdrop-blur-md rounded-full uppercase tracking-widest font-bold border border-white/10">
@@ -124,7 +129,6 @@ export class ProjectsGrid implements OnDestroy {
       title: 'Tagtics',
       type: 'SaaS',
       year: '2025',
-      image: 'assets/projects/tagtics.png',
       description: 'A multi-tenant UI feedback SaaS. Users click any element on any web app and submit contextual feedback — no changes needed to the target app\'s code. Designed with PostgreSQL Row-Level Security (RLS) enforcing strict data isolation at the database layer per tenant. Frontend is live; backend integration with Supabase Edge Functions is in active development.',
       stack: ['React', 'Supabase', 'PostgreSQL', 'RLS', 'TypeScript'],
       links: {
@@ -137,7 +141,6 @@ export class ProjectsGrid implements OnDestroy {
       title: 'Green Power India',
       type: 'Client Contract',
       year: '2026',
-      image: 'assets/projects/green-power-india.png',
       description: 'Delivered end-to-end for a sustainable energy company — full stack corporate platform built with Next.js 15 App Router, deployed on Vercel. Designed and implemented a Supabase and PostgreSQL backend with structured bucket storage for dynamic media assets. Owned both the frontend (bento-style UI with Tailwind CSS and Framer Motion) and the backend schema and API layer.',
       stack: ['Next.js 15', 'React 19', 'Supabase', 'PostgreSQL', 'Tailwind CSS', 'Framer Motion'],
       links: {
@@ -149,7 +152,6 @@ export class ProjectsGrid implements OnDestroy {
       title: 'Ever-Gauzy',
       type: 'Open Source',
       year: '2025',
-      image: 'assets/projects/ever-gauzy.png',
       description: 'Contributed to a 100,000+ line enterprise ERP built on NestJS and Angular. Navigated a large Nx monorepo to improve the authentication UI — gaining direct exposure to production-grade enterprise patterns including CQRS, Event Sourcing, and Hexagonal Architecture in a live system used by real organisations.',
       stack: ['NestJS', 'Angular', 'TypeScript', 'Nx', 'CQRS'],
       links: {
@@ -162,7 +164,6 @@ export class ProjectsGrid implements OnDestroy {
       title: 'Fashion Studio',
       type: 'E-Commerce',
       year: '2024',
-      image: 'assets/projects/fashion-studio.png',
       description: 'Production e-commerce backend deployed on a self-managed AWS EC2 instance with Nginx configured as a reverse proxy. Integrated Razorpay payment gateway with webhook signature verification for tamper-proof transaction handling. Covers product catalogue management, user auth, and order processing.',
       stack: ['Node.js', 'Express', 'MongoDB', 'AWS EC2', 'Nginx'],
       links: {
@@ -170,6 +171,16 @@ export class ProjectsGrid implements OnDestroy {
       }
     }
   ];
+
+  getInitials(title: string): string {
+    if (!title) return '';
+    return title
+      .split(/[\s-]+/)
+      .map(word => word[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 3);
+  }
 
   ctx: any;
   private resizeHandler: (() => void) | null = null;
