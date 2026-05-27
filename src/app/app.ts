@@ -22,7 +22,11 @@ import { ScrollService } from './services/scroll';
   ],
   template: `
     <!-- Wild Scroll Indicator (Perimeter) -->
-    <svg class="fixed inset-0 w-full h-[100dvh] pointer-events-none z-[9999] overflow-visible" fill="none">
+    <svg 
+      class="fixed inset-0 w-full h-full pointer-events-none z-[9999] overflow-visible" 
+      fill="none"
+      [attr.viewBox]="'0 0 ' + windowSize().w + ' ' + windowSize().h"
+    >
       <path 
         [attr.d]="pathD()" 
         stroke="var(--color-primary)" 
@@ -190,7 +194,14 @@ export class App {
   }
 
   onScroll() {
-    // Calculate progress based on full document scroll
+    // Try to get Lenis progress first for the most accurate reading on mobile
+    const lenis = this.scrollService.getLenis();
+    if (lenis && typeof lenis.progress === 'number') {
+      this.scrollProgress.set(Math.max(0, Math.min(1, lenis.progress)));
+      return;
+    }
+
+    // Fallback manual calculation based on full document scroll
     const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
     const progress = window.scrollY / scrollHeight;
     this.scrollProgress.set(isNaN(progress) ? 0 : Math.max(0, Math.min(1, progress)));
