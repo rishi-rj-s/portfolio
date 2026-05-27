@@ -1,4 +1,4 @@
-import { Component, PLATFORM_ID, inject, afterNextRender, Injector } from '@angular/core';
+import { Component, PLATFORM_ID, inject, afterNextRender, Injector, signal, computed } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { Navbar } from './components/navbar/navbar';
@@ -21,6 +21,20 @@ import { ScrollService } from './services/scroll';
     ThemeSelectorComponent
   ],
   template: `
+    <!-- Wild Scroll Indicator (Perimeter) -->
+    <svg class="fixed inset-0 w-full h-[100dvh] pointer-events-none z-[9999] overflow-visible" fill="none">
+      <path 
+        [attr.d]="pathD()" 
+        stroke="var(--color-primary)" 
+        stroke-width="8" 
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        [style.stroke-dasharray]="dashArray()"
+        [style.stroke-dashoffset]="dashOffset()"
+        class="transition-[stroke-dashoffset] duration-100 ease-out opacity-90 filter drop-shadow-[0_0_8px_var(--color-primary)]"
+      />
+    </svg>
+
     <app-webgl-background />
     <div class="noise-overlay"></div>
 
@@ -46,9 +60,60 @@ export class App {
   private loaderService = inject(LoaderService);
   private scrollService = inject(ScrollService); // Injected to initialize Lenis smooth scroll
   
+  // State for wild scrollbar
+  windowSize = signal({ w: 0, h: 0 });
+  scrollProgress = signal(0);
+  
+  // Computed path properties
+  pathD = computed(() => {
+    const { w, h } = this.windowSize();
+    if (w === 0 || h === 0) return '';
+    const p = 4; // Padding to ensure stroke stays inside viewport on all screens
+    const iw = w - p;
+    const ih = h - p;
+    
+    // Full Perimeter Path Clockwise: Top-Middle -> Top-Right -> Bottom-Right -> Bottom-Left -> Top-Left -> Top-Middle
+    return `
+      M ${w/2}, ${p}
+      L ${iw}, ${p}
+      L ${iw}, ${ih}
+      L ${p}, ${ih}
+      L ${p}, ${p}
+      L ${w/2}, ${p}
+    `;
+  });
+
+  pathLength = computed(() => {
+    const { w, h } = this.windowSize();
+    if (w === 0 || h === 0) return 0;
+    const p = 4;
+    // 2 * width + 2 * height - corners
+    return 2 * (w - 2 * p) + 2 * (h - 2 * p);
+  });
+
+  dashArray = computed(() => {
+    const total = this.pathLength();
+    const thumbLen = 240; 
+    // Dash and Gap must add exactly to total for seamless infinite loops
+    return `${thumbLen} ${Math.max(0, total - thumbLen)}`;
+  });
+
+  dashOffset = computed(() => {
+    const total = this.pathLength();
+    // 4 full continuous loops around the screen
+    return -this.scrollProgress() * total * 4;
+  });
+
   constructor() {
     afterNextRender(() => {
       if (!this.isBrowser) return;
+
+      // Track window size and scroll for wild scrollbar
+      this.updateDimensions();
+      window.addEventListener('resize', () => this.updateDimensions());
+      
+      // Lenis fires smooth scroll, so we hook into it if we can, or just use window scroll
+      window.addEventListener('scroll', () => this.onScroll(), { passive: true });
       
       printAsciiArt();
       
@@ -118,5 +183,16 @@ export class App {
         });
       }, 3000);
     });
+  }
+
+  updateDimensions() {
+    this.windowSize.set({ w: window.innerWidth, h: window.innerHeight });
+  }
+
+  onScroll() {
+    // Calculate progress based on full document scroll
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = window.scrollY / scrollHeight;
+    this.scrollProgress.set(isNaN(progress) ? 0 : Math.max(0, Math.min(1, progress)));
   }
 }

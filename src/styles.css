@@ -179,7 +179,16 @@ body {
   transition: color 0.5s ease;
   font-family: var(--font-sans);
   overflow-x: hidden;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
+body::-webkit-scrollbar,
+html::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+}
+
 .font-serif {
   font-family: var(--font-serif);
 }
