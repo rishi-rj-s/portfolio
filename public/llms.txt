@@ -1,0 +1,29 @@
+# Rishiraj Sajeev - Full Stack Developer Portfolio
+
+> A modern, performant portfolio website built with Angular 20 and Tailwind CSS v4, showcasing the work of Rishiraj Sajeev.
+
+This portfolio highlights my skills and experience as a full-stack developer specializing in Angular, Vue 3, React, and NestJS. 
+
+## About Me
+- **Name:** Rishiraj Sajeev
+- **Roles:** Full Stack Developer
+- **Email:** rishirajsajeev@gmail.com
+- **LinkedIn:** [linkedin.com/in/rishiraj-sajeev](https://www.linkedin.com/in/rishiraj-sajeev)
+- **GitHub:** [github.com/rishi-rj-s](https://github.com/rishi-rj-s)
+
+## Technical Skills
+- **Frontend:** Vue 3, Angular, React, TypeScript, Tailwind CSS
+- **Backend:** Node.js, NestJS, Express, GraphQL, gRPC
+- **Database:** PostgreSQL, MongoDB, Redis, Supabase
+- **DevOps:** Docker, Kubernetes, GitHub Actions, AWS EC2
+- **State & Messaging:** RxJS, Pinia, NgRx, Kafka
+- **Tools & ORM:** Prisma, TypeORM, Socket.io, Git
+
+## Featured Projects
+- **EEZY-CABS:** Taxi booking microservice system (Angular, NestJS, Kafka, gRPC)
+- **Apply Log:** Job tracker application (Vue 3, Supabase)
+- **Tagtics:** SaaS feedback platform (React, Supabase)
+- **Fashion Studio:** E-commerce platform (Node.js, Express, MongoDB)
+
+## Resources & Details
+- Detailed portfolio data can be found at: [/llms-full.txt](/llms-full.txt)
