@@ -1,4 +1,4 @@
-import { Component, output, inject, signal, viewChild, ElementRef, afterNextRender, computed } from "@angular/core";
+import { Component, output, inject, signal, viewChild, ElementRef, afterNextRender, computed, NgZone, OnDestroy } from "@angular/core";
 import { ThemeOption, Theme } from "../../services/theme";
 import { Background, BackgroundStyle } from "../../services/background";
 
@@ -21,12 +21,13 @@ import { Background, BackgroundStyle } from "../../services/background";
         <!-- Wild Scroll Indicator (Perimeter) -->
         <svg class="absolute inset-0 w-full h-full pointer-events-none z-50 overflow-visible" fill="none">
           <path 
+            #scrollPath
             [attr.d]="pathD()" 
             stroke="var(--color-primary)" 
             stroke-width="8" 
             stroke-linecap="round"
             [style.stroke-dasharray]="dashArray()"
-            [style.stroke-dashoffset]="dashOffset()"
+            style="stroke-dashoffset: 0;"
             class="transition-[stroke-dashoffset] duration-150 ease-out opacity-90 filter drop-shadow-[0_0_8px_var(--color-primary)]"
           />
         </svg>
@@ -46,7 +47,6 @@ import { Background, BackgroundStyle } from "../../services/background";
         <!-- Scrollable Content -->
         <div 
           #scroller
-          (scroll)="onScroll($event)"
           class="overflow-y-auto overflow-x-hidden p-6 md:p-8 custom-scrollbar overscroll-contain flex-grow relative z-10"
         >
           
@@ -143,12 +143,14 @@ import { Background, BackgroundStyle } from "../../services/background";
     }
   `]
 })
-export class ThemeSelectorComponent {
+export class ThemeSelectorComponent implements OnDestroy {
   public theme = inject(Theme);
   public background = inject(Background);
+  private ngZone = inject(NgZone);
 
   modalBox = viewChild<ElementRef<HTMLElement>>('modalBox');
   scroller = viewChild<ElementRef<HTMLElement>>('scroller');
+  scrollPath = viewChild<ElementRef<SVGPathElement>>('scrollPath');
 
   themes = this.theme.availableThemes;
   backgrounds = this.background.availableBackgrounds;
@@ -156,7 +158,6 @@ export class ThemeSelectorComponent {
 
   // State for wild scrollbar
   modalSize = signal({ w: 0, h: 0 });
-  scrollProgress = signal(0);
   
   // Computed path properties
   pathD = computed(() => {
@@ -184,25 +185,41 @@ export class ThemeSelectorComponent {
     return (w/2 - r) + pi_r_2 + (h - 2*r) + pi_r_2 + (w/2 - r);
   });
 
-  // Dash array creates a fixed-size thumb (e.g., 240px) followed by a giant gap
   dashArray = computed(() => {
     const total = this.pathLength();
     const thumbLen = 240; // Fixed size thumb (increased from 80)
     return `${thumbLen} ${total}`;
   });
 
-  dashOffset = computed(() => {
-    const total = this.pathLength();
-    const thumbLen = 240;
-    // Offset goes from 0 (start) to -(total - thumbLen) (end)
-    return -this.scrollProgress() * (total - thumbLen);
-  });
+  private scrollHandler: ((e: Event) => void) | null = null;
+  private resizeHandler: (() => void) | null = null;
 
   constructor() {
     afterNextRender(() => {
       this.updateDimensions();
-      window.addEventListener('resize', () => this.updateDimensions());
+      this.resizeHandler = () => this.updateDimensions();
+      this.scrollHandler = (e: Event) => this.onScroll(e);
+
+      this.ngZone.runOutsideAngular(() => {
+        window.addEventListener('resize', this.resizeHandler!);
+        const scrollerEl = this.scroller()?.nativeElement;
+        if (scrollerEl) {
+          scrollerEl.addEventListener('scroll', this.scrollHandler!);
+        }
+      });
     });
+  }
+
+  ngOnDestroy() {
+    if (this.resizeHandler) {
+      window.removeEventListener('resize', this.resizeHandler);
+    }
+    if (this.scrollHandler) {
+      const scrollerEl = this.scroller()?.nativeElement;
+      if (scrollerEl) {
+        scrollerEl.removeEventListener('scroll', this.scrollHandler);
+      }
+    }
   }
 
   updateDimensions() {
@@ -215,7 +232,16 @@ export class ThemeSelectorComponent {
   onScroll(e: Event) {
     const el = e.target as HTMLElement;
     const progress = el.scrollTop / (el.scrollHeight - el.clientHeight);
-    this.scrollProgress.set(isNaN(progress) ? 0 : progress);
+    const validProgress = isNaN(progress) ? 0 : progress;
+
+    const total = this.pathLength();
+    const thumbLen = 240;
+    const offset = -validProgress * (total - thumbLen);
+
+    const pathEl = this.scrollPath()?.nativeElement;
+    if (pathEl) {
+      pathEl.style.strokeDashoffset = `${offset}`;
+    }
   }
 
   selectTheme(id: ThemeOption, event: MouseEvent) {

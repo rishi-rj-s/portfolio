@@ -33,6 +33,16 @@ export interface WebGLEffect {
   dispose(): void;
 }
 
+const THEME_COLORS_SINGLE: Record<string, number> = { light: 0x6366f1, dark: 0x8e2de2, ocean: 0x0ea5e9, sunset: 0xf43f5e, cyberpunk: 0xd946ef, forest: 0x10b981 };
+const THEME_COLORS_MULTI: Record<string, number[]> = {
+  light: [0x6366f1, 0x8b5cf6, 0xa78bfa, 0xc4b5fd, 0x7c3aed, 0x4f46e5, 0x818cf8],
+  dark: [0xff0088, 0x00ff88, 0x0088ff, 0xff8800, 0x8800ff, 0x00ffff, 0xff00ff],
+  ocean: [0x0ea5e9, 0x06b6d4, 0x14b8a6, 0x0284c7, 0x22d3ee, 0x67e8f9, 0x0891b2],
+  sunset: [0xf43f5e, 0xfb7185, 0xf97316, 0xfacc15, 0xef4444, 0xf87171, 0xfca5a5],
+  cyberpunk: [0xd946ef, 0xa855f7, 0xe879f9, 0xf0abfc, 0xc026d3, 0x9333ea, 0x7c3aed],
+  forest: [0x10b981, 0x34d399, 0x22c55e, 0x4ade80, 0x059669, 0x047857, 0x065f46]
+};
+
 // ============================================
 // AURORA EFFECT - Shader-based light curtains
 // ============================================
@@ -158,7 +168,8 @@ export class AuroraEffect implements WebGLEffect {
   }
 
   updateColors(theme: string) {
-    const [primary, secondary] = this.getThemeColors(theme);
+    const map: Record<string, [number, number]> = { light: [0x818cf8, 0xc084fc], dark: [0x00ffaa, 0x0088ff], ocean: [0x22d3ee, 0x3b82f6], sunset: [0xf472b6, 0xfb923c], cyberpunk: [0xd946ef, 0x06b6d4], forest: [0x34d399, 0xa3e635] };
+    const [primary, secondary] = map[theme] || [0x00ffaa, 0x0088ff];
     const color1 = new Color(primary);
     const color2 = new Color(secondary);
 
@@ -166,18 +177,6 @@ export class AuroraEffect implements WebGLEffect {
       mat.uniforms['uColor'].value.copy(color1);
       mat.uniforms['uColor2'].value.copy(color2);
     });
-  }
-
-  private getThemeColors(theme: string): [number, number] {
-    switch (theme) {
-      case 'light': return [0x818cf8, 0xc084fc]; // Indigo → Purple
-      case 'dark': return [0x00ffaa, 0x0088ff]; // Green → Blue (classic aurora)
-      case 'ocean': return [0x22d3ee, 0x3b82f6]; // Cyan → Blue
-      case 'sunset': return [0xf472b6, 0xfb923c]; // Pink → Orange
-      case 'cyberpunk': return [0xd946ef, 0x06b6d4]; // Magenta → Cyan
-      case 'forest': return [0x34d399, 0xa3e635]; // Emerald → Lime
-      default: return [0x00ffaa, 0x0088ff];
-    }
   }
 
   dispose() {
@@ -266,24 +265,13 @@ export class CrystalEffect implements WebGLEffect {
   }
 
   updateColors(theme: string) {
-    const color = this.getThemeColor(theme);
+    const map: Record<string, number> = { light: 0x6366f1, dark: 0xffffff, ocean: 0x38bdf8, sunset: 0xfb7185, cyberpunk: 0xd946ef, forest: 0x34d399 };
+    const color = map[theme] || 0xffffff;
     this.materials.forEach((mat, i) => {
       mat.color.setHex(color);
       mat.emissive.setHex(color);
       mat.emissiveIntensity = 0.1 + i * 0.02;
     });
-  }
-
-  private getThemeColor(theme: string): number {
-    switch (theme) {
-      case 'light': return 0x6366f1;
-      case 'dark': return 0xffffff;
-      case 'ocean': return 0x38bdf8;
-      case 'sunset': return 0xfb7185;
-      case 'cyberpunk': return 0xd946ef;
-      case 'forest': return 0x34d399;
-      default: return 0xffffff;
-    }
   }
 
   dispose() {
@@ -374,20 +362,8 @@ export class WavesEffect implements WebGLEffect {
   }
 
   updateColors(theme: string) {
-    const color = this.getThemeColor(theme);
+    const color = THEME_COLORS_SINGLE[theme] || 0x8e2de2;
     this.materials.forEach(mat => mat.color.setHex(color));
-  }
-
-  private getThemeColor(theme: string): number {
-    switch (theme) {
-      case 'light': return 0x6366f1;
-      case 'dark': return 0x8e2de2;
-      case 'ocean': return 0x0ea5e9;
-      case 'sunset': return 0xf43f5e;
-      case 'cyberpunk': return 0xd946ef;
-      case 'forest': return 0x10b981;
-      default: return 0x8e2de2;
-    }
   }
 
   dispose() {
@@ -494,22 +470,10 @@ export class BlobsEffect implements WebGLEffect {
   }
 
   updateColors(theme: string) {
-    const colors = this.getThemeColors(theme);
+    const colors = THEME_COLORS_MULTI[theme] || THEME_COLORS_MULTI['dark'];
     this.materials.forEach((mat, i) => {
       mat.uniforms['uColor'].value.setHex(colors[i % colors.length]);
     });
-  }
-
-  private getThemeColors(theme: string): number[] {
-    switch (theme) {
-      case 'light': return [0x6366f1, 0x8b5cf6, 0xa78bfa, 0xc4b5fd, 0x7c3aed, 0x4f46e5, 0x818cf8];
-      case 'dark': return [0xff0088, 0x00ff88, 0x0088ff, 0xff8800, 0x8800ff, 0x00ffff, 0xff00ff];
-      case 'ocean': return [0x0ea5e9, 0x06b6d4, 0x14b8a6, 0x0284c7, 0x22d3ee, 0x67e8f9, 0x0891b2];
-      case 'sunset': return [0xf43f5e, 0xfb7185, 0xf97316, 0xfacc15, 0xef4444, 0xf87171, 0xfca5a5];
-      case 'cyberpunk': return [0xd946ef, 0xa855f7, 0xe879f9, 0xf0abfc, 0xc026d3, 0x9333ea, 0x7c3aed];
-      case 'forest': return [0x10b981, 0x34d399, 0x22c55e, 0x4ade80, 0x059669, 0x047857, 0x065f46];
-      default: return [0xff0088, 0x00ff88, 0x0088ff, 0xff8800, 0x8800ff, 0x00ffff, 0xff00ff];
-    }
   }
 
   dispose() {
@@ -586,19 +550,8 @@ export class TerrainEffect implements WebGLEffect {
   }
 
   updateColors(theme: string) {
-    this.material.color.setHex(this.getThemeColor(theme));
-  }
-
-  private getThemeColor(theme: string): number {
-    switch (theme) {
-      case 'light': return 0x6366f1;
-      case 'dark': return 0x8e2de2;
-      case 'ocean': return 0x0ea5e9;
-      case 'sunset': return 0xf43f5e;
-      case 'cyberpunk': return 0xd946ef;
-      case 'forest': return 0x22c55e;
-      default: return 0x8e2de2;
-    }
+    const map: Record<string, number> = { light: 0x6366f1, dark: 0x8e2de2, ocean: 0x0ea5e9, sunset: 0xf43f5e, cyberpunk: 0xd946ef, forest: 0x22c55e };
+    this.material.color.setHex(map[theme] || 0x8e2de2);
   }
 
   dispose() {
@@ -703,19 +656,8 @@ export class GalaxyEffect implements WebGLEffect {
   }
 
   updateColors(theme: string) {
-    this.material.color.setHex(this.getThemeColor(theme));
-  }
-
-  private getThemeColor(theme: string): number {
-    switch (theme) {
-      case 'light': return 0x6366f1;
-      case 'dark': return 0xff6030;
-      case 'ocean': return 0x22d3ee;
-      case 'sunset': return 0xfb7185;
-      case 'cyberpunk': return 0xe879f9;
-      case 'forest': return 0x4ade80;
-      default: return 0xff6030;
-    }
+    const map: Record<string, number> = { light: 0x6366f1, dark: 0xff6030, ocean: 0x22d3ee, sunset: 0xfb7185, cyberpunk: 0xe879f9, forest: 0x4ade80 };
+    this.material.color.setHex(map[theme] || 0xff6030);
   }
 
   dispose() {
