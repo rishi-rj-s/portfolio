@@ -23,17 +23,38 @@ import { Education } from '../components/education/education';
       <app-hero />
 
       <!-- Info Section (Experience & Education) -->
-      <section id="info" class="min-h-screen py-20 px-6 md:px-20 max-w-7xl mx-auto flex flex-col justify-center">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24">
-          <app-experience class="w-full" />
-          <app-education class="w-full" />
-        </div>
-      </section>
+      @defer (on viewport) {
+        <section id="info" class="min-h-screen py-20 px-6 md:px-20 max-w-7xl mx-auto flex flex-col justify-center">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24">
+            <app-experience class="w-full" />
+            <app-education class="w-full" />
+          </div>
+        </section>
+      } @placeholder (minimum 500ms) {
+        <div style="min-height: 100vh;"></div>
+      }
 
-      <app-skills />
-      <app-projects-grid />
-      <app-contact-form />
-      <app-social-island />
+      @defer (on viewport) {
+        <app-skills />
+      } @placeholder {
+        <div style="min-height: 100vh;"></div>
+      }
+
+      @defer (on viewport) {
+        <app-projects-grid />
+      } @placeholder {
+        <div style="min-height: 100vh;"></div>
+      }
+
+      @defer (on viewport) {
+        <app-contact-form />
+      } @placeholder {
+        <div style="min-height: 100vh;"></div>
+      }
+
+      @defer {
+        <app-social-island />
+      }
     </main>
   `
 })
