@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, inject, PLATFORM_ID, OnDestroy, viewChild, afterNextRender } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, PLATFORM_ID, OnDestroy, viewChild, afterNextRender, NgZone } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 @Component({
@@ -92,6 +92,7 @@ export class SocialIsland implements OnDestroy {
   private elementRef = inject(ElementRef);
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
+  private ngZone = inject(NgZone);
   
   isOpen = false;
   isDesktop = false;
@@ -119,15 +120,19 @@ export class SocialIsland implements OnDestroy {
       this.scrollHandler = () => {
         if (!this.ticking) {
           this.ticking = true;
-          requestAnimationFrame(() => {
-            this.updateIslandBottom();
-            this.ticking = false;
+          this.ngZone.runOutsideAngular(() => {
+            requestAnimationFrame(() => {
+              this.updateIslandBottom();
+              this.ticking = false;
+            });
           });
         }
       };
       
-      window.addEventListener('resize', this.resizeHandler);
-      window.addEventListener('scroll', this.scrollHandler, { passive: true });
+      this.ngZone.runOutsideAngular(() => {
+        window.addEventListener('resize', this.resizeHandler!);
+        window.addEventListener('scroll', this.scrollHandler!, { passive: true });
+      });
       
       // Initial position calc
       this.updateIslandBottom();

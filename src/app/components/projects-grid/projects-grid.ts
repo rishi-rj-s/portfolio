@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, PLATFORM_ID, inject, viewChild, viewChildren, afterNextRender, signal } from '@angular/core';
+import { Component, ElementRef, OnDestroy, PLATFORM_ID, inject, viewChild, viewChildren, afterNextRender, signal, NgZone } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ScrollService } from '../../services/scroll';
 
@@ -55,12 +55,7 @@ import { ScrollService } from '../../services/scroll';
               <article class="project-card group relative w-[80vw] md:w-[500px] lg:w-[600px] shrink-0 flex flex-col max-h-full">
                  <!-- 3D Initials Flip Card -->
                  <div (click)="onCardClick($event)"
-                      (mousemove)="onCardMouseMove($event)" 
-                      (mouseleave)="onCardMouseLeave($event)"
-                      (touchstart)="onCardTouchStart($event)"
-                      (touchmove)="onCardTouchMove($event)"
-                      (touchend)="onCardTouchEnd($event)"
-                      class="relative aspect-[16/9] md:aspect-[2/1] max-h-[25dvh] md:max-h-[35dvh] rounded-sm md:rounded-md mb-4 md:mb-6 border border-[var(--color-border)] group-hover:border-[var(--color-primary)] group-active:border-[var(--color-primary)] shadow-2xl flex-shrink-1 cursor-pointer"
+                      class="card-interact relative aspect-[16/9] md:aspect-[2/1] max-h-[25dvh] md:max-h-[35dvh] rounded-sm md:rounded-md mb-4 md:mb-6 border border-[var(--color-border)] group-hover:border-[var(--color-primary)] group-active:border-[var(--color-primary)] shadow-2xl flex-shrink-1 cursor-pointer"
                       style="transform: perspective(1000px) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg)); transition: transform 0.25s cubic-bezier(0.1, 1, 0.1, 1), border-color 0.5s; transform-style: preserve-3d; will-change: transform;">
                     
                     <!-- Card Inner (handles the 180deg flip) -->
@@ -192,6 +187,8 @@ export class ProjectsGrid implements OnDestroy {
   private scrollService = inject(ScrollService);
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
+  private ngZone = inject(NgZone);
+  private interactionListeners: {el: HTMLElement, type: string, listener: any}[] = [];
 
   projects = [
     {
@@ -341,6 +338,31 @@ export class ProjectsGrid implements OnDestroy {
       const trackEl = this.track()?.nativeElement;
       if (!trackEl) return;
 
+      this.ngZone.runOutsideAngular(() => {
+        const interactAreas = Array.from(trackEl.querySelectorAll('.card-interact')) as HTMLElement[];
+        interactAreas.forEach(area => {
+          const onMove = (e: Event) => this.onCardMouseMove(e as MouseEvent);
+          const onLeave = (e: Event) => this.onCardMouseLeave(e as MouseEvent);
+          const onTStart = (e: Event) => this.onCardTouchStart(e as TouchEvent);
+          const onTMove = (e: Event) => this.onCardTouchMove(e as TouchEvent);
+          const onTEnd = (e: Event) => this.onCardTouchEnd(e as TouchEvent);
+
+          area.addEventListener('mousemove', onMove);
+          area.addEventListener('mouseleave', onLeave);
+          area.addEventListener('touchstart', onTStart, { passive: true });
+          area.addEventListener('touchmove', onTMove, { passive: true });
+          area.addEventListener('touchend', onTEnd);
+
+          this.interactionListeners.push(
+            {el: area, type: 'mousemove', listener: onMove},
+            {el: area, type: 'mouseleave', listener: onLeave},
+            {el: area, type: 'touchstart', listener: onTStart},
+            {el: area, type: 'touchmove', listener: onTMove},
+            {el: area, type: 'touchend', listener: onTEnd}
+          );
+        });
+      });
+
       const resizeObserver = new ResizeObserver((entries) => {
         for (const entry of entries) {
           if (entry.contentBoxSize) {
@@ -370,32 +392,34 @@ export class ProjectsGrid implements OnDestroy {
     const trackEl = this.track()?.nativeElement;
     if (!trackEl) return;
 
-    this.ctx = gsap.context(() => {
-      const cards = Array.from(trackEl.querySelectorAll('.project-card')) as HTMLElement[];
-      const lastCard = cards[cards.length - 1];
+    this.ngZone.runOutsideAngular(() => {
+      this.ctx = gsap.context(() => {
+        const cards = Array.from(trackEl.querySelectorAll('.project-card')) as HTMLElement[];
+        const lastCard = cards[cards.length - 1];
 
-      const lastCardCenter = lastCard.offsetLeft + lastCard.offsetWidth;
-      const windowWidth = window.innerWidth;
-      const targetX = -(lastCardCenter - windowWidth + (windowWidth * 0.1)); // Leave some margin at the end
+        const lastCardCenter = lastCard.offsetLeft + lastCard.offsetWidth;
+        const windowWidth = window.innerWidth;
+        const targetX = -(lastCardCenter - windowWidth + (windowWidth * 0.1)); // Leave some margin at the end
 
-      this.st = this.ScrollTrigger.create({
-        trigger: '.projects-wrapper',
-        pin: true,
-        start: 'top top',
-        scrub: 1,
-        end: () => '+=' + Math.abs(targetX),
-        invalidateOnRefresh: true,
-        animation: gsap.to(trackEl, {
-          x: targetX,
-          ease: 'none'
-        })
+        this.st = this.ScrollTrigger.create({
+          trigger: '.projects-wrapper',
+          pin: true,
+          start: 'top top',
+          scrub: 1,
+          end: () => '+=' + Math.abs(targetX),
+          invalidateOnRefresh: true,
+          animation: gsap.to(trackEl, {
+            x: targetX,
+            ease: 'none'
+          })
+        });
       });
-    });
 
-    this.resizeHandler = () => {
-      this.ScrollTrigger.refresh();
-    };
-    window.addEventListener('resize', this.resizeHandler);
+      this.resizeHandler = () => {
+        this.ScrollTrigger.refresh();
+      };
+      window.addEventListener('resize', this.resizeHandler);
+    });
   }
 
   async navScroll(direction: 'prev' | 'next') {
@@ -441,5 +465,8 @@ export class ProjectsGrid implements OnDestroy {
     if (this.resizeHandler) {
       window.removeEventListener('resize', this.resizeHandler);
     }
+    this.interactionListeners.forEach(({el, type, listener}) => {
+      el.removeEventListener(type, listener);
+    });
   }
 }

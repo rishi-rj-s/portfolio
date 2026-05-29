@@ -1,4 +1,4 @@
-import { Component, ElementRef, viewChildren, signal, inject, PLATFORM_ID } from '@angular/core';
+import { Component, ElementRef, viewChildren, signal, inject, PLATFORM_ID, NgZone, afterNextRender, viewChild, OnDestroy } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Theme } from '../../services/theme';
 import { Router } from '@angular/router';
@@ -9,9 +9,8 @@ import { ScrollService } from '../../services/scroll';
   template: `
     <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300">
       <div 
+        #navbarContainer
         class="relative px-6 py-3 rounded-full flex items-center gap-6 shadow-2xl border border-white/10 overflow-hidden"
-        (mouseleave)="resetMagnets()"
-        (mousemove)="handleMouseMove($event)"
       >
         <!-- Glass Background Layer (Absolute) -->
         <div class="absolute inset-0 glass-bg pointer-events-none"></div>
@@ -86,14 +85,19 @@ import { ScrollService } from '../../services/scroll';
     }
   `]
 })
-export class Navbar {
+export class Navbar implements OnDestroy {
   navItems = viewChildren<ElementRef>('navItem');
+  navbarContainer = viewChild<ElementRef>('navbarContainer');
   mobileMenuOpen = signal(false);
 
   private platformId = inject(PLATFORM_ID);
   public theme = inject(Theme);
   private router = inject(Router);
   private scrollService = inject(ScrollService);
+  private ngZone = inject(NgZone);
+
+  private mouseMoveListener: ((e: MouseEvent) => void) | null = null;
+  private mouseLeaveListener: (() => void) | null = null;
 
   // Performance: Cache GSAP module to avoid repeated dynamic imports
   private gsapModule: any = null;
@@ -102,6 +106,31 @@ export class Navbar {
   // Performance: Throttle magnetic mouse tracking
   private lastMouseMoveTime = 0;
   private static readonly MOUSE_THROTTLE_MS = 20; // More responsive, fluid animation
+
+  constructor() {
+    afterNextRender(() => {
+      if (!isPlatformBrowser(this.platformId)) return;
+      const containerEl = this.navbarContainer()?.nativeElement;
+      if (!containerEl) return;
+
+      this.mouseMoveListener = (e: MouseEvent) => this.handleMouseMove(e);
+      this.mouseLeaveListener = () => this.resetMagnets();
+
+      this.ngZone.runOutsideAngular(() => {
+        containerEl.addEventListener('mousemove', this.mouseMoveListener!);
+        containerEl.addEventListener('mouseleave', this.mouseLeaveListener!);
+      });
+    });
+  }
+
+  ngOnDestroy() {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const containerEl = this.navbarContainer()?.nativeElement;
+    if (containerEl) {
+      if (this.mouseMoveListener) containerEl.removeEventListener('mousemove', this.mouseMoveListener);
+      if (this.mouseLeaveListener) containerEl.removeEventListener('mouseleave', this.mouseLeaveListener);
+    }
+  }
 
   private async getGsap() {
     if (this.gsapModule) return this.gsapModule;

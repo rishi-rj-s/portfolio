@@ -1,4 +1,4 @@
-import { Injectable, PLATFORM_ID, inject, afterNextRender } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject, afterNextRender, NgZone } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
@@ -7,6 +7,7 @@ import { isPlatformBrowser } from '@angular/common';
 export class ScrollService {
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
+  private ngZone = inject(NgZone);
   private lenis: any = null;
 
   constructor() {
@@ -35,12 +36,14 @@ export class ScrollService {
         infinite: false,
       });
 
-      const raf = (time: number) => {
-        this.lenis?.raf(time);
-        requestAnimationFrame(raf);
-      };
+      this.ngZone.runOutsideAngular(() => {
+        const raf = (time: number) => {
+          this.lenis?.raf(time);
+          requestAnimationFrame(raf);
+        };
 
-      requestAnimationFrame(raf);
+        requestAnimationFrame(raf);
+      });
       console.log('Lenis initialized smoothly 🚀');
     } catch (error) {
       console.error('Failed to initialize Lenis:', error);

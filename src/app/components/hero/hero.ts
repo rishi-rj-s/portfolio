@@ -1,4 +1,4 @@
-import { Component, ElementRef, afterNextRender, viewChild, OnDestroy } from '@angular/core';
+import { Component, ElementRef, afterNextRender, viewChild, OnDestroy, NgZone, inject } from '@angular/core';
 // GSAP loaded dynamically for better TBT
 
 @Component({
@@ -70,6 +70,8 @@ export class Hero implements OnDestroy {
   line1 = viewChild<ElementRef<HTMLElement>>('line1');
   line2 = viewChild<ElementRef<HTMLElement>>('line2');
   
+  private ngZone = inject(NgZone);
+  
   private isInViewport = false;
   private observer: IntersectionObserver | null = null;
   private mouseMoveHandler: ((e: MouseEvent) => void) | null = null;
@@ -89,19 +91,18 @@ export class Hero implements OnDestroy {
       import('gsap').then(({ default: gsap }) => {
         this.gsapModule = gsap;
         
-        // CLS-safe: Use clip-path reveal instead of Y-translation.
-        // The text stays in its final position — only the mask animates,
-        // so Lighthouse doesn't count this as a layout shift.
-        gsap.fromTo(titleEl.children, 
-          { clipPath: 'inset(0 0 100% 0)' },
-          { 
-            clipPath: 'inset(0 0 0% 0)',
-            duration: 1,
-            stagger: 0.15,
-            ease: 'power4.out',
-            delay: 0.1
-          }
-        );
+        this.ngZone.runOutsideAngular(() => {
+          gsap.fromTo(titleEl.children, 
+            { clipPath: 'inset(0 0 100% 0)' },
+            { 
+              clipPath: 'inset(0 0 0% 0)',
+              duration: 1,
+              stagger: 0.15,
+              ease: 'power4.out',
+              delay: 0.1
+            }
+          );
+        });
       });
       
       // Set up Intersection Observer - only track mouse when hero is visible
@@ -161,7 +162,9 @@ export class Hero implements OnDestroy {
         });
       };
       
-      window.addEventListener('mousemove', this.mouseMoveHandler, { passive: true });
+      this.ngZone.runOutsideAngular(() => {
+        window.addEventListener('mousemove', this.mouseMoveHandler!, { passive: true });
+      });
     });
   }
 
