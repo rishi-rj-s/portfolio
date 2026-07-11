@@ -3,7 +3,6 @@
    Does NOT block first paint
    =================================== */
 
-/* Global Noise Overlay */
 .noise-overlay {
   position: fixed;
   top: 0;
@@ -12,223 +11,93 @@
   height: 100%;
   pointer-events: none;
   z-index: 9999;
-  opacity: 0.03;
+  opacity: 0.035;
+  contain: strict;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
-/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
+  display: none !important;
+  width: 0 !important;
+  background: transparent !important;
+}
+*::-webkit-scrollbar {
+  display: none !important;
+}
+html, body {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--color-background);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-primary);
-}
-
-/* Selection */
 ::selection {
-  background-color: #3b82f6;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
 }
 
-:root.dark ::selection {
-  background-color: #3b82f6;
-  color: white;
-}
-
-/* Focus visible */
 *:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: var(--focus-ring);
   outline-offset: 2px;
 }
 
-/* Animations */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(24px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
   }
 }
 
 @keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.9);
+    transform: scale(0.96);
   }
-
   to {
     opacity: 1;
     transform: scale(1);
   }
 }
 
-@keyframes slideInLeft {
+@keyframes slideInDown {
   from {
     opacity: 0;
-    transform: translateX(-50px);
+    transform: translateY(-16px);
   }
-
   to {
     opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(50px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes float {
-
-  0%,
-  100% {
     transform: translateY(0);
   }
-
-  50% {
-    transform: translateY(-20px);
-  }
 }
 
-@keyframes pulse {
-
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.5;
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -1000px 0;
-  }
-
-  100% {
-    background-position: 1000px 0;
-  }
-}
-
-@keyframes gradient-shift {
-
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-/* Utilities */
 .animate-fade-in-up {
-  animation: fadeInUp 0.6s ease-out forwards;
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.6s ease-out forwards;
+  animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .animate-scale-in {
-  animation: scaleIn 0.5s ease-out forwards;
+  animation: scaleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.animate-slide-in-left {
-  animation: slideInLeft 0.6s ease-out forwards;
+.app-loaded app-navbar {
+  animation: slideInDown 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.animate-slide-in-right {
-  animation: slideInRight 0.6s ease-out forwards;
+.app-loaded section#hero {
+  animation: fadeInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both;
 }
 
-.text-gradient {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.glow-box {
-  box-shadow: 0 0 40px var(--glow-primary), 0 0 80px var(--glow-accent);
-}
-
-/* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
-
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-  display: block;
-}
-
-::view-transition-image-pair(root) {
-  isolation: isolate;
-}
-
-/* Theme Icon Visibility */
-.theme-icon-light {
-  display: block;
-}
-
-.theme-icon-dark {
-  display: none;
-}
-
-:root.dark .theme-icon-light {
-  display: none;
-}
-
-:root.dark .theme-icon-dark {
-  display: block;
-}
-
-/* Invert colors in dark mode (for black logos) */
-:root.dark .theme-inverse {
-  filter: brightness(0) invert(1) !important;
-}
+.theme-icon-light { display: block; }
+.theme-icon-dark { display: none; }
+:root.dark .theme-icon-light { display: none; }
+:root.dark .theme-icon-dark { display: block; }

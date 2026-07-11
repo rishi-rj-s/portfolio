@@ -3,47 +3,53 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-education',
   template: `
-    <div class="h-full flex flex-col justify-center">
-      <h2 class="text-3xl font-bold text-[var(--color-text)] mb-8 flex items-center gap-3">
-        <span class="text-5xl text-[var(--color-text)]">02</span> EDUCATION
-      </h2>
-
-      <div class="relative pl-8 border-l border-[var(--color-border)] space-y-12">
-        <!-- Education Item 1 -->
-        <div class="relative group">
-          <div class="absolute -left-[37px] top-0 w-4 h-4 rounded-full bg-[var(--color-background)] border-2 border-[var(--color-text)] group-hover:scale-125 transition-transform duration-300"></div>
-          
-          <div class="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-            <h3 class="text-xl font-bold text-[var(--color-text)]">Bachelor of Computer Science</h3>
-            <div class="w-fit flex shrink-0 items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--color-card-hover)]/40 border border-[var(--color-border)] backdrop-blur-sm">
-                <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-text-muted)]"></span>
-                <span class="text-xs font-bold tracking-wider text-[var(--color-text)] uppercase whitespace-nowrap">2020 – 2023</span>
-            </div>
+    <div class="space-y-0">
+      @for (item of items; track item.title; let i = $index) {
+        <article
+          class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8 py-10 md:py-14 border-t border-[var(--color-border)] px-0 md:px-4 -mx-0 md:-mx-4"
+        >
+          <div class="md:col-span-2">
+            <span class="font-mono text-sm text-[var(--color-primary)] font-bold">E{{ i + 1 }}</span>
           </div>
-          
-          <h4 class="text-base text-[var(--color-text-secondary)] mb-4">University of Kerala, India</h4>
-        </div>
-
-        <!-- Certification Item -->
-         <div class="relative group">
-          <div class="absolute -left-[37px] top-0 w-4 h-4 rounded-full bg-[var(--color-background)] border-2 border-[var(--color-text)] group-hover:scale-125 transition-transform duration-300"></div>
-          
-          <div class="mb-2">
-            <h3 class="text-xl font-bold text-[var(--color-text)]">Japanese Language Certificate</h3>
-            <span class="text-sm text-[var(--color-text-secondary)] block mt-1">(Upper-Beginner Level)</span>
+          <div class="md:col-span-3">
+            <p class="font-mono text-[11px] tracking-[0.14em] uppercase text-[var(--color-text-muted)]">
+              {{ item.period }}
+            </p>
           </div>
-          
-          <a href="https://www.credly.com/badges/1dbf4ba3-e87b-48eb-8411-2d5a76b379be/linked_in_profile" 
-             target="_blank" 
-             rel="noopener noreferrer"
-             class="inline-flex items-center gap-2 text-sm text-[var(--color-text)] hover:text-[var(--color-primary)] hover:underline mt-2 group/link">
-             View Credly Badge
-             <span class="group-hover/link:translate-x-1 transition-transform">→</span>
-          </a>
-        </div>
-      </div>
+          <div class="md:col-span-7">
+            <h3 class="text-2xl md:text-3xl font-black tracking-tight text-[var(--color-text)] mb-1">
+              {{ item.title }}
+            </h3>
+            <p class="text-sm text-[var(--color-text-secondary)] mb-3">{{ item.subtitle }}</p>
+            @if (item.link) {
+              <a
+                [href]="item.link"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex text-sm font-medium text-[var(--color-primary)] hover:underline"
+              >
+                View Credly Badge →
+              </a>
+            }
+          </div>
+        </article>
+      }
     </div>
   `,
-  styles: []
 })
-export class Education {}
+export class Education {
+  items = [
+    {
+      title: 'Bachelor of Computer Science',
+      subtitle: 'University of Kerala, India',
+      period: '2020 — 2023',
+      link: null as string | null,
+    },
+    {
+      title: 'Japanese Language Certificate',
+      subtitle: 'Upper-Beginner Level',
+      period: 'Credential',
+      link: 'https://www.credly.com/badges/1dbf4ba3-e87b-48eb-8411-2d5a76b379be/linked_in_profile',
+    },
+  ];
+}

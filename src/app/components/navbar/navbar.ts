@@ -1,4 +1,4 @@
-import { Component, ElementRef, viewChildren, signal, inject, PLATFORM_ID, NgZone, afterNextRender, viewChild, OnDestroy } from '@angular/core';
+import { Component, signal, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Theme } from '../../services/theme';
 import { Router } from '@angular/router';
@@ -7,245 +7,126 @@ import { ScrollService } from '../../services/scroll';
 @Component({
   selector: 'app-navbar',
   template: `
-    <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300">
-      <div 
-        #navbarContainer
-        class="relative px-6 py-3 rounded-full flex items-center gap-6 shadow-2xl border border-white/10 overflow-hidden"
+    <header class="fixed top-0 inset-x-0 z-50 border-b border-[var(--color-border)] bg-[var(--color-background)]/85 backdrop-blur-md">
+      <nav
+        class="page-gutter h-[var(--navbar-height)] flex items-center justify-between gap-4"
+        aria-label="Primary"
       >
-        <!-- Glass Background Layer (Absolute) -->
-        <div class="absolute inset-0 glass-bg pointer-events-none"></div>
+        <a
+          href="/"
+          (click)="handleLogoClick($event)"
+          class="group flex items-baseline gap-2 min-w-0"
+          aria-label="Rishiraj Sajeev — Home"
+        >
+          <span class="font-black text-lg md:text-xl tracking-tight text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors">
+            RISHIRAJ
+          </span>
+          <span class="hidden sm:inline font-mono text-[10px] tracking-[0.2em] text-[var(--color-text-muted)] uppercase">
+            Sajeev
+          </span>
+        </a>
 
-        <!-- Content Layer (Relative) -->
-        <div class="relative z-10 flex items-center gap-6">
-          <!-- Logo -->
-          <a href="/" (click)="handleLogoClick($event)" class="nav-item group relative font-bold text-xl tracking-tighter text-[var(--color-text)] cursor-pointer select-none" #navItem>
-            RS
+        <div class="hidden lg:flex items-center gap-1">
+          @for (link of links; track link.id) {
+            <a
+              [href]="link.id"
+              (click)="handleNavClick($event, link.id)"
+              class="px-3 py-2 font-mono text-[11px] tracking-[0.16em] uppercase text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors"
+            >
+              <span class="text-[var(--color-primary)] mr-1.5">{{ link.num }}</span>{{ link.label }}
+            </a>
+          }
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button
+            type="button"
+            class="p-2.5 border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors"
+            (click)="theme.toggleTheme($event)"
+            [attr.aria-label]="theme.isDark() ? 'Switch to light theme' : 'Switch to dark theme'"
+          >
+            <svg class="theme-icon-light w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
+            <svg class="theme-icon-dark w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+            </svg>
+          </button>
+
+          <a
+            href="#contact"
+            (click)="handleNavClick($event, '#contact')"
+            class="hidden md:inline-flex signal-btn !py-2.5 !px-4 !text-[11px]"
+          >
+            Hire me
           </a>
 
-          <!-- Desktop Links -->
-          <div class="hidden md:flex items-center gap-1">
-             <a href="#info" (click)="handleNavClick($event, '#info')" class="nav-item px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:text-[var(--color-primary)] transition-colors rounded-full hover:bg-[var(--color-card-hover)]" #navItem>Info</a>
-            <a href="#skills" (click)="handleNavClick($event, '#skills')" class="nav-item px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:text-[var(--color-primary)] transition-colors rounded-full hover:bg-[var(--color-card-hover)]" #navItem>Skills</a>
-            <a href="#projects" (click)="handleNavClick($event, '#projects')" class="nav-item px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:text-[var(--color-primary)] transition-colors rounded-full hover:bg-[var(--color-card-hover)]" #navItem>Projects</a>
-          </div>
-
-          <!-- Actions -->
-          <div class="flex items-center gap-4">
-
-
-            <!-- Palette Selector -->
-            <button 
-              #navItem
-              class="nav-item p-2 rounded-full text-[var(--color-text)] hover:bg-[var(--color-card-hover)] transition-colors duration-300"
-              (click)="theme.toggleSelector()"
-              aria-label="Select theme"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
-            </button>
-
-            <!-- CTA / Mobile Menu Toggle -->
-             <a href="#contact" (click)="handleNavClick($event, '#contact')" class="hidden md:block nav-item px-5 py-2 bg-[var(--color-text)] text-[var(--color-background)] rounded-full text-sm font-bold" #navItem>
-              Let's Talk
-            </a>
-
-            <button (click)="toggleMobileMenu()" class="md:hidden nav-item p-2 text-[var(--color-text)]" #navItem aria-label="Toggle mobile menu" [attr.aria-expanded]="mobileMenuOpen()">
-              @if (!mobileMenuOpen()) {
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                </svg>
-              }
-              @if (mobileMenuOpen()) {
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
-              }
-            </button>
-          </div>
+          <button
+            type="button"
+            class="lg:hidden p-2.5 border border-[var(--color-border)] text-[var(--color-text)]"
+            (click)="mobileOpen.update(v => !v)"
+            [attr.aria-expanded]="mobileOpen()"
+            aria-label="Toggle menu"
+          >
+            @if (!mobileOpen()) {
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h10"/>
+              </svg>
+            } @else {
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            }
+          </button>
         </div>
-      </div>
+      </nav>
 
-      <!-- Mobile Menu Dropdown -->
-      @if (mobileMenuOpen()) {
-        <div 
-          class="absolute top-full left-0 right-0 mt-4 p-4 rounded-2xl flex flex-col gap-4 md:hidden animate-fade-in-up origin-top shadow-xl border border-white/10 glass-bg"
-        >
-          <a href="#info" (click)="closeMobileMenu(); handleNavClick($event, '#info')" class="p-3 text-[var(--color-text)] hover:bg-[var(--color-card-hover)] rounded-xl font-bold">Info</a>
-          <a href="#skills" (click)="closeMobileMenu(); handleNavClick($event, '#skills')" class="p-3 text-[var(--color-text)] hover:bg-[var(--color-card-hover)] rounded-xl font-bold">Skills</a>
-          <a href="#projects" (click)="closeMobileMenu(); handleNavClick($event, '#projects')" class="p-3 text-[var(--color-text)] hover:bg-[var(--color-card-hover)] rounded-xl font-bold">Projects</a>
-          <a href="#contact" (click)="closeMobileMenu(); handleNavClick($event, '#contact')" class="p-3 bg-[var(--color-text)] text-[var(--color-background)] rounded-xl text-center font-bold">Let's Talk</a>
+      @if (mobileOpen()) {
+        <div class="lg:hidden border-t border-[var(--color-border)] bg-[var(--color-background)] page-gutter py-4 flex flex-col gap-1">
+          @for (link of links; track link.id) {
+            <a
+              [href]="link.id"
+              (click)="mobileOpen.set(false); handleNavClick($event, link.id)"
+              class="py-3 font-mono text-xs tracking-[0.16em] uppercase text-[var(--color-text)] border-b border-[var(--color-border)]"
+            >
+              <span class="text-[var(--color-primary)] mr-2">{{ link.num }}</span>{{ link.label }}
+            </a>
+          }
+          <a
+            href="#contact"
+            (click)="mobileOpen.set(false); handleNavClick($event, '#contact')"
+            class="signal-btn mt-3 w-full"
+          >
+            Hire me
+          </a>
         </div>
       }
-    </nav>
+    </header>
   `,
-  styles: [`
-    .glass-bg {
-      background: rgba(125, 125, 125, 0.05);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-    }
-  `]
 })
-export class Navbar implements OnDestroy {
-  navItems = viewChildren<ElementRef>('navItem');
-  navbarContainer = viewChild<ElementRef>('navbarContainer');
-  mobileMenuOpen = signal(false);
-
-  private platformId = inject(PLATFORM_ID);
+export class Navbar {
+  mobileOpen = signal(false);
   public theme = inject(Theme);
+  private platformId = inject(PLATFORM_ID);
   private router = inject(Router);
   private scrollService = inject(ScrollService);
-  private ngZone = inject(NgZone);
 
-  private mouseMoveListener: ((e: MouseEvent) => void) | null = null;
-  private mouseLeaveListener: (() => void) | null = null;
+  links = [
+    { num: '01', label: 'Work', id: '#projects' },
+    { num: '02', label: 'Path', id: '#info' },
+    { num: '03', label: 'Stack', id: '#skills' },
+    { num: '04', label: 'Contact', id: '#contact' },
+  ];
 
-  // Performance: Cache GSAP module to avoid repeated dynamic imports
-  private gsapModule: any = null;
-  private gsapLoading: Promise<any> | null = null;
-  
-  // Performance: Throttle magnetic mouse tracking
-  private lastMouseMoveTime = 0;
-  private static readonly MOUSE_THROTTLE_MS = 20; // More responsive, fluid animation
-
-  constructor() {
-    afterNextRender(() => {
-      if (!isPlatformBrowser(this.platformId)) return;
-      const containerEl = this.navbarContainer()?.nativeElement;
-      if (!containerEl) return;
-
-      this.mouseMoveListener = (e: MouseEvent) => this.handleMouseMove(e);
-      this.mouseLeaveListener = () => this.resetMagnets();
-
-      this.ngZone.runOutsideAngular(() => {
-        containerEl.addEventListener('mousemove', this.mouseMoveListener!);
-        containerEl.addEventListener('mouseleave', this.mouseLeaveListener!);
-      });
-    });
-  }
-
-  ngOnDestroy() {
-    if (!isPlatformBrowser(this.platformId)) return;
-    const containerEl = this.navbarContainer()?.nativeElement;
-    if (containerEl) {
-      if (this.mouseMoveListener) containerEl.removeEventListener('mousemove', this.mouseMoveListener);
-      if (this.mouseLeaveListener) containerEl.removeEventListener('mouseleave', this.mouseLeaveListener);
-    }
-  }
-
-  private async getGsap() {
-    if (this.gsapModule) return this.gsapModule;
-    if (!this.gsapLoading) {
-      this.gsapLoading = import('gsap').then(({ default: gsap }) => {
-        this.gsapModule = gsap;
-        return gsap;
-      });
-    }
-    return this.gsapLoading;
-  }
-
-  handleMouseMove(e: MouseEvent) {
-    if (!isPlatformBrowser(this.platformId)) return;
-    
-    // Performance: Throttle mouse move processing
-    const now = performance.now();
-    if (now - this.lastMouseMoveTime < Navbar.MOUSE_THROTTLE_MS) return;
-    this.lastMouseMoveTime = now;
-    
-    requestAnimationFrame(async () => {
-      const mouseX = e.clientX;
-      const mouseY = e.clientY;
-      
-      // Performance: Single cached GSAP import for all items
-      const gsap = await this.getGsap();
-      
-      this.navItems().forEach((item) => {
-        const el = item.nativeElement;
-        
-        // Get current translation to calculate original center
-        const currentX = gsap.getProperty(el, 'x') as number || 0;
-        const currentY = gsap.getProperty(el, 'y') as number || 0;
-        
-        const rect = el.getBoundingClientRect();
-        const centerX = (rect.left - currentX) + rect.width / 2;
-        const centerY = (rect.top - currentY) + rect.height / 2;
-
-        // Calculate distance from mouse to center of item
-        const dist = Math.sqrt(Math.pow(mouseX - centerX, 2) + Math.pow(mouseY - centerY, 2));
-        
-        // Magnetic effect calculation
-        // Only effect closer items
-        if (dist < 65) {
-          const moveX = (mouseX - centerX) * 0.35;
-          const moveY = (mouseY - centerY) * 0.35;
-          
-          gsap.to(el, {
-            x: moveX,
-            y: moveY,
-            scale: 1.1, // Fixed scale for better predictability
-            duration: 0.3,
-            ease: 'power2.out',
-            overwrite: 'auto'
-          });
-        } else {
-          // Smooth return when mouse is outside the immediate magnetic radius
-          gsap.to(el, {
-            x: 0,
-            y: 0,
-            scale: 1,
-            duration: 0.4,
-            ease: 'power3.out',
-            overwrite: 'auto'
-          });
-        }
-      });
-    });
-  }
-
-  async resetMagnets() {
-    if (!isPlatformBrowser(this.platformId)) return;
-    const gsap = await this.getGsap();
-    this.navItems().forEach((item) => {
-      gsap.to(item.nativeElement, {
-        x: 0,
-        y: 0,
-        scale: 1,
-        duration: 0.5,
-        ease: 'elastic.out(1, 0.3)'
-      });
-    });
-  }
-
-  toggleMobileMenu() {
-    this.mobileMenuOpen.update(v => !v);
-  }
-
-  closeMobileMenu() {
-    this.mobileMenuOpen.set(false);
-  }
-
-  async handleNavClick(e: Event, id: string) {
+  handleNavClick(e: Event, id: string) {
     e.preventDefault();
-    if (isPlatformBrowser(this.platformId)) {
-      this.scrollService.scrollTo(id);
-    }
+    if (isPlatformBrowser(this.platformId)) this.scrollService.scrollTo(id);
   }
 
   handleLogoClick(e: Event) {
     e.preventDefault();
     if (!isPlatformBrowser(this.platformId)) return;
-
-    if (this.router.url === '/') {
-      // Already on home — smooth scroll to top
-      this.smoothScrollToTop();
-    } else {
-      // On 404 or other page — navigate home via Angular router
-      this.router.navigateByUrl('/');
-    }
-  }
-
-  private async smoothScrollToTop() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.scrollService.scrollTo(0);
-    }
+    if (this.router.url === '/') this.scrollService.scrollTo(0);
+    else this.router.navigateByUrl('/');
   }
 }

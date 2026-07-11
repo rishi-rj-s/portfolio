@@ -5,60 +5,70 @@ This document provides a comprehensive overview of the portfolio, skills, and pr
 ## Developer Profile
 
 - **Name**: Rishiraj Sajeev
-- **Focus Area**: Full Stack Web Development
+- **Role**: Full Stack Engineer
+- **Focus**: Production-grade SaaS platforms and microservices
 - **Email**: rishirajsajeev@gmail.com
 - **LinkedIn**: [linkedin.com/in/rishiraj-sajeev](https://www.linkedin.com/in/rishiraj-sajeev)
 - **GitHub**: [github.com/rishi-rj-s](https://github.com/rishi-rj-s)
+- **Website**: [https://www.rishiraj-sajeev.space/](https://www.rishiraj-sajeev.space/)
+
+## Experience
+
+### Angular Developer — Axolon
+- **Period**: April 2026 – Present
+- Leading enterprise-grade Angular applications with a focus on scalability and performance.
+- Optimizing frontend architecture and UI patterns for complex business logic.
+
+### Full Stack Engineering (Freelance)
+- **Period**: 2023 – March 2026
+- System design, microservices, and cloud deployment on AWS.
+- Scalable solutions with NestJS, Angular, Next.js, and React.
+
+## Education
+
+- **Bachelor of Computer Science**, University of Kerala, India (2020–2023)
+- **Japanese Language Certificate** (Upper-Beginner) — Credly badge available
 
 ## Technical Expertise
 
-Rishiraj is proficient in a wide array of modern web technologies across the entire stack.
-
 ### Frontend
-- **Frameworks/Libraries**: Vue 3, Angular, React
-- **Languages**: TypeScript, JavaScript, HTML5, CSS3
-- **Styling**: Tailwind CSS, SCSS
+- Angular, React, Next.js, TypeScript, Tailwind CSS
 
 ### Backend
-- **Frameworks/Environments**: Node.js, NestJS, Express
-- **Architecture**: GraphQL, gRPC, Microservices, RESTful APIs
+- Node.js, NestJS, Express, REST APIs, microservices
 
-### Databases
-- **Relational**: PostgreSQL
-- **NoSQL**: MongoDB, Redis
-- **BaaS**: Supabase
+### Databases & Security
+- PostgreSQL, MongoDB, Redis, Supabase, Row-Level Security (RLS)
 
-### DevOps & Infrastructure
-- **Containerization & Orchestration**: Docker, Kubernetes
-- **CI/CD**: GitHub Actions
-- **Cloud**: AWS EC2
+### DevOps & Cloud
+- Docker, GitHub Actions, AWS EC2/S3, Vercel
 
-### State Management & Messaging
-- **State**: Pinia, NgRx, Redux
-- **Messaging/Streaming**: Kafka, RxJS
-
-### Additional Tools & ORMs
-- **ORMs**: Prisma, TypeORM
-- **Real-time**: Socket.io
-- **Version Control**: Git
+### Realtime
+- WebSockets, Redis Pub/Sub
 
 ## Featured Projects
 
-### 1. EEZY-CABS
-A comprehensive taxi booking microservice system.
-- **Technologies used**: Angular, NestJS, Kafka, gRPC
+### 1. Tagtics
+Multi-tenant UI feedback SaaS. Users click any element on any web app and submit contextual feedback. PostgreSQL RLS enforces tenant isolation.
+- **Stack**: React, Supabase, PostgreSQL, RLS, TypeScript
+- **Live**: https://www.tagtics.online
+- **Source**: https://github.com/tagtics/tagtics-frontend
 
-### 2. Apply Log
-A job application tracker application.
-- **Technologies used**: Vue 3, Supabase
+### 2. Green Power India
+End-to-end corporate platform for a sustainable energy company.
+- **Stack**: Next.js 15, React 19, Supabase, PostgreSQL, Tailwind CSS
+- **Live**: https://greenpowerindia.com/
 
-### 3. Tagtics
-A SaaS feedback platform designed for gathering user insights.
-- **Technologies used**: React, Supabase
+### 3. Ever-Gauzy
+Open-source contributions to a large NestJS/Angular enterprise ERP (Nx monorepo), including authentication UI improvements.
+- **Stack**: NestJS, Angular, TypeScript, Nx, CQRS
+- **Live**: https://app.gauzy.co/#/auth/login
+- **Source**: https://github.com/ever-co/ever-gauzy
 
 ### 4. Fashion Studio
-An e-commerce platform built for fashion retail.
-- **Technologies used**: Node.js, Express, MongoDB
+Production e-commerce backend on AWS EC2 with Nginx reverse proxy and Razorpay payment webhooks.
+- **Stack**: Node.js, Express, MongoDB, AWS EC2, Nginx
+- **Source**: https://github.com/rishi-rj-s/RSBackend
 
 ---
-*This file is provided for LLM and AI agents to efficiently index and understand the contents of the portfolio. To view a summary, visit [/llms.txt](/llms.txt).*
+*This file is provided for LLM and AI agents to efficiently index and understand the contents of the portfolio. Summary: [/llms.txt](/llms.txt).*

@@ -45,7 +45,6 @@
     "ng-hcaptcha": "^2.7.0",
     "rxjs": "~7.8.0",
     "tagtics-client": "^1.4.1",
-    "three": "^0.182.0",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
@@ -56,7 +55,6 @@
     "@types/express": "^5.0.1",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^20.17.19",
-    "@types/three": "^0.182.0",
     "baseline-browser-mapping": "^2.9.12",
     "jasmine-core": "~5.9.0",
     "karma": "~6.4.0",

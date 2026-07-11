@@ -1,61 +1,56 @@
 import { Component } from '@angular/core';
 import { Hero } from '../components/hero/hero';
+import { Experience } from '../components/experience/experience';
+import { Education } from '../components/education/education';
 import { Skills } from '../components/skills/skills';
 import { ProjectsGrid } from '../components/projects-grid/projects-grid';
 import { ContactForm } from '../components/contact-form/contact-form';
-import { SocialIsland } from '../components/social-island/social-island';
-import { Experience } from '../components/experience/experience';
-import { Education } from '../components/education/education';
 
 @Component({
   selector: 'app-home',
-  imports: [
-    Hero,
-    Skills,
-    ProjectsGrid,
-    ContactForm,
-    SocialIsland,
-    Experience,
-    Education,
-  ],
+  imports: [Hero, Skills, ProjectsGrid, ContactForm, Experience, Education],
   template: `
     <main class="min-h-screen">
       <app-hero />
 
-      <!-- Info Section (Experience & Education) -->
       @defer (on viewport) {
-        <section id="info" class="min-h-screen py-20 px-6 md:px-20 max-w-7xl mx-auto flex flex-col justify-center">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24">
-            <app-experience class="w-full" />
-            <app-education class="w-full" />
+        <app-projects-grid />
+      } @placeholder {
+        <div style="min-height: 60vh;" aria-hidden="true"></div>
+      }
+
+      @defer (on viewport) {
+        <section id="info" class="py-[var(--section-pad-y)] border-t border-[var(--color-border)]">
+          <div class="page-gutter max-w-[1400px] mx-auto mb-10 md:mb-14">
+            <p class="section-label mb-4">02 — Path</p>
+            <h2 class="text-4xl md:text-6xl font-black tracking-[-0.04em] leading-[0.95] text-[var(--color-text)]">
+              Experience &amp;<br />
+              <span class="text-[var(--color-text-muted)]">education</span>
+            </h2>
+          </div>
+          <div class="page-gutter max-w-[1400px] mx-auto">
+            <app-experience />
+            <div class="mt-4 md:mt-8">
+              <app-education />
+            </div>
           </div>
         </section>
-      } @placeholder (minimum 500ms) {
-        <div style="min-height: 100vh;"></div>
+      } @placeholder (minimum 300ms) {
+        <div style="min-height: 80vh;" aria-hidden="true"></div>
       }
 
       @defer (on viewport) {
         <app-skills />
       } @placeholder {
-        <div style="min-height: 100vh;"></div>
-      }
-
-      @defer (on viewport) {
-        <app-projects-grid />
-      } @placeholder {
-        <div style="min-height: 100vh;"></div>
+        <div style="min-height: 60vh;" aria-hidden="true"></div>
       }
 
       @defer (on viewport) {
         <app-contact-form />
       } @placeholder {
-        <div style="min-height: 100vh;"></div>
-      }
-
-      @defer {
-        <app-social-island />
+        <div style="min-height: 80vh;" aria-hidden="true"></div>
       }
     </main>
-  `
+  `,
 })
 export class Home {}

@@ -5,36 +5,24 @@ import { RouterLink } from '@angular/router';
   selector: 'app-not-found',
   imports: [RouterLink],
   template: `
-    <div class="min-h-screen flex flex-col items-center justify-center text-[var(--color-text)] p-6 text-center select-none overflow-hidden relative">
-       
-       <!-- Background Noise -->
-       <div class="absolute inset-0 pointer-events-none opacity-20 bg-[url('/assets/noise.svg')]"></div>
+    <div class="min-h-screen flex flex-col justify-center page-gutter pt-[var(--navbar-height)] relative overflow-hidden">
+      <p class="section-label mb-6">404</p>
+      <h1 class="text-5xl md:text-7xl lg:text-8xl font-black tracking-[-0.05em] leading-[0.9] text-[var(--color-text)] mb-6 max-w-3xl">
+        This route<br />
+        <span class="text-[var(--color-primary)]">doesn't compile.</span>
+      </h1>
+      <p class="text-lg text-[var(--color-text-muted)] mb-10 max-w-md">
+        The page you're looking for isn't part of this portfolio build.
+      </p>
+      <a routerLink="/" class="signal-btn self-start">Back to home</a>
 
-       <!-- Glow behind content -->
-       <div class="absolute w-[500px] h-[500px] rounded-full opacity-20 blur-[120px] pointer-events-none"
-            style="background: radial-gradient(circle, var(--color-primary), transparent 70%);">
-       </div>
-
-       <!-- Giant 404 -->
-       <h1 class="text-[12rem] md:text-[20rem] font-black leading-none tracking-tighter absolute select-none"
-           style="color: var(--color-primary); opacity: 0.08;">404</h1>
-       
-       <div class="relative z-10 animate-fade-in-up">
-          <div class="text-6xl md:text-8xl mb-4">🤨</div>
-          <h2 class="text-4xl md:text-6xl font-black tracking-tight mb-2">
-            Why you do <span style="color: var(--color-primary);">that</span>?
-          </h2>
-          <p class="text-xl md:text-2xl font-mono mb-12" style="color: var(--color-accent);">System cannot locate this sector.</p>
-          
-          <a routerLink="/" 
-             class="inline-block px-8 py-4 border-2 font-bold uppercase tracking-widest transition-all duration-300 hover:scale-105"
-             style="border-color: var(--color-primary); color: var(--color-primary);"
-             onmouseenter="this.style.backgroundColor=getComputedStyle(document.documentElement).getPropertyValue('--color-primary');this.style.color=getComputedStyle(document.documentElement).getPropertyValue('--color-background');"
-             onmouseleave="this.style.backgroundColor='transparent';this.style.color=getComputedStyle(document.documentElement).getPropertyValue('--color-primary');">
-             Return to Base
-          </a>
-       </div>
+      <div
+        class="absolute bottom-0 right-0 font-black text-[clamp(8rem,30vw,22rem)] leading-none text-[var(--color-text)] opacity-[0.04] select-none pointer-events-none"
+        aria-hidden="true"
+      >
+        404
+      </div>
     </div>
-  `
+  `,
 })
 export class NotFound {}

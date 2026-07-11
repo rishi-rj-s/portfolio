@@ -48,7 +48,7 @@
       "jobTitle": "Full Stack Engineer",
       "worksFor": {
         "@type": "Organization",
-        "name": "Freelance"
+        "name": "Axolon"
       },
       "description": "Full Stack Engineer specializing in architecting production-grade SaaS platforms and microservices."
     }
@@ -57,7 +57,7 @@
   <base href="/">
   <link rel="icon" type="image/gif" href="r.gif">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/seo/Rishi.jpeg">
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#07080a">
 
   <!-- ===================================
        CRITICAL THEME & LOADER SYSTEM
@@ -68,19 +68,25 @@
         var d = document.documentElement;
         var saved = localStorage.getItem('theme');
         var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        var theme = saved || (prefersDark ? 'dark' : 'light');
-        if (theme !== 'light') d.classList.add('dark');
-        if (['ocean','sunset','cyberpunk','forest'].includes(saved)) d.classList.add('theme-' + saved);
-        var bgMap = {dark:'#000',ocean:'#0d1b32',sunset:'#2b0a0a',cyberpunk:'#09090b',forest:'#052e16',light:'#fff'};
-        d.style.backgroundColor = bgMap[theme] || '#000';
+        var legacy = ['ocean', 'sunset', 'cyberpunk', 'forest'];
+        var theme =
+          saved === 'light' || saved === 'dark'
+            ? saved
+            : legacy.indexOf(saved) !== -1
+              ? 'dark'
+              : prefersDark
+                ? 'dark'
+                : 'light';
+        if (theme === 'dark') d.classList.add('dark');
+        d.style.backgroundColor = theme === 'dark' ? '#07080a' : '#e9edf2';
       } catch (e) {}
     })();
   </script>
 
   <style>
     #app-loader {
-      --l-accent: #6366f1; 
-      --l-bg: #000;
+      --l-accent: #b6ff2e;
+      --l-bg: #07080a;
       position: fixed;
       inset: 0;
       z-index: 99999;
@@ -105,13 +111,13 @@
     .loader-grid {
       position: absolute;
       inset: -100% -50%;
-      background-image: 
-        linear-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(99, 102, 241, 0.1) 1px, transparent 1px);
+      background-image:
+        linear-gradient(rgba(182, 255, 46, 0.14) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(182, 255, 46, 0.14) 1px, transparent 1px);
       background-size: 50px 50px;
       mask-image: radial-gradient(circle at center, black, transparent 70%);
       transform: translate3d(0,0,-200px) rotateX(45deg);
-      opacity: 0.2;
+      opacity: 0.25;
     }
 
     .loader-content {
@@ -166,7 +172,7 @@
       font-weight: 900;
       letter-spacing: 0.6em;
       text-indent: 0.6em;
-      text-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+      text-shadow: 0 0 20px rgba(182, 255, 46, 0.35);
       animation: l-pulse 2.5s ease-in-out infinite;
     }
 
@@ -232,8 +238,8 @@
         <div class="l-ring-active"></div>
         <div class="l-scan"></div>
         <svg width="40" height="40" viewBox="0 0 40 40" style="position:relative;z-index:5">
-          <path d="M20 5V35M5 20H35" stroke="#6366f1" stroke-width="1" stroke-dasharray="2 2" />
-          <circle cx="20" cy="20" r="3" fill="#6366f1" />
+          <path d="M20 5V35M5 20H35" stroke="#b6ff2e" stroke-width="1" stroke-dasharray="2 2" />
+          <circle cx="20" cy="20" r="3" fill="#b6ff2e" />
         </svg>
       </div>
 
@@ -257,9 +263,9 @@
       <h1 style="font-family:sans-serif;letter-spacing:4px">RISHIRAJ SAJEEV</h1>
       <p style="opacity:0.6;font-family:monospace;margin-bottom:20px">JAVASCRIPT REQUIRED FOR SYSTEM BOOT</p>
       <div style="display:flex;gap:20px;font-family:monospace">
-        <a href="https://github.com/rishi-rj-s" style="color:#6366f1;text-decoration:none">GITHUB</a>
-        <a href="https://linkedin.com/in/rishiraj-sajeev" style="color:#6366f1;text-decoration:none">LINKEDIN</a>
-        <a href="mailto:rishirajsajeev@gmail.com" style="color:#6366f1;text-decoration:none">EMAIL</a>
+        <a href="https://github.com/rishi-rj-s" style="color:#b6ff2e;text-decoration:none">GITHUB</a>
+        <a href="https://linkedin.com/in/rishiraj-sajeev" style="color:#b6ff2e;text-decoration:none">LINKEDIN</a>
+        <a href="mailto:rishirajsajeev@gmail.com" style="color:#b6ff2e;text-decoration:none">EMAIL</a>
       </div>
     </div>
   </noscript>

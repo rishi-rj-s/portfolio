@@ -1,29 +1,33 @@
-# Rishiraj Sajeev - Full Stack Developer Portfolio
+# Rishiraj Sajeev - Full Stack Engineer Portfolio
 
-> A modern, performant portfolio website built with Angular 20 and Tailwind CSS v4, showcasing the work of Rishiraj Sajeev.
+> A performant portfolio built with Angular 21 and Tailwind CSS v4, showcasing the work of Rishiraj Sajeev.
 
-This portfolio highlights my skills and experience as a full-stack developer specializing in Angular, Vue 3, React, and NestJS. 
+Full Stack Engineer specializing in production-grade SaaS platforms and microservices.
 
 ## About Me
 - **Name:** Rishiraj Sajeev
-- **Roles:** Full Stack Developer
+- **Role:** Full Stack Engineer
 - **Email:** rishirajsajeev@gmail.com
 - **LinkedIn:** [linkedin.com/in/rishiraj-sajeev](https://www.linkedin.com/in/rishiraj-sajeev)
 - **GitHub:** [github.com/rishi-rj-s](https://github.com/rishi-rj-s)
+- **Site:** [https://www.rishiraj-sajeev.space/](https://www.rishiraj-sajeev.space/)
+
+## Experience
+- **Angular Developer @ Axolon** — April 2026 – Present
+- **Full Stack Engineering (Freelance)** — 2023 – March 2026
 
 ## Technical Skills
-- **Frontend:** Vue 3, Angular, React, TypeScript, Tailwind CSS
-- **Backend:** Node.js, NestJS, Express, GraphQL, gRPC
+- **Frontend:** Angular, React, Next.js, TypeScript, Tailwind CSS
+- **Backend:** Node.js, NestJS, Express, REST APIs
 - **Database:** PostgreSQL, MongoDB, Redis, Supabase
-- **DevOps:** Docker, Kubernetes, GitHub Actions, AWS EC2
-- **State & Messaging:** RxJS, Pinia, NgRx, Kafka
-- **Tools & ORM:** Prisma, TypeORM, Socket.io, Git
+- **DevOps:** Docker, GitHub Actions, AWS EC2/S3, Vercel
+- **Realtime:** WebSockets, Redis Pub/Sub
 
 ## Featured Projects
-- **EEZY-CABS:** Taxi booking microservice system (Angular, NestJS, Kafka, gRPC)
-- **Apply Log:** Job tracker application (Vue 3, Supabase)
-- **Tagtics:** SaaS feedback platform (React, Supabase)
-- **Fashion Studio:** E-commerce platform (Node.js, Express, MongoDB)
+- **Tagtics:** Multi-tenant UI feedback SaaS (React, Supabase, PostgreSQL RLS) — https://www.tagtics.online
+- **Green Power India:** Corporate platform for a sustainable energy company (Next.js 15, Supabase) — https://greenpowerindia.com/
+- **Ever-Gauzy:** Open-source enterprise ERP contributions (NestJS, Angular, Nx)
+- **Fashion Studio:** E-commerce backend on AWS EC2 (Node.js, Express, MongoDB, Razorpay)
 
 ## Resources & Details
-- Detailed portfolio data can be found at: [/llms-full.txt](/llms-full.txt)
+- Detailed portfolio data: [/llms-full.txt](/llms-full.txt)

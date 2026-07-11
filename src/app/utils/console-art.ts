@@ -1,4 +1,4 @@
-export function printAsciiArt(color: string = '#3b82f6') {
+export function printAsciiArt(color: string = '#b6ff2e') {
     const art = `
 %c
     ██████╗ ██╗██╗██╗███████╗██╗  ██╗██╗██╗██╗

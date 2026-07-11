@@ -3,7 +3,6 @@
    Does NOT block first paint
    =================================== */
 
-/* Global Noise Overlay */
 .noise-overlay {
   position: fixed;
   top: 0;
@@ -12,12 +11,11 @@
   height: 100%;
   pointer-events: none;
   z-index: 9999;
-  opacity: 0.03;
-  contain: strict; /* Performance: Isolate paint to this layer */
+  opacity: 0.035;
+  contain: strict;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
-/* Custom Scrollbar - Completely Hidden globally */
 ::-webkit-scrollbar {
   display: none !important;
   width: 0 !important;
@@ -31,39 +29,42 @@ html, body {
   scrollbar-width: none !important;
 }
 
-/* Selection */
 ::selection {
-  background-color: #3b82f6;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
 }
 
-:root.dark ::selection {
-  background-color: #3b82f6;
-  color: white;
-}
-
-/* Focus visible */
 *:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: var(--focus-ring);
   outline-offset: 2px;
 }
 
-/* Base Animations */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(24px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
 @keyframes slideInDown {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-16px);
   }
   to {
     opacity: 1;
@@ -71,48 +72,32 @@ html, body {
   }
 }
 
-@keyframes slideInUpMask {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-    clip-path: inset(100% 0 0 0);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    clip-path: inset(0% 0 0 0);
-  }
+.animate-fade-in-up {
+  animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* Entrance Animations - Triggered by .app-loaded class on <html> */
+.animate-scale-in {
+  animation: scaleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 .app-loaded app-navbar {
-  animation: slideInDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: slideInDown 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .app-loaded section#hero {
-  animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+  animation: fadeInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both;
 }
 
-.app-loaded .hero-title .line:nth-child(1) {
-  animation: slideInUpMask 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
-}
-
-.app-loaded .hero-title .line:nth-child(2) {
-  animation: slideInUpMask 1s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
-}
-
-/* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
-/* Theme Icon Visibility */
 .theme-icon-light { display: block; }
 .theme-icon-dark { display: none; }
 :root.dark .theme-icon-light { display: none; }
 :root.dark .theme-icon-dark { display: block; }
-
