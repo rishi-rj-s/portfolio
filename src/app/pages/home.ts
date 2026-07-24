@@ -36,9 +36,7 @@ import { Education } from '../components/education/education';
 
       <app-contact-form />
 
-      @defer {
-        <app-social-island />
-      }
+      <app-social-island />
     </main>
   `
 })
