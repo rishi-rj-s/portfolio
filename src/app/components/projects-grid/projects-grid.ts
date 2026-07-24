@@ -156,26 +156,29 @@ import { projects } from '../../data/projects';
                        }
                     </div>
 
-                    <div class="flex flex-wrap items-center gap-3 z-20">
+                    <div class="flex flex-wrap items-center gap-2 z-20 mt-1">
                        @if (project.caseStudySlug) {
                           <a [routerLink]="['/work', project.caseStudySlug]"
                              (click)="$event.stopPropagation()"
-                             class="text-[10px] font-bold tracking-widest uppercase text-[var(--color-primary)] hover:underline underline-offset-4">
+                             class="project-link project-link--primary">
                              Case study
+                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                           </a>
                        }
                        @if (project.links.live) {
                           <a [href]="project.links.live" target="_blank" rel="noopener noreferrer"
                              (click)="$event.stopPropagation()"
-                             class="text-[10px] font-bold tracking-widest uppercase text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:underline underline-offset-4">
-                             Live Demo
+                             class="project-link">
+                             Live demo
+                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
                           </a>
                        }
                        @if (project.links.source) {
                           <a [href]="project.links.source" target="_blank" rel="noopener noreferrer"
                              (click)="$event.stopPropagation()"
-                             class="text-[10px] font-bold tracking-widest uppercase text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:underline underline-offset-4">
+                             class="project-link">
                              GitHub
+                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
                           </a>
                        }
                     </div>
@@ -195,6 +198,41 @@ import { projects } from '../../data/projects';
     }
     .scrollbar-none::-webkit-scrollbar {
       display: none;
+    }
+
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: 9999px;
+      border: 1px solid var(--color-border);
+      background: color-mix(in oklab, var(--color-card) 80%, transparent);
+      color: var(--color-text);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
+    }
+
+    .project-link:hover {
+      border-color: var(--color-primary);
+      background: color-mix(in oklab, var(--color-primary) 12%, var(--color-card));
+      transform: translateY(-1px);
+    }
+
+    .project-link--primary {
+      border-color: var(--color-text);
+      background: var(--color-text);
+      color: var(--color-background);
+    }
+
+    .project-link--primary:hover {
+      border-color: var(--color-primary);
+      background: var(--color-primary);
+      color: var(--color-background);
     }
   `]
 })
