@@ -1,8 +1,10 @@
 {
+  "buildCommand": "pnpm run build",
+  "outputDirectory": "dist/rishiraj-portfolio/browser",
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/"
+      "destination": "/index.html"
     }
   ]
 }

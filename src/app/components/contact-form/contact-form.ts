@@ -15,7 +15,16 @@ import { isPlatformBrowser } from '@angular/common';
       <div class="w-full max-w-xl relative z-10">
          @if (!isSubmitted()) {
             <div class="animate-fade-in-up">
-              <h2 class="text-4xl md:text-6xl font-black mb-8 text-[var(--color-text)] tracking-tight">LET'S TALK</h2>
+              <h2 class="text-4xl md:text-6xl font-black mb-4 text-[var(--color-text)] tracking-tight">LET'S TALK</h2>
+              <p class="text-sm md:text-base text-[var(--color-text-muted)] mb-2 leading-relaxed">
+                Employed at Axolon and selectively exploring — open to full stack or backend roles with real system complexity. I typically reply within 48 hours.
+              </p>
+              <p class="mb-8">
+                <a href="mailto:rishirajsajeev@gmail.com"
+                   class="text-sm font-medium text-[var(--color-text)] underline underline-offset-4 decoration-[var(--color-border)] hover:decoration-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors">
+                  rishirajsajeev&#64;gmail.com
+                </a>
+              </p>
               
               <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" autocomplete="on" class="space-y-6">
                 

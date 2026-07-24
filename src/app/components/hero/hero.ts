@@ -15,7 +15,7 @@ import { Component, ElementRef, afterNextRender, viewChild, OnDestroy, NgZone, i
       <!-- Kinetic Typography Container -->
       <div class="relative z-10 text-center select-none" #heroContainer>
         <h2 class="text-xl md:text-2xl font-bold tracking-[0.2em] text-[var(--color-text-secondary)] mb-4">
-          DIGITAL CRAFTSMAN
+          FULL STACK ENGINEER
         </h2>
         
         <h1 class="hero-title text-6xl md:text-9xl font-black leading-none tracking-tighter mix-blend-difference text-[var(--color-text)] perspective-text" #heroTitle>
@@ -23,10 +23,24 @@ import { Component, ElementRef, afterNextRender, viewChild, OnDestroy, NgZone, i
           <div class="line" #line2>SAJEEV</div>
         </h1>
 
-        <div class="mt-8 max-w-lg mx-auto">
+        <div class="mt-8 max-w-2xl mx-auto space-y-3 px-4">
           <p class="text-lg md:text-xl text-[var(--color-text-muted)]">
-            Architecting production-grade <span class="text-[var(--color-text)] font-semibold">SaaS</span> & <span class="text-[var(--color-text)] font-semibold">Microservices</span>.
+            Seeking a <span class="text-[var(--color-text)] font-semibold">full stack or backend</span> role with real system complexity — SaaS &amp; production systems.
           </p>
+          <p class="text-sm md:text-base text-[var(--color-text-secondary)]">
+            Currently Angular Developer at Axolon — employed and selectively exploring.
+          </p>
+          <div class="flex flex-wrap items-center justify-center gap-3 pt-4">
+            <a href="/assets/resumes/RISHIRAJ_SAJEEV_RESUME.pdf"
+               download="Rishiraj_Sajeev_Resume.pdf"
+               class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[var(--color-text)] bg-[var(--color-text)] text-[var(--color-background)] text-xs font-bold tracking-widest uppercase hover:bg-transparent hover:text-[var(--color-text)] transition-colors">
+              Resume
+            </a>
+            <a href="#contact"
+               class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[var(--color-border)] bg-[var(--color-card)]/40 text-[var(--color-text)] text-xs font-bold tracking-widest uppercase hover:border-[var(--color-primary)] transition-colors">
+              Let's Talk
+            </a>
+          </div>
         </div>
       </div>
 
