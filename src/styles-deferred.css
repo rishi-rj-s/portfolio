@@ -3,6 +3,36 @@
    Does NOT block first paint
    =================================== */
 
+/* Extra Clash weights + Playfair (below-fold / serif accents) */
+@font-face {
+  font-family: 'Clash Display';
+  src: url('/assets/fonts/clash-display-500.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Clash Display';
+  src: url('/assets/fonts/clash-display-600.woff2') format('woff2');
+  font-weight: 600;
+  font-display: swap;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('/assets/fonts/playfair-display-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('/assets/fonts/playfair-display-italic.woff2') format('woff2');
+}
+
 /* Global Noise Overlay */
 .noise-overlay {
   position: fixed;
@@ -13,7 +43,7 @@
   pointer-events: none;
   z-index: 9999;
   opacity: 0.03;
-  contain: strict; /* Performance: Isolate paint to this layer */
+  contain: strict;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
@@ -84,17 +114,11 @@ html, body {
   }
 }
 
-/* Entrance Animations - Triggered by .app-loaded class on <html> */
-.app-loaded app-navbar {
-  animation: slideInDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-/* Reduced Motion */
+/* Reduced Motion — only kill looping/decorative animations.
+   Do NOT zero transition-duration globally (it breaks intentional UI like card flips). */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
-    animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
   }
 }
 
@@ -103,4 +127,3 @@ html, body {
 .theme-icon-dark { display: none; }
 :root.dark .theme-icon-light { display: none; }
 :root.dark .theme-icon-dark { display: block; }
-

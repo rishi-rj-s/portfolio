@@ -1,48 +1,68 @@
-import { Component, PLATFORM_ID, inject } from '@angular/core';
+import { Component, PLATFORM_ID, afterNextRender, inject, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HeroBootVisual } from '../hero-boot-visual/hero-boot-visual';
 import { profile } from '../../data/profile';
 import { ScrollService } from '../../services/scroll';
+import { shouldLoadHeavyGraphics } from '../../utils/connection';
 
 @Component({
   selector: 'app-hero',
   imports: [HeroBootVisual],
   template: `
-    <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-x-clip overflow-y-hidden">
       <div class="absolute inset-0 z-[1] pointer-events-none overflow-hidden" aria-hidden="true">
-        <app-hero-boot-visual />
+        @if (enableBootVisual()) {
+          @defer (on idle; on timer(400ms)) {
+            <app-hero-boot-visual />
+          }
+        }
       </div>
 
-      <div class="relative z-10 w-full max-w-6xl mx-auto px-4 md:px-8 flex flex-col items-center justify-center">
-        <div class="name-stage select-none">
+      <div class="relative z-10 w-full max-w-7xl mx-auto px-3 sm:px-6 flex flex-col items-center justify-center">
+        <div class="hero-identity select-none">
           <h2 class="name-eyebrow">
-            {{ profile.eyebrow }}
+            <span class="lg:hidden">{{ profile.role }}</span>
+            <span class="hidden lg:inline">{{ profile.eyebrow }}</span>
           </h2>
 
-          <h1 class="name-3d">
-            <span class="word word-1">
-              @for (layer of depthLayers; track layer) {
-                <span class="extrude" [attr.data-z]="layer" aria-hidden="true">RISHIRAJ</span>
-              }
-              <span class="face">RISHIRAJ</span>
-            </span>
-            <span class="word word-2">
-              @for (layer of depthLayers; track layer) {
-                <span class="extrude" [attr.data-z]="layer" aria-hidden="true">SAJEEV</span>
-              }
-              <span class="face">SAJEEV</span>
-            </span>
-          </h1>
+          <div class="name-stage">
+            <h1 class="name-3d">
+              <span class="word word-1">
+                @for (layer of depthLayers(); track layer) {
+                  <span class="extrude" [attr.data-z]="layer" aria-hidden="true">RISHIRAJ</span>
+                }
+                <span class="face">RISHIRAJ</span>
+              </span>
+              <span class="word word-2">
+                @for (layer of depthLayers(); track layer) {
+                  <span class="extrude" [attr.data-z]="layer" aria-hidden="true">SAJEEV</span>
+                }
+                <span class="face">SAJEEV</span>
+              </span>
+            </h1>
+          </div>
         </div>
 
-        <div class="mt-10 md:mt-14 max-w-2xl mx-auto space-y-4 text-center px-2">
-          <p class="text-lg md:text-xl text-[var(--color-text-muted)] leading-relaxed">
-            {{ profile.subhead }}
-          </p>
-          <p class="text-sm md:text-base text-[var(--color-text-secondary)]">
-            {{ profile.currentTitle }}. {{ profile.availability }}
-          </p>
-          <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+        <div class="mt-8 md:mt-10 lg:mt-14 max-w-2xl mx-auto text-center px-2">
+          <div class="lg:hidden space-y-2">
+            <p class="text-[10px] sm:text-xs font-bold tracking-[0.22em] uppercase text-[var(--color-text-secondary)]">
+              Angular · NestJS · SaaS
+            </p>
+            <p class="hidden md:block text-sm text-[var(--color-text-secondary)] pt-1">
+              {{ profile.currentTitle }}. {{ profile.availability }}
+            </p>
+          </div>
+
+          <div class="hidden lg:block space-y-4">
+            <p class="text-lg xl:text-xl text-[var(--color-text-muted)] leading-relaxed">
+              {{ profile.subhead }}
+            </p>
+            <p class="text-sm md:text-base text-[var(--color-text-secondary)]">
+              {{ profile.currentTitle }}. {{ profile.availability }}
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-center gap-3 pt-5 lg:pt-6">
             <a href="#projects" (click)="scrollTo($event, '#projects')"
                class="px-5 py-2.5 rounded-full bg-[var(--color-text)] text-[var(--color-background)] text-xs font-bold tracking-widest uppercase hover:bg-[var(--color-primary)] transition-colors">
               View work
@@ -63,30 +83,75 @@ import { ScrollService } from '../../services/scroll';
     </section>
   `,
   styles: [`
+    .hero-identity {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: min(100%, 1100px);
+    }
+
     .name-stage {
       position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: min(96vw, 920px);
-      perspective: 900px;
-      perspective-origin: 30% 50%;
+      width: 100%;
+      /* Room for stroke + extrusion so letters aren't clipped */
+      padding: 0 0 0;
+      /* Shorter perspective = stronger “coming at you” foreshortening on small screens */
+      perspective: 520px;
+      perspective-origin: 22% 45%;
+      box-sizing: border-box;
     }
 
+    @media (min-width: 768px) {
+      .name-stage {
+        perspective: 720px;
+        perspective-origin: 26% 48%;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .name-stage {
+        padding: 0 1rem;
+        perspective: 900px;
+        perspective-origin: 30% 50%;
+      }
+    }
+
+    /* Match gap below the name (mt-8 / md:mt-10 / lg:mt-14) */
     .name-eyebrow {
-      margin: 0 0 0.75rem;
+      position: relative;
+      z-index: 3;
+      margin: 0 0 2rem; /* = mt-8 */
+      padding: 0.35rem 0.85rem;
       text-align: center;
-      font-size: 0.875rem;
+      font-size: clamp(0.85rem, 2.6vw, 1.1rem);
       font-weight: 700;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--color-text-secondary);
+      color: var(--color-text);
+      opacity: 0.78;
+      max-width: 100%;
+      white-space: normal;
     }
 
     @media (min-width: 768px) {
       .name-eyebrow {
-        margin-bottom: 1rem;
-        font-size: 1rem;
+        margin-bottom: 2.5rem; /* = md:mt-10 */
+        letter-spacing: 0.22em;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .name-eyebrow {
+        margin-bottom: 3.5rem; /* = lg:mt-14 */
+        font-size: clamp(0.75rem, 1.35vw, 1rem);
+        letter-spacing: 0.18em;
+        color: var(--color-text-secondary);
+        opacity: 1;
+        padding-inline: 0.5rem;
       }
     }
 
@@ -99,24 +164,60 @@ import { ScrollService } from '../../services/scroll';
       justify-content: center;
       gap: 0.02em;
       margin: 0;
-      transform: rotateY(-32deg) rotateX(14deg) rotateZ(-2deg) translate3d(-4%, 2%, 40px);
+      width: 100%;
+      /* Aggressive mobile tilt + forward push so extrusion reads as popping out */
+      transform: rotateY(-32deg) rotateX(16deg) rotateZ(-2deg) translate3d(-2%, 2%, 48px);
       transform-style: preserve-3d;
       font-family: ui-sans-serif, system-ui, sans-serif;
       font-weight: 900;
-      font-size: clamp(2.75rem, 11vw, 7rem);
+      /* Size to dominate the hero — "RISHIRAJ" is 8 letters, ~0.72em wide each */
+      font-size: clamp(3.6rem, 15.5vw, 7.25rem);
       line-height: 0.88;
       letter-spacing: -0.06em;
       text-transform: uppercase;
+    }
+
+    @media (min-width: 768px) {
+      .name-3d {
+        font-size: clamp(5rem, 13.5vw, 9rem);
+        transform: rotateY(-26deg) rotateX(12deg) rotateZ(-1.5deg) translate3d(-2%, 1.5%, 36px);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .name-3d {
+        font-size: clamp(6.5rem, 12vw, 11.5rem);
+        transform: rotateY(-22deg) rotateX(10deg) rotateZ(-1.5deg) translate3d(-2%, 1%, 24px);
+      }
+    }
+
+    @media (min-width: 1400px) {
+      .name-3d {
+        font-size: clamp(8rem, 11vw, 13rem);
+      }
     }
 
     .word {
       position: relative;
       display: block;
       transform-style: preserve-3d;
+      max-width: 100%;
     }
 
     .word-2 {
-      transform: translate3d(8%, 0, 28px);
+      transform: translate3d(5%, 2%, 18px);
+    }
+
+    @media (min-width: 768px) {
+      .word-2 {
+        transform: translate3d(5%, 1%, 16px);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .word-2 {
+        transform: translate3d(6%, 0, 20px);
+      }
     }
 
     .face,
@@ -129,10 +230,10 @@ import { ScrollService } from '../../services/scroll';
       position: relative;
       z-index: 20;
       color: var(--color-background);
-      -webkit-text-stroke: 4px var(--color-text);
+      -webkit-text-stroke: 3px var(--color-text);
       paint-order: stroke fill;
-      filter: drop-shadow(5px 6px 0 var(--color-primary));
-      transform: translateZ(0);
+      filter: drop-shadow(4px 5px 0 var(--color-primary));
+      transform: translateZ(8px);
     }
 
     .extrude {
@@ -145,35 +246,34 @@ import { ScrollService } from '../../services/scroll';
     }
 
     .extrude[data-z='1']  { transform: translateZ(-2px);  opacity: 0.95; }
-    .extrude[data-z='2']  { transform: translateZ(-4px);  opacity: 0.9; }
-    .extrude[data-z='3']  { transform: translateZ(-6px);  opacity: 0.85; }
-    .extrude[data-z='4']  { transform: translateZ(-8px);  opacity: 0.8; }
-    .extrude[data-z='5']  { transform: translateZ(-10px); opacity: 0.75; }
-    .extrude[data-z='6']  { transform: translateZ(-12px); opacity: 0.7; }
-    .extrude[data-z='7']  { transform: translateZ(-14px); opacity: 0.65; }
-    .extrude[data-z='8']  { transform: translateZ(-16px); opacity: 0.6; }
-    .extrude[data-z='9']  { transform: translateZ(-18px); opacity: 0.55; }
-    .extrude[data-z='10'] { transform: translateZ(-20px); opacity: 0.5; }
-    .extrude[data-z='11'] { transform: translateZ(-22px); opacity: 0.45; }
-    .extrude[data-z='12'] { transform: translateZ(-24px); opacity: 0.4; }
-    .extrude[data-z='13'] { transform: translateZ(-26px); opacity: 0.35; }
-    .extrude[data-z='14'] { transform: translateZ(-28px); opacity: 0.3; }
-    .extrude[data-z='15'] { transform: translateZ(-30px); opacity: 0.28; }
-    .extrude[data-z='16'] { transform: translateZ(-32px); opacity: 0.25; }
-    .extrude[data-z='17'] { transform: translateZ(-34px); opacity: 0.22; }
-    .extrude[data-z='18'] { transform: translateZ(-36px); opacity: 0.2; }
-    .extrude[data-z='19'] { transform: translateZ(-38px); opacity: 0.18; }
-    .extrude[data-z='20'] { transform: translateZ(-40px); opacity: 0.16; }
+    .extrude[data-z='2']  { transform: translateZ(-4px);  opacity: 0.88; }
+    .extrude[data-z='3']  { transform: translateZ(-6px);  opacity: 0.8; }
+    .extrude[data-z='4']  { transform: translateZ(-8px);  opacity: 0.72; }
+    .extrude[data-z='5']  { transform: translateZ(-10px); opacity: 0.64; }
+    .extrude[data-z='6']  { transform: translateZ(-12px); opacity: 0.56; }
+    .extrude[data-z='7']  { transform: translateZ(-14px); opacity: 0.48; }
+    .extrude[data-z='8']  { transform: translateZ(-16px); opacity: 0.4; }
+    .extrude[data-z='9']  { transform: translateZ(-18px); opacity: 0.32; }
+    .extrude[data-z='10'] { transform: translateZ(-20px); opacity: 0.24; }
+    .extrude[data-z='11'] { transform: translateZ(-22px); opacity: 0.18; }
+    .extrude[data-z='12'] { transform: translateZ(-24px); opacity: 0.12; }
 
-    @media (max-width: 640px) {
-      .name-3d {
-        font-size: clamp(2.1rem, 12vw, 3.2rem);
-        transform: rotateY(-26deg) rotateX(12deg) rotateZ(-1deg) translate3d(-2%, 0, 24px);
-      }
-
+    /* Mobile: thicker extrusion + stronger face lift so the slab reads in perspective */
+    @media (max-width: 767px) {
       .face {
         -webkit-text-stroke: 2.5px var(--color-text);
+        filter: drop-shadow(5px 7px 0 color-mix(in oklab, var(--color-primary) 70%, transparent));
+        transform: translateZ(14px);
       }
+
+      .extrude[data-z='1']  { transform: translateZ(-5px);  opacity: 0.98; }
+      .extrude[data-z='2']  { transform: translateZ(-10px); opacity: 0.9; }
+      .extrude[data-z='3']  { transform: translateZ(-15px); opacity: 0.78; }
+      .extrude[data-z='4']  { transform: translateZ(-20px); opacity: 0.64; }
+      .extrude[data-z='5']  { transform: translateZ(-26px); opacity: 0.48; }
+      .extrude[data-z='6']  { transform: translateZ(-32px); opacity: 0.34; }
+      .extrude[data-z='7']  { transform: translateZ(-38px); opacity: 0.22; }
+      .extrude[data-z='8']  { transform: translateZ(-44px); opacity: 0.12; }
     }
   `]
 })
@@ -181,9 +281,27 @@ export class Hero {
   readonly profile = profile;
   private scrollService = inject(ScrollService);
   private platformId = inject(PLATFORM_ID);
+  readonly enableBootVisual = signal(true);
 
-  /** Stacked Z layers give the letters physical depth (length on the Z axis). */
-  readonly depthLayers = Array.from({ length: 20 }, (_, i) => i + 1);
+  /** Depth layers — restored for desktop; lighter on small screens */
+  readonly depthLayers = signal<number[]>([1, 2, 3, 4, 5, 6]);
+
+  constructor() {
+    afterNextRender(() => {
+      if (!isPlatformBrowser(this.platformId)) return;
+      this.enableBootVisual.set(shouldLoadHeavyGraphics());
+
+      const w = window.innerWidth;
+      if (w >= 1024) {
+        this.depthLayers.set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+      } else if (w >= 768) {
+        this.depthLayers.set([1, 2, 3, 4, 5, 6, 7, 8]);
+      } else {
+        // Thicker mobile extrusion needs more layers for a solid slab
+        this.depthLayers.set([1, 2, 3, 4, 5, 6, 7, 8]);
+      }
+    });
+  }
 
   scrollTo(e: Event, id: string) {
     e.preventDefault();

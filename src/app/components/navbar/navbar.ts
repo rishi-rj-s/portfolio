@@ -113,13 +113,18 @@ export class Navbar implements OnDestroy {
       const containerEl = this.navbarContainer()?.nativeElement;
       if (!containerEl) return;
 
-      this.mouseMoveListener = (e: MouseEvent) => this.handleMouseMove(e);
-      this.mouseLeaveListener = () => this.resetMagnets();
+      // Attach magnetic GSAP only after first pointer intent — keeps GSAP off initial boot
+      const arm = () => {
+        this.mouseMoveListener = (e: MouseEvent) => this.handleMouseMove(e);
+        this.mouseLeaveListener = () => this.resetMagnets();
+        this.ngZone.runOutsideAngular(() => {
+          containerEl.addEventListener('mousemove', this.mouseMoveListener!);
+          containerEl.addEventListener('mouseleave', this.mouseLeaveListener!);
+        });
+        containerEl.removeEventListener('pointerenter', arm);
+      };
 
-      this.ngZone.runOutsideAngular(() => {
-        containerEl.addEventListener('mousemove', this.mouseMoveListener!);
-        containerEl.addEventListener('mouseleave', this.mouseLeaveListener!);
-      });
+      containerEl.addEventListener('pointerenter', arm, { once: true });
     });
   }
 
