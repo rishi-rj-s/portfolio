@@ -55,6 +55,15 @@ Optional local SSR server:
 pnpm run serve:ssr:rishiraj-portfolio
 ```
 
+## Crawl / agent files
+
+Served from `public/` at site root:
+
+- `/robots.txt` — crawler allow rules + sitemap
+- `/sitemap.xml` — indexable URLs
+- `/llms.txt` — short AI-oriented brief
+- `/llms-full.txt` — full profile dump for agents
+
 ## Connect
 
 - **Email**: [rishirajsajeev@gmail.com](mailto:rishirajsajeev@gmail.com)
