@@ -55,80 +55,85 @@ import { projects } from '../../data/projects';
             <!-- Project Cards -->
             @for (project of projects; track project.title; let i = $index) {
               <article class="project-card group relative w-[80vw] md:w-[500px] lg:w-[600px] shrink-0 flex flex-col max-h-full">
-                 <!-- 3D Initials Flip Card -->
+                 <!-- Flip card: perspective shell → tilt layer → flip layer (WAAPI) -->
                  <div (click)="onCardClick($event)"
-                      class="card-interact relative aspect-[16/9] md:aspect-[2/1] max-h-[25dvh] md:max-h-[35dvh] rounded-sm md:rounded-md mb-4 md:mb-6 border border-[var(--color-border)] group-hover:border-[var(--color-primary)] group-active:border-[var(--color-primary)] shadow-2xl flex-shrink-1 cursor-pointer"
-                      style="transform: perspective(1000px) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg)); transition: transform 0.25s cubic-bezier(0.1, 1, 0.1, 1), border-color 0.5s; transform-style: preserve-3d; will-change: transform;">
-                    
-                    <!-- Card Inner (handles the 180deg flip) -->
-                    <div class="card-inner w-full h-full relative"
-                         style="transform-style: preserve-3d; transform: var(--flip-rotation, rotateY(0deg)); transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); will-change: transform;">
-                       
-                       <!-- Front Side: Initials & Visual Accents -->
-                       <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-[var(--color-card)] to-[var(--color-background)] rounded-sm md:rounded-md flex items-center justify-center"
-                            style="backface-visibility: hidden; transform-style: preserve-3d;">
-                            
-                            <!-- Dot pattern background -->
-                            <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.07] bg-[radial-gradient(var(--color-text)_1px,transparent_1px)] [background-size:16px_16px]"></div>
-                            
-                            <!-- Mouse/Touch Spotlight Glow -->
-                            <div class="absolute inset-0 opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-300 pointer-events-none"
-                                 [style.background]="'radial-gradient(220px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), var(--color-primary) 0%, transparent 100%)'"
-                                 style="mix-blend-mode: plus-lighter; opacity: var(--spotlight-opacity, 0); will-change: background, opacity;"></div>
+                      class="card-interact relative aspect-[16/9] md:aspect-[2/1] max-h-[25dvh] md:max-h-[35dvh] rounded-sm md:rounded-md mb-4 md:mb-6 border border-[var(--color-border)] group-hover:border-[var(--color-primary)] shadow-2xl flex-shrink-1 cursor-pointer">
 
-                            <!-- Initials (3D Floating Parallax Text) -->
-                            <span class="text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter bg-gradient-to-br from-[var(--color-text)] to-[var(--color-primary)] bg-clip-text text-transparent opacity-25 group-hover:opacity-100 group-active:opacity-100 group-hover:drop-shadow-[0_0_20px_var(--glow-primary)] select-none font-sans relative z-10"
-                                 style="transform: translate3d(var(--text-tx, 0px), var(--text-ty, 0px), 30px); transition: transform 0.25s cubic-bezier(0.1, 1, 0.1, 1), opacity 0.5s; will-change: transform;">
-                              {{ getInitials(project.title) }}
-                            </span>
+                    <div class="card-tilt w-full h-full"
+                         style="transform: rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg)) scale(var(--card-scale, 1));">
 
-                            <!-- Tech corner accents -->
-                            <div class="absolute top-3 left-3 w-1.5 h-1.5 border-t border-l border-[var(--color-border)] group-hover:border-[var(--color-primary)] group-active:border-[var(--color-primary)] transition-colors duration-500 opacity-60"></div>
-                            <div class="absolute top-3 right-3 w-1.5 h-1.5 border-t border-r border-[var(--color-border)] group-hover:border-[var(--color-primary)] group-active:border-[var(--color-primary)] transition-colors duration-500 opacity-60"></div>
-                            <div class="absolute bottom-3 left-3 w-1.5 h-1.5 border-b border-l border-[var(--color-border)] group-hover:border-[var(--color-primary)] group-active:border-[var(--color-primary)] transition-colors duration-500 opacity-60"></div>
-                            <div class="absolute bottom-3 right-3 w-1.5 h-1.5 border-b border-r border-[var(--color-border)] group-hover:border-[var(--color-primary)] group-active:border-[var(--color-primary)] transition-colors duration-500 opacity-60"></div>
+                      <div class="card-inner w-full h-full relative">
 
-                            <!-- Index / Numbering Badge -->
-                            <div class="absolute top-4 right-4 z-20 font-mono text-[10px] tracking-widest text-[var(--color-text)] opacity-40 select-none">
-                               /0{{ i + 1 }}
-                            </div>
+                         <!-- Front -->
+                         <div class="card-face card-face--front absolute inset-0 w-full h-full bg-gradient-to-br from-[var(--color-card)] to-[var(--color-background)] rounded-sm md:rounded-md flex items-center justify-center overflow-hidden">
 
-                            <!-- Type Badge -->
-                            <div class="absolute top-4 left-4 z-20">
-                               <span class="text-[8px] px-2 py-0.5 bg-black/80 text-white backdrop-blur-md rounded-full uppercase tracking-widest font-bold border border-white/10">
-                                  {{project.type}}
-                               </span>
-                            </div>
+                              <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.07] bg-[radial-gradient(var(--color-text)_1px,transparent_1px)] [background-size:16px_16px]"></div>
 
-                            <!-- Details Toggle Badge -->
-                            <div class="absolute bottom-3 right-3 opacity-0 group-hover:opacity-60 transition-all duration-500 text-[8px] tracking-widest uppercase font-mono flex items-center gap-1 text-[var(--color-text)] select-none">
-                               <span>Details</span>
-                               <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                  <path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9-9a9 9 0 0 0-9 9"/>
-                               </svg>
-                            </div>
-                       </div>
+                              <div class="card-spotlight absolute inset-0 pointer-events-none"
+                                   [style.background]="'radial-gradient(240px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), var(--color-primary) 0%, transparent 65%)'"
+                                   style="mix-blend-mode: plus-lighter; opacity: var(--spotlight-opacity, 0);"></div>
 
-                       <!-- Back Side: Description & Details -->
-                       <div class="absolute inset-0 w-full h-full bg-[var(--color-card)] rounded-sm md:rounded-md p-4 md:p-6 flex flex-col justify-between"
-                            style="backface-visibility: hidden; transform: rotateY(180deg); transform-style: preserve-3d;">
-                            
-                            <div class="flex-1 flex flex-col justify-center gap-2">
-                               <p class="text-xs md:text-sm font-semibold text-[var(--color-text)] leading-relaxed">
-                                  {{project.outcome}}
-                               </p>
-                               <p class="text-xs md:text-sm text-[var(--color-text)] opacity-80 leading-relaxed max-h-[10dvh] overflow-y-auto pr-1 scrollbar-none font-sans">
-                                  {{project.description}}
-                               </p>
-                            </div>
+                              <span class="card-initials text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter bg-gradient-to-br from-[var(--color-text)] to-[var(--color-primary)] bg-clip-text text-transparent opacity-25 group-hover:opacity-100 select-none font-sans relative z-10"
+                                   style="transform: translate3d(var(--text-tx, 0px), var(--text-ty, 0px), 30px);">
+                                {{ getInitials(project.title) }}
+                              </span>
 
-                            <!-- Click to return instruction -->
-                            <div class="flex items-center justify-between text-[8px] font-mono tracking-widest uppercase text-[var(--color-text-secondary)] opacity-60 border-t border-[var(--color-border)] pt-2 mt-2 select-none">
-                               <span>Back to initials</span>
-                               <span>Close &times;</span>
-                            </div>
-                       </div>
-                       
+                              <div class="absolute top-3 left-3 w-1.5 h-1.5 border-t border-l border-[var(--color-border)] group-hover:border-[var(--color-primary)] transition-colors duration-500 opacity-60"></div>
+                              <div class="absolute top-3 right-3 w-1.5 h-1.5 border-t border-r border-[var(--color-border)] group-hover:border-[var(--color-primary)] transition-colors duration-500 opacity-60"></div>
+                              <div class="absolute bottom-3 left-3 w-1.5 h-1.5 border-b border-l border-[var(--color-border)] group-hover:border-[var(--color-primary)] transition-colors duration-500 opacity-60"></div>
+                              <div class="absolute bottom-3 right-3 w-1.5 h-1.5 border-b border-r border-[var(--color-border)] group-hover:border-[var(--color-primary)] transition-colors duration-500 opacity-60"></div>
+
+                              <div class="absolute top-4 right-4 z-20 font-mono text-[10px] tracking-widest text-[var(--color-text)] opacity-40 select-none">
+                                 /0{{ i + 1 }}
+                              </div>
+
+                              <div class="absolute top-4 left-4 z-20">
+                                 <span class="text-[8px] px-2 py-0.5 bg-black/80 text-white backdrop-blur-md rounded-full uppercase tracking-widest font-bold border border-white/10">
+                                    {{project.type}}
+                                 </span>
+                              </div>
+
+                              <div class="absolute bottom-3 right-3 opacity-0 group-hover:opacity-70 transition-opacity duration-300 text-[8px] tracking-widest uppercase font-mono flex items-center gap-1.5 text-[var(--color-text)] select-none">
+                                 <span>Flip for details</span>
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9-9a9 9 0 0 0-9 9"/>
+                                 </svg>
+                              </div>
+                         </div>
+
+                         <!-- Back -->
+                         <div class="card-face card-face--back absolute inset-0 w-full h-full rounded-sm md:rounded-md p-4 md:p-6 flex flex-col justify-between overflow-hidden">
+
+                              <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-card)] via-[var(--color-card)] to-[var(--color-background)]"></div>
+                              <div class="absolute inset-0 opacity-[0.04] bg-[radial-gradient(var(--color-text)_1px,transparent_1px)] [background-size:14px_14px]"></div>
+
+                              <div class="card-spotlight absolute inset-0 pointer-events-none"
+                                   [style.background]="'radial-gradient(260px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), var(--color-primary) 0%, transparent 65%)'"
+                                   style="mix-blend-mode: plus-lighter; opacity: var(--spotlight-opacity, 0);"></div>
+
+                              <div class="card-back-content relative z-10 flex-1 flex flex-col justify-center gap-2.5 min-h-0"
+                                   style="transform: translate3d(var(--text-tx, 0px), var(--text-ty, 0px), 24px);">
+                                 <p class="text-[10px] font-mono uppercase tracking-[0.18em] text-[var(--color-primary)] opacity-80">
+                                    {{project.type}} · {{project.year}}
+                                 </p>
+                                 <p class="text-xs md:text-sm font-semibold text-[var(--color-text)] leading-relaxed">
+                                    {{project.outcome}}
+                                 </p>
+                                 <p class="text-xs md:text-sm text-[var(--color-text-muted)] leading-relaxed max-h-[9dvh] overflow-y-auto pr-1 scrollbar-none font-sans">
+                                    {{project.description}}
+                                 </p>
+                              </div>
+
+                              <div class="relative z-10 flex items-center justify-between text-[8px] font-mono tracking-widest uppercase text-[var(--color-text-secondary)] border-t border-[var(--color-border)] pt-2.5 mt-2 select-none">
+                                 <span class="opacity-70">Click to flip back</span>
+                                 <span class="inline-flex items-center gap-1 opacity-80">
+                                    Close
+                                    <span aria-hidden="true">×</span>
+                                 </span>
+                              </div>
+                         </div>
+
+                      </div>
                     </div>
                  </div>
 
@@ -234,6 +239,88 @@ import { projects } from '../../data/projects';
       background: var(--color-primary);
       color: var(--color-background);
     }
+
+    /* GSAP pin + track translate flatten nested 3D unless preserve-3d is kept up the chain */
+    .projects-wrapper,
+    .projects-track,
+    .project-card {
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+    }
+
+    .card-interact {
+      perspective: 1400px;
+      -webkit-perspective: 1400px;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+      /* overflow must stay visible or browsers flatten the 3D flip */
+      overflow: visible;
+      transition: border-color 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    .card-tilt {
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+      transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform;
+    }
+
+    .card-inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+      transform: rotateY(0deg);
+      will-change: transform;
+    }
+
+    .card-face {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+    }
+
+    .card-face--front {
+      transform: rotateY(0deg) translateZ(0.5px);
+    }
+
+    .card-face--back {
+      transform: rotateY(180deg) translateZ(0.5px);
+    }
+
+    .card-interact.is-flipped {
+      border-color: var(--color-primary);
+      box-shadow:
+        0 20px 50px -20px color-mix(in oklab, var(--color-primary) 35%, transparent),
+        0 0 0 1px color-mix(in oklab, var(--color-primary) 25%, transparent);
+    }
+
+    .card-interact.is-flipped .card-face--back .card-back-content > * {
+      animation: cardBackIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .card-interact.is-flipped .card-face--back .card-back-content > *:nth-child(1) { animation-delay: 0.28s; }
+    .card-interact.is-flipped .card-face--back .card-back-content > *:nth-child(2) { animation-delay: 0.36s; }
+    .card-interact.is-flipped .card-face--back .card-back-content > *:nth-child(3) { animation-delay: 0.44s; }
+
+    @keyframes cardBackIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
   `]
 })
 export class ProjectsGrid implements OnDestroy {
@@ -257,38 +344,40 @@ export class ProjectsGrid implements OnDestroy {
       .slice(0, 3);
   }
 
-  private handleCardInteraction(card: HTMLElement, clientX: number, clientY: number, checkBounds = false) {
-    const inner = card.querySelector('.card-inner') as HTMLElement;
-    const isFlipped = inner && inner.style.getPropertyValue('--flip-rotation') === 'rotateY(180deg)';
+  private flipRafs = new WeakMap<HTMLElement, number>();
+  private flipAngles = new WeakMap<HTMLElement, number>();
 
+  private isCardFlipped(card: HTMLElement): boolean {
+    return card.classList.contains('is-flipped');
+  }
+
+  private handleCardInteraction(card: HTMLElement, clientX: number, clientY: number, checkBounds = false) {
     const rect = card.getBoundingClientRect();
     const x = clientX - rect.left;
     const y = clientY - rect.top;
 
-    // Spotlight glow coordinates
+    if (checkBounds && (x < 0 || x > rect.width || y < 0 || y > rect.height)) {
+      this.resetCardTilt(card);
+      return;
+    }
+
     card.style.setProperty('--mouse-x', `${x}px`);
     card.style.setProperty('--mouse-y', `${y}px`);
-    card.style.setProperty('--spotlight-opacity', '0.15');
-
-    if (isFlipped) {
-      this.resetCardProperties(card);
-      return;
-    }
-
-    if (checkBounds && (x < 0 || x > rect.width || y < 0 || y > rect.height)) {
-      this.resetCardProperties(card);
-      return;
-    }
+    card.style.setProperty('--spotlight-opacity', this.isCardFlipped(card) ? '0.18' : '0.16');
+    card.style.setProperty('--card-scale', '1.02');
 
     const xc = rect.width / 2;
     const yc = rect.height / 2;
     const dx = (x - xc) / xc;
     const dy = (y - yc) / yc;
 
-    card.style.setProperty('--rotate-x', `${-dy * 10}deg`);
-    card.style.setProperty('--rotate-y', `${dx * 10}deg`);
-    card.style.setProperty('--text-tx', `${dx * 15}px`);
-    card.style.setProperty('--text-ty', `${dy * 15}px`);
+    const tilt = this.isCardFlipped(card) ? 6 : 10;
+    const parallax = this.isCardFlipped(card) ? 8 : 15;
+
+    card.style.setProperty('--rotate-x', `${-dy * tilt}deg`);
+    card.style.setProperty('--rotate-y', `${dx * tilt}deg`);
+    card.style.setProperty('--text-tx', `${dx * parallax}px`);
+    card.style.setProperty('--text-ty', `${dy * parallax}px`);
   }
 
   onCardMouseMove(e: MouseEvent) {
@@ -296,10 +385,7 @@ export class ProjectsGrid implements OnDestroy {
   }
 
   onCardMouseLeave(e: MouseEvent) {
-    const card = e.currentTarget as HTMLElement;
-    this.resetCardProperties(card);
-    const inner = card.querySelector('.card-inner') as HTMLElement;
-    if (inner) inner.style.setProperty('--flip-rotation', 'rotateY(0deg)');
+    this.resetCardTilt(e.currentTarget as HTMLElement);
   }
 
   onCardTouchStart(e: TouchEvent) {
@@ -311,29 +397,64 @@ export class ProjectsGrid implements OnDestroy {
   }
 
   onCardTouchEnd(e: TouchEvent) {
-    this.resetCardProperties(e.currentTarget as HTMLElement);
+    this.resetCardTilt(e.currentTarget as HTMLElement);
   }
 
-  private resetCardProperties(card: HTMLElement) {
+  private resetCardTilt(card: HTMLElement) {
     card.style.setProperty('--rotate-x', '0deg');
     card.style.setProperty('--rotate-y', '0deg');
     card.style.setProperty('--text-tx', '0px');
     card.style.setProperty('--text-ty', '0px');
     card.style.setProperty('--spotlight-opacity', '0');
+    card.style.setProperty('--card-scale', '1');
   }
 
   onCardClick(e: MouseEvent) {
     const card = e.currentTarget as HTMLElement;
-    const inner = card.querySelector('.card-inner') as HTMLElement;
+    const inner = card.querySelector('.card-inner') as HTMLElement | null;
     if (!inner) return;
 
-    const isFlipped = inner.style.getPropertyValue('--flip-rotation') === 'rotateY(180deg)';
-    if (isFlipped) {
-      inner.style.setProperty('--flip-rotation', 'rotateY(0deg)');
-    } else {
-      inner.style.setProperty('--flip-rotation', 'rotateY(180deg)');
-      this.resetCardProperties(card);
-    }
+    this.resetCardTilt(card);
+
+    const nextFlipped = !this.isCardFlipped(card);
+    card.classList.toggle('is-flipped', nextFlipped);
+    this.animateFlip(inner, nextFlipped);
+  }
+
+  /**
+   * rAF-driven rotateY — survives prefers-reduced-motion (browsers zero out
+   * CSS transitions / WAAPI) and CSS variable transform interpolation issues.
+   */
+  private animateFlip(inner: HTMLElement, flipped: boolean) {
+    const existing = this.flipRafs.get(inner);
+    if (existing) cancelAnimationFrame(existing);
+
+    const from = this.flipAngles.get(inner) ?? (flipped ? 0 : 180);
+    const to = flipped ? 180 : 0;
+    const duration = 750;
+    const start = performance.now();
+
+    const ease = (t: number) => {
+      // cubic-bezier(0.4, 0.05, 0.2, 1) approximation (ease-out heavy)
+      return 1 - Math.pow(1 - t, 3.2);
+    };
+
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / duration);
+      const angle = from + (to - from) * ease(t);
+      this.flipAngles.set(inner, angle);
+      inner.style.transform = `rotateY(${angle}deg)`;
+
+      if (t < 1) {
+        this.flipRafs.set(inner, requestAnimationFrame(tick));
+      } else {
+        this.flipRafs.delete(inner);
+        this.flipAngles.set(inner, to);
+        inner.style.transform = `rotateY(${to}deg)`;
+      }
+    };
+
+    this.flipRafs.set(inner, requestAnimationFrame(tick));
   }
 
   ctx: any;

@@ -114,12 +114,11 @@ html, body {
   }
 }
 
-/* Reduced Motion */
+/* Reduced Motion — only kill looping/decorative animations.
+   Do NOT zero transition-duration globally (it breaks intentional UI like card flips). */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
-    animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
   }
 }
 
