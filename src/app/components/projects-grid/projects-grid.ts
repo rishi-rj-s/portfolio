@@ -353,12 +353,16 @@ export class ProjectsGrid implements OnDestroy {
   }
 
   private async initScroll() {
+    await this.scrollService.whenReady();
+
     const gsapModule = await import('gsap');
     const scrollTriggerModule = await import('gsap/ScrollTrigger');
-    const scrollToModule = await import('gsap/ScrollToPlugin');
     const gsap = gsapModule.default;
     this.ScrollTrigger = scrollTriggerModule.ScrollTrigger;
-    gsap.registerPlugin(this.ScrollTrigger, scrollToModule.ScrollToPlugin);
+    gsap.registerPlugin(this.ScrollTrigger);
+
+    // Critical: keep pin/scrub synced with Lenis (otherwise scroll feels choppy)
+    this.scrollService.setScrollTriggerUpdate(() => this.ScrollTrigger.update());
 
     const trackEl = this.track()?.nativeElement;
     if (!trackEl) return;
@@ -370,13 +374,14 @@ export class ProjectsGrid implements OnDestroy {
 
         const lastCardCenter = lastCard.offsetLeft + lastCard.offsetWidth;
         const windowWidth = window.innerWidth;
-        const targetX = -(lastCardCenter - windowWidth + (windowWidth * 0.1)); // Leave some margin at the end
+        const targetX = -(lastCardCenter - windowWidth + (windowWidth * 0.1));
 
         this.st = this.ScrollTrigger.create({
           trigger: '.projects-wrapper',
           pin: true,
           start: 'top top',
-          scrub: 1,
+          // lighter scrub = snappier follow of Lenis
+          scrub: 0.45,
           end: () => '+=' + Math.abs(targetX),
           invalidateOnRefresh: true,
           animation: gsap.to(trackEl, {
@@ -385,6 +390,9 @@ export class ProjectsGrid implements OnDestroy {
           })
         });
       });
+
+      // Recalculate after Lenis + layout settle
+      requestAnimationFrame(() => this.ScrollTrigger.refresh());
 
       this.resizeHandler = () => {
         this.ScrollTrigger.refresh();
@@ -395,35 +403,27 @@ export class ProjectsGrid implements OnDestroy {
 
   async navScroll(direction: 'prev' | 'next') {
     if (!this.st) return;
-    
-    const gsapModule = await import('gsap');
-    const gsap = gsapModule.default;
-    
+
     const currentProgress = this.st.progress;
 
-    // If we are at the end and click next, scroll down to the next section (contact)
     if (direction === 'next' && currentProgress >= 0.98) {
       this.scrollService.scrollTo('#contact');
       return;
     }
 
     const step = 1 / (this.projects.length - 1);
-    
-    let targetProgress = direction === 'next' 
-      ? Math.min(1, currentProgress + step) 
+
+    let targetProgress = direction === 'next'
+      ? Math.min(1, currentProgress + step)
       : Math.max(0, currentProgress - step);
-      
-    // Snap to nearest step
+
     targetProgress = Math.round(targetProgress / step) * step;
 
     const scrollRange = this.st.end - this.st.start;
     const targetScroll = this.st.start + (targetProgress * scrollRange);
 
-    gsap.to(window, {
-      scrollTo: targetScroll,
-      duration: 0.8,
-      ease: 'power3.inOut'
-    });
+    // Drive navigation through Lenis so it stays on the same smooth rail
+    this.scrollService.scrollTo(targetScroll, { duration: 0.9 });
   }
 
   handleCollaborateClick(e: Event) {
@@ -432,6 +432,7 @@ export class ProjectsGrid implements OnDestroy {
   }
 
   ngOnDestroy() {
+    this.scrollService.setScrollTriggerUpdate(null);
     this.ctx?.revert();
     if (this.resizeHandler) {
       window.removeEventListener('resize', this.resizeHandler);

@@ -1,13 +1,19 @@
-import { Component, ElementRef, OnDestroy, PLATFORM_ID, effect, afterNextRender, viewChild, inject, NgZone } from '@angular/core';
+import { Component, ElementRef, OnDestroy, PLATFORM_ID, effect, afterNextRender, viewChild, inject, NgZone, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Theme } from '../../services/theme';
-import { Background, BackgroundStyle } from '../../services/background';
+import { Background } from '../../services/background';
 import { LoaderService } from '../../services/loader';
 
 @Component({
   selector: 'app-webgl-background',
   template: `
-    <div #canvasContainer class="fixed inset-0 -z-10 pointer-events-none transition-opacity duration-1000 opacity-0">
+    <!-- z-0 (not -z-10): negative z sits behind opaque html background and never shows -->
+    <div
+      #canvasContainer
+      class="fixed inset-0 z-0 pointer-events-none transition-opacity duration-700"
+      [class.opacity-0]="!visible()"
+      [class.opacity-100]="visible()"
+    >
       <canvas #canvas class="w-full h-full block"></canvas>
     </div>
   `,
@@ -27,8 +33,9 @@ export class WebglBackgroundComponent implements OnDestroy {
   private background = inject(Background);
   private loaderService = inject(LoaderService);
   private ngZone = inject(NgZone);
-  
+
   isBrowser = isPlatformBrowser(this.platformId);
+  visible = signal(false);
 
   // Performance: Throttle mouse/scroll messages to worker
   private lastMouseMsgTime = 0;
@@ -53,17 +60,16 @@ export class WebglBackgroundComponent implements OnDestroy {
       }
     });
 
-    // Angular v20 / SSR Standard: Use afterNextRender for browser-only initialization
     afterNextRender(() => {
-      this.initWorker();
-      
-      const container = this.canvasContainer()?.nativeElement;
-      if (container) {
-          setTimeout(() => {
-             container.classList.remove('opacity-0');
-          }, 100);
+      if (!this.isBrowser) return;
+
+      // If user previously picked "None", fall back to aurora so the site isn't blank
+      if (this.background.currentBackground() === 'none') {
+        this.background.setBackground('aurora');
       }
-      
+
+      this.initWorker();
+
       this.ngZone.runOutsideAngular(() => {
         window.addEventListener('mousemove', this.onMouseMove, { passive: true });
         window.addEventListener('scroll', this.onScroll, { passive: true });
@@ -115,12 +121,17 @@ export class WebglBackgroundComponent implements OnDestroy {
       this.worker.onmessage = ({ data }) => {
         if (data.type === 'ready') {
           this.loaderService.setWebglReady();
+          this.ngZone.run(() => this.visible.set(true));
         }
       };
 
+      // Failsafe fade-in if worker message is delayed
+      setTimeout(() => this.ngZone.run(() => this.visible.set(true)), 800);
+
     } catch (err) {
       console.error('Failed to initialize WebGL worker:', err);
-      this.loaderService.setWebglReady(); // Fallback
+      this.loaderService.setWebglReady();
+      this.visible.set(true);
     }
   }
 
@@ -151,16 +162,16 @@ export class WebglBackgroundComponent implements OnDestroy {
     });
   };
   
-  // Performance: Throttle scroll messages to worker
+  // Performance: Throttle scroll messages to worker (Lenis updates window.scrollY)
   private onScroll = () => {
     if (!this.worker) return;
     const now = performance.now();
     if (now - this.lastScrollMsgTime < WebglBackgroundComponent.MSG_THROTTLE_MS) return;
     this.lastScrollMsgTime = now;
-    
+
     this.worker.postMessage({
       type: 'scroll',
-      y: window.scrollY
+      y: window.scrollY || document.documentElement.scrollTop || 0
     });
   };
 }

@@ -85,7 +85,7 @@
 
   <style>
     #app-loader {
-      --l-accent: #6366f1; 
+      --l-accent: #6366f1;
       --l-bg: #000;
       position: fixed;
       inset: 0;
@@ -103,15 +103,15 @@
 
     #app-loader.fade-out {
       opacity: 0;
-      transform: scale(1.1) translate3d(0, 0, 100px);
-      transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+      transform: scale(1.05);
+      transition: opacity 0.55s ease, transform 0.55s ease;
       pointer-events: none;
     }
 
     .loader-grid {
       position: absolute;
       inset: -100% -50%;
-      background-image: 
+      background-image:
         linear-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px),
         linear-gradient(90deg, rgba(99, 102, 241, 0.1) 1px, transparent 1px);
       background-size: 50px 50px;
@@ -167,15 +167,6 @@
       margin-left: -1px;
     }
 
-    .l-brand {
-      font-size: 22px;
-      font-weight: 900;
-      letter-spacing: 0.6em;
-      text-indent: 0.6em;
-      text-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
-      animation: l-pulse 2.5s ease-in-out infinite;
-    }
-
     .l-bar-track {
       width: 240px;
       height: 2px;
@@ -215,24 +206,35 @@
     }
 
     @keyframes l-spin { to { transform: rotate(360deg); } }
-    @keyframes l-progress { 0% { transform: translate3d(-100%,0,0); } 50% { transform: translate3d(0,0,0); } 100% { transform: translate3d(100%,0,0); } }
-    @keyframes l-pulse { 0%, 100% { opacity: 0.7; transform: scale(0.98); } 50% { opacity: 1; transform: scale(1); } }
+    @keyframes l-progress {
+      0% { transform: translate3d(-100%,0,0); }
+      50% { transform: translate3d(0,0,0); }
+      100% { transform: translate3d(100%,0,0); }
+    }
     @keyframes l-blink { from { opacity: 1; } to { opacity: 0.3; } }
 
-    html:not(.app-loaded), html:not(.app-loaded) body {
+    /* Scroll lock only while loader is up — content stays painted underneath */
+    html:not(.app-loaded),
+    html:not(.app-loaded) body {
       overflow: hidden !important;
       height: 100vh !important;
     }
   </style>
 
-
+  <script>
+    // Non-critical CSS after first paint
+    requestAnimationFrame(function () {
+      var l = document.createElement('link');
+      l.rel = 'stylesheet';
+      l.href = 'styles-deferred.css';
+      document.head.appendChild(l);
+    });
+  </script>
 </head>
 
 <body>
-  <!-- App content first so crawlers/scrapers read real portfolio text before the overlay loader -->
   <app-root></app-root>
 
-  <!-- Visual boot overlay only (fixed); aria-hidden so it is not treated as page content -->
   <div id="app-loader" aria-hidden="true">
     <div class="loader-grid"></div>
     <div class="loader-content">
@@ -245,13 +247,9 @@
           <circle cx="20" cy="20" r="3" fill="#6366f1" />
         </svg>
       </div>
-
-      <div class="l-brand" aria-hidden="true"></div>
-
       <div class="l-bar-track">
         <div class="l-bar-fill"></div>
       </div>
-
       <div class="l-status">
         <div class="l-dot"></div>
         <span id="loader-status"></span>

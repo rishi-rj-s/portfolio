@@ -24,7 +24,6 @@
             "assets": [
               "src/loader.css",
               "src/theme-init.js",
-              "src/styles-deferred.css",
               {
                 "glob": "**/*",
                 "input": "public"

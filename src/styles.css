@@ -5,51 +5,20 @@
    Keep this as small as possible
    =================================== */
 
-/* Clash Display Local */
-@font-face {
-  font-family: 'Clash Display';
-  src: url('./assets/fonts/clash-display-400.woff2') format('woff2');
-  font-weight: 400;
-  font-display: swap;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Clash Display';
-  src: url('./assets/fonts/clash-display-500.woff2') format('woff2');
-  font-weight: 500;
-  font-display: swap;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Clash Display';
-  src: url('./assets/fonts/clash-display-600.woff2') format('woff2');
-  font-weight: 600;
-  font-display: swap;
-  font-style: normal;
-}
+/* Critical fonts only — extra weights / Playfair load via styles-deferred.css */
 @font-face {
   font-family: 'Clash Display';
   src: url('./assets/fonts/clash-display-700.woff2') format('woff2');
   font-weight: 700;
-  font-display: swap;
+  font-display: optional;
   font-style: normal;
 }
-
-/* Playfair Display Local (Variable Font) */
 @font-face {
-  font-family: 'Playfair Display';
+  font-family: 'Clash Display';
+  src: url('./assets/fonts/clash-display-400.woff2') format('woff2');
+  font-weight: 400;
+  font-display: optional;
   font-style: normal;
-  font-weight: 400 900;
-  font-display: swap;
-  src: url('./assets/fonts/playfair-display-normal.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Playfair Display';
-  font-style: italic;
-  font-weight: 400 900;
-  font-display: swap;
-  src: url('./assets/fonts/playfair-display-italic.woff2') format('woff2');
 }
 
 /* CLS Prevention: Size-adjusted fallback font to match Clash Display metrics.
@@ -216,21 +185,7 @@ section:not(#about) {
   }
 }
 
-/* Entrance Animation States — Hidden by default, shown when .app-loaded is active */
-html:not(.app-loaded) app-navbar, 
-html:not(.app-loaded) section {
-  opacity: 0;
-}
-
-app-navbar, 
-section {
-  transition: opacity 0.8s ease;
-}
-
-.app-loaded app-navbar,
-.app-loaded section {
-  opacity: 1;
-}
+/* Content must paint immediately — never gate FCP/LCP on JS (.app-loaded) */
 
 /* Lenis Recommended CSS */
 html.lenis,
