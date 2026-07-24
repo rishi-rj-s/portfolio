@@ -15,7 +15,8 @@ import { ScrollService } from '../../services/scroll';
 
       <div class="relative z-10 w-full max-w-6xl mx-auto px-4 md:px-8 flex flex-col items-center justify-center">
         <div class="name-stage select-none">
-          <h2 class="name-eyebrow">
+          <!-- Full eyebrow: large screens only -->
+          <h2 class="name-eyebrow hidden lg:block">
             {{ profile.eyebrow }}
           </h2>
 
@@ -35,14 +36,23 @@ import { ScrollService } from '../../services/scroll';
           </h1>
         </div>
 
-        <div class="mt-10 md:mt-14 max-w-2xl mx-auto space-y-4 text-center px-2">
-          <p class="text-lg md:text-xl text-[var(--color-text-muted)] leading-relaxed">
-            {{ profile.subhead }}
+        <div class="mt-8 md:mt-10 lg:mt-14 max-w-2xl mx-auto text-center px-2">
+          <!-- Compact keywords: &lt; lg -->
+          <p class="lg:hidden text-[10px] sm:text-xs font-bold tracking-[0.22em] uppercase text-[var(--color-text-secondary)]">
+            Angular · NestJS · SaaS
           </p>
-          <p class="text-sm md:text-base text-[var(--color-text-secondary)]">
-            {{ profile.currentTitle }}. {{ profile.availability }}
-          </p>
-          <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+
+          <!-- Full copy: lg+ only -->
+          <div class="hidden lg:block space-y-4">
+            <p class="text-lg xl:text-xl text-[var(--color-text-muted)] leading-relaxed">
+              {{ profile.subhead }}
+            </p>
+            <p class="text-sm md:text-base text-[var(--color-text-secondary)]">
+              {{ profile.currentTitle }}. {{ profile.availability }}
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-center gap-3 pt-5 lg:pt-6">
             <a href="#projects" (click)="scrollTo($event, '#projects')"
                class="px-5 py-2.5 rounded-full bg-[var(--color-text)] text-[var(--color-background)] text-xs font-bold tracking-widest uppercase hover:bg-[var(--color-primary)] transition-colors">
               View work
@@ -74,20 +84,13 @@ import { ScrollService } from '../../services/scroll';
     }
 
     .name-eyebrow {
-      margin: 0 0 0.75rem;
+      margin: 0 0 1rem;
       text-align: center;
-      font-size: 0.875rem;
+      font-size: 1rem;
       font-weight: 700;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--color-text-secondary);
-    }
-
-    @media (min-width: 768px) {
-      .name-eyebrow {
-        margin-bottom: 1rem;
-        font-size: 1rem;
-      }
     }
 
     .name-3d {
@@ -103,10 +106,17 @@ import { ScrollService } from '../../services/scroll';
       transform-style: preserve-3d;
       font-family: ui-sans-serif, system-ui, sans-serif;
       font-weight: 900;
-      font-size: clamp(2.75rem, 11vw, 7rem);
+      /* Bigger on small/medium so the name owns the viewport */
+      font-size: clamp(3.25rem, 16vw, 5.5rem);
       line-height: 0.88;
       letter-spacing: -0.06em;
       text-transform: uppercase;
+    }
+
+    @media (min-width: 1024px) {
+      .name-3d {
+        font-size: clamp(2.75rem, 11vw, 7rem);
+      }
     }
 
     .word {
@@ -167,12 +177,13 @@ import { ScrollService } from '../../services/scroll';
 
     @media (max-width: 640px) {
       .name-3d {
-        font-size: clamp(2.1rem, 12vw, 3.2rem);
+        font-size: clamp(3.1rem, 15.5vw, 4.25rem);
         transform: rotateY(-26deg) rotateX(12deg) rotateZ(-1deg) translate3d(-2%, 0, 24px);
       }
 
       .face {
         -webkit-text-stroke: 2.5px var(--color-text);
+        filter: drop-shadow(4px 5px 0 var(--color-primary));
       }
     }
   `]
