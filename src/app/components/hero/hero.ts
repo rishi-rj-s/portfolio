@@ -18,32 +18,40 @@ import { shouldLoadHeavyGraphics } from '../../utils/connection';
         }
       </div>
 
-      <div class="relative z-10 w-full max-w-6xl mx-auto px-5 sm:px-8 flex flex-col items-center justify-center">
-        <div class="name-stage select-none">
-          <h2 class="name-eyebrow hidden lg:block">
-            {{ profile.eyebrow }}
+      <div class="relative z-10 w-full max-w-7xl mx-auto px-3 sm:px-6 flex flex-col items-center justify-center">
+        <div class="hero-identity select-none">
+          <h2 class="name-eyebrow">
+            <span class="lg:hidden">{{ profile.role }}</span>
+            <span class="hidden lg:inline">{{ profile.eyebrow }}</span>
           </h2>
 
-          <h1 class="name-3d">
-            <span class="word word-1">
-              @for (layer of depthLayers(); track layer) {
-                <span class="extrude" [attr.data-z]="layer" aria-hidden="true">RISHIRAJ</span>
-              }
-              <span class="face">RISHIRAJ</span>
-            </span>
-            <span class="word word-2">
-              @for (layer of depthLayers(); track layer) {
-                <span class="extrude" [attr.data-z]="layer" aria-hidden="true">SAJEEV</span>
-              }
-              <span class="face">SAJEEV</span>
-            </span>
-          </h1>
+          <div class="name-stage">
+            <h1 class="name-3d">
+              <span class="word word-1">
+                @for (layer of depthLayers(); track layer) {
+                  <span class="extrude" [attr.data-z]="layer" aria-hidden="true">RISHIRAJ</span>
+                }
+                <span class="face">RISHIRAJ</span>
+              </span>
+              <span class="word word-2">
+                @for (layer of depthLayers(); track layer) {
+                  <span class="extrude" [attr.data-z]="layer" aria-hidden="true">SAJEEV</span>
+                }
+                <span class="face">SAJEEV</span>
+              </span>
+            </h1>
+          </div>
         </div>
 
         <div class="mt-8 md:mt-10 lg:mt-14 max-w-2xl mx-auto text-center px-2">
-          <p class="lg:hidden text-[10px] sm:text-xs font-bold tracking-[0.22em] uppercase text-[var(--color-text-secondary)]">
-            Angular · NestJS · SaaS
-          </p>
+          <div class="lg:hidden space-y-2">
+            <p class="text-[10px] sm:text-xs font-bold tracking-[0.22em] uppercase text-[var(--color-text-secondary)]">
+              Angular · NestJS · SaaS
+            </p>
+            <p class="hidden md:block text-sm text-[var(--color-text-secondary)] pt-1">
+              {{ profile.currentTitle }}. {{ profile.availability }}
+            </p>
+          </div>
 
           <div class="hidden lg:block space-y-4">
             <p class="text-lg xl:text-xl text-[var(--color-text-muted)] leading-relaxed">
@@ -75,31 +83,76 @@ import { shouldLoadHeavyGraphics } from '../../utils/connection';
     </section>
   `,
   styles: [`
+    .hero-identity {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: min(100%, 1100px);
+    }
+
     .name-stage {
       position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
       width: 100%;
-      max-width: min(100%, 920px);
-      /* Room for stroke + drop-shadow so letters aren't clipped */
-      padding: 0.75rem 0.5rem 1.25rem;
-      perspective: 900px;
-      perspective-origin: 30% 50%;
+      /* Room for stroke + extrusion so letters aren't clipped */
+      padding: 0 0 0;
+      /* Shorter perspective = stronger “coming at you” foreshortening on small screens */
+      perspective: 520px;
+      perspective-origin: 22% 45%;
       box-sizing: border-box;
     }
 
+    @media (min-width: 768px) {
+      .name-stage {
+        perspective: 720px;
+        perspective-origin: 26% 48%;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .name-stage {
+        padding: 0 1rem;
+        perspective: 900px;
+        perspective-origin: 30% 50%;
+      }
+    }
+
+    /* Match gap below the name (mt-8 / md:mt-10 / lg:mt-14) */
     .name-eyebrow {
-      margin: 0 0 1rem;
-      padding-inline: 0.5rem;
+      position: relative;
+      z-index: 3;
+      margin: 0 0 2rem; /* = mt-8 */
+      padding: 0.35rem 0.85rem;
       text-align: center;
-      font-size: clamp(0.7rem, 1.4vw, 1rem);
+      font-size: clamp(0.85rem, 2.6vw, 1.1rem);
       font-weight: 700;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--color-text-secondary);
+      color: var(--color-text);
+      opacity: 0.78;
       max-width: 100%;
       white-space: normal;
+    }
+
+    @media (min-width: 768px) {
+      .name-eyebrow {
+        margin-bottom: 2.5rem; /* = md:mt-10 */
+        letter-spacing: 0.22em;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .name-eyebrow {
+        margin-bottom: 3.5rem; /* = lg:mt-14 */
+        font-size: clamp(0.75rem, 1.35vw, 1rem);
+        letter-spacing: 0.18em;
+        color: var(--color-text-secondary);
+        opacity: 1;
+        padding-inline: 0.5rem;
+      }
     }
 
     .name-3d {
@@ -112,31 +165,35 @@ import { shouldLoadHeavyGraphics } from '../../utils/connection';
       gap: 0.02em;
       margin: 0;
       width: 100%;
-      transform: none;
+      /* Aggressive mobile tilt + forward push so extrusion reads as popping out */
+      transform: rotateY(-32deg) rotateX(16deg) rotateZ(-2deg) translate3d(-2%, 2%, 48px);
+      transform-style: preserve-3d;
       font-family: ui-sans-serif, system-ui, sans-serif;
       font-weight: 900;
-      /* ~8-letter word must fit viewport: keep vw modest */
-      font-size: clamp(2.4rem, 11vw, 4.75rem);
-      line-height: 0.9;
-      letter-spacing: -0.05em;
+      /* Size to dominate the hero — "RISHIRAJ" is 8 letters, ~0.72em wide each */
+      font-size: clamp(3.6rem, 15.5vw, 7.25rem);
+      line-height: 0.88;
+      letter-spacing: -0.06em;
       text-transform: uppercase;
     }
 
     @media (min-width: 768px) {
       .name-3d {
-        font-size: clamp(3.25rem, 9vw, 5.75rem);
+        font-size: clamp(5rem, 13.5vw, 9rem);
+        transform: rotateY(-26deg) rotateX(12deg) rotateZ(-1.5deg) translate3d(-2%, 1.5%, 36px);
       }
     }
 
     @media (min-width: 1024px) {
-      .name-stage {
-        padding: 1.5rem 3rem 2rem;
-      }
-
       .name-3d {
-        font-size: clamp(3.5rem, 8.5vw, 6.75rem);
+        font-size: clamp(6.5rem, 12vw, 11.5rem);
         transform: rotateY(-22deg) rotateX(10deg) rotateZ(-1.5deg) translate3d(-2%, 1%, 24px);
-        transform-style: preserve-3d;
+      }
+    }
+
+    @media (min-width: 1400px) {
+      .name-3d {
+        font-size: clamp(8rem, 11vw, 13rem);
       }
     }
 
@@ -148,7 +205,13 @@ import { shouldLoadHeavyGraphics } from '../../utils/connection';
     }
 
     .word-2 {
-      transform: none;
+      transform: translate3d(5%, 2%, 18px);
+    }
+
+    @media (min-width: 768px) {
+      .word-2 {
+        transform: translate3d(5%, 1%, 16px);
+      }
     }
 
     @media (min-width: 1024px) {
@@ -170,7 +233,7 @@ import { shouldLoadHeavyGraphics } from '../../utils/connection';
       -webkit-text-stroke: 3px var(--color-text);
       paint-order: stroke fill;
       filter: drop-shadow(4px 5px 0 var(--color-primary));
-      transform: translateZ(0);
+      transform: translateZ(8px);
     }
 
     .extrude {
@@ -195,11 +258,22 @@ import { shouldLoadHeavyGraphics } from '../../utils/connection';
     .extrude[data-z='11'] { transform: translateZ(-22px); opacity: 0.18; }
     .extrude[data-z='12'] { transform: translateZ(-24px); opacity: 0.12; }
 
-    @media (max-width: 640px) {
+    /* Mobile: thicker extrusion + stronger face lift so the slab reads in perspective */
+    @media (max-width: 767px) {
       .face {
         -webkit-text-stroke: 2.5px var(--color-text);
-        filter: drop-shadow(3px 4px 0 var(--color-primary));
+        filter: drop-shadow(5px 7px 0 color-mix(in oklab, var(--color-primary) 70%, transparent));
+        transform: translateZ(14px);
       }
+
+      .extrude[data-z='1']  { transform: translateZ(-5px);  opacity: 0.98; }
+      .extrude[data-z='2']  { transform: translateZ(-10px); opacity: 0.9; }
+      .extrude[data-z='3']  { transform: translateZ(-15px); opacity: 0.78; }
+      .extrude[data-z='4']  { transform: translateZ(-20px); opacity: 0.64; }
+      .extrude[data-z='5']  { transform: translateZ(-26px); opacity: 0.48; }
+      .extrude[data-z='6']  { transform: translateZ(-32px); opacity: 0.34; }
+      .extrude[data-z='7']  { transform: translateZ(-38px); opacity: 0.22; }
+      .extrude[data-z='8']  { transform: translateZ(-44px); opacity: 0.12; }
     }
   `]
 })
@@ -223,7 +297,8 @@ export class Hero {
       } else if (w >= 768) {
         this.depthLayers.set([1, 2, 3, 4, 5, 6, 7, 8]);
       } else {
-        this.depthLayers.set([1, 2, 3, 4]);
+        // Thicker mobile extrusion needs more layers for a solid slab
+        this.depthLayers.set([1, 2, 3, 4, 5, 6, 7, 8]);
       }
     });
   }
