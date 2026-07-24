@@ -1,161 +1,20 @@
 import { Component } from '@angular/core';
+import { HeroBootVisual } from '../hero-boot-visual/hero-boot-visual';
 
 @Component({
   selector: 'app-hero',
+  imports: [HeroBootVisual],
   template: `
     <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--color-primary)] rounded-full blur-[80px] opacity-[0.03]"></div>
-        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[var(--color-accent)] rounded-full blur-[80px] opacity-[0.03]"></div>
+      <div class="absolute inset-0 z-[1] pointer-events-none overflow-hidden" aria-hidden="true">
+        <app-hero-boot-visual />
       </div>
 
-      <div class="relative z-10 w-full max-w-6xl mx-auto px-4 md:px-8 flex flex-col items-center">
-        <h2 class="text-sm md:text-base font-bold tracking-[0.2em] text-[var(--color-text-secondary)] mb-8 md:mb-10 text-center">
-          FULL-STACK SOFTWARE ENGINEER
-        </h2>
-
-        <!-- Frozen 3D comic breakout — no motion -->
+      <div class="relative z-10 w-full max-w-6xl mx-auto px-4 md:px-8 flex flex-col items-center justify-center">
         <div class="name-stage select-none">
-          <div class="shatter-pane" aria-hidden="true">
-            <svg class="shatter-svg" viewBox="0 0 900 500" preserveAspectRatio="xMidYMid meet">
-              <defs>
-                <!-- Clear pane glass -->
-                <linearGradient id="glassA" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.45"/>
-                  <stop offset="35%" stop-color="#a5b4fc" stop-opacity="0.18"/>
-                  <stop offset="70%" stop-color="#ffffff" stop-opacity="0.08"/>
-                  <stop offset="100%" stop-color="#6366f1" stop-opacity="0.14"/>
-                </linearGradient>
-                <linearGradient id="glassB" x1="100%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stop-color="#e0e7ff" stop-opacity="0.4"/>
-                  <stop offset="50%" stop-color="#ffffff" stop-opacity="0.1"/>
-                  <stop offset="100%" stop-color="#818cf8" stop-opacity="0.2"/>
-                </linearGradient>
-                <linearGradient id="glassC" x1="0%" y1="100%" x2="100%" y2="0%">
-                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.35"/>
-                  <stop offset="60%" stop-color="#c7d2fe" stop-opacity="0.12"/>
-                  <stop offset="100%" stop-color="#ffffff" stop-opacity="0.05"/>
-                </linearGradient>
-                <!-- Bright specular edge on leading face -->
-                <linearGradient id="rimLight" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
-                  <stop offset="100%" stop-color="#ffffff" stop-opacity="0.15"/>
-                </linearGradient>
-              </defs>
-
-              <!--
-                Real glass break: thin elongated splinters + sharp triangular plates,
-                rotated mid-flight, denser on the breakout (right) side.
-                No crack spokes / impact lines.
-              -->
-
-              <!-- LARGE PLATE — upper right, flying out -->
-              <g transform="translate(670,95) rotate(18)">
-                <polygon fill="url(#glassA)" stroke="#ffffff" stroke-opacity="0.55" stroke-width="1.1"
-                  points="0,-8 78,-28 118,-6 102,42 48,58 -6,36 -18,8"/>
-                <polyline fill="none" stroke="url(#rimLight)" stroke-width="1.6" points="-6,36 48,58 102,42"/>
-                <line x1="12" y1="0" x2="88" y2="18" stroke="#ffffff" stroke-opacity="0.25" stroke-width="0.8"/>
-              </g>
-
-              <!-- LONG SPLINTER — needle glass -->
-              <g transform="translate(760,175) rotate(-12)">
-                <polygon fill="url(#glassB)" stroke="#ffffff" stroke-opacity="0.5" stroke-width="0.9"
-                  points="0,0 140,-14 148,4 12,18"/>
-                <line x1="8" y1="2" x2="130" y2="-6" stroke="#ffffff" stroke-opacity="0.35" stroke-width="1"/>
-              </g>
-
-              <!-- DAGGER TRIANGLE — mid right -->
-              <g transform="translate(720,250) rotate(28)">
-                <polygon fill="url(#glassA)" stroke="#c7d2fe" stroke-opacity="0.7" stroke-width="1"
-                  points="0,10 96,-22 108,18 18,32"/>
-                <polyline fill="none" stroke="#ffffff" stroke-opacity="0.55" stroke-width="1.3" points="0,10 96,-22 108,18"/>
-              </g>
-
-              <!-- WIDE JAGGED PANE — lower right -->
-              <g transform="translate(640,320) rotate(-8)">
-                <polygon fill="url(#glassC)" stroke="#ffffff" stroke-opacity="0.45" stroke-width="1"
-                  points="-10,0 55,-35 110,-18 128,30 72,58 20,48 -18,22"/>
-                <polyline fill="none" stroke="#ffffff" stroke-opacity="0.4" stroke-width="1.2" points="55,-35 110,-18 128,30"/>
-                <line x1="5" y1="8" x2="90" y2="12" stroke="#a5b4fc" stroke-opacity="0.3" stroke-width="0.7"/>
-              </g>
-
-              <!-- SPIKE SPLINTER — far right -->
-              <g transform="translate(820,300) rotate(42)">
-                <polygon fill="url(#glassB)" stroke="#ffffff" stroke-opacity="0.55" stroke-width="0.8"
-                  points="0,4 88,-10 94,6 6,16"/>
-              </g>
-
-              <!-- TINY NEEDLE -->
-              <g transform="translate(850,140) rotate(-35)">
-                <polygon fill="url(#glassA)" stroke="#ffffff" stroke-opacity="0.6" stroke-width="0.7"
-                  points="0,2 52,-6 56,3 3,9"/>
-              </g>
-
-              <!-- CHIP — acute triangle -->
-              <g transform="translate(790,90) rotate(55)">
-                <polygon fill="url(#glassC)" stroke="#ffffff" stroke-opacity="0.65" stroke-width="0.8"
-                  points="0,0 38,-18 42,12"/>
-              </g>
-
-              <!-- TOP splinter above name -->
-              <g transform="translate(520,70) rotate(-22)">
-                <polygon fill="url(#glassA)" stroke="#ffffff" stroke-opacity="0.5" stroke-width="0.9"
-                  points="0,6 72,-16 80,8 8,22"/>
-                <line x1="6" y1="8" x2="68" y2="-4" stroke="#ffffff" stroke-opacity="0.3" stroke-width="0.8"/>
-              </g>
-
-              <!-- TOP-LEFT plate remnant -->
-              <g transform="translate(250,95) rotate(-28)">
-                <polygon fill="url(#glassB)" stroke="#ffffff" stroke-opacity="0.45" stroke-width="1"
-                  points="0,0 62,-20 95,8 70,48 18,52 -12,24"/>
-                <polyline fill="none" stroke="#ffffff" stroke-opacity="0.4" stroke-width="1.2" points="0,0 62,-20 95,8"/>
-              </g>
-
-              <!-- LEFT thin shard -->
-              <g transform="translate(180,210) rotate(15)">
-                <polygon fill="url(#glassC)" stroke="#c7d2fe" stroke-opacity="0.55" stroke-width="0.8"
-                  points="0,0 70,-8 76,10 5,16"/>
-              </g>
-
-              <!-- LOWER-LEFT jagged -->
-              <g transform="translate(220,340) rotate(-40)">
-                <polygon fill="url(#glassA)" stroke="#ffffff" stroke-opacity="0.45" stroke-width="0.9"
-                  points="0,8 48,-18 85,2 70,40 22,48 -8,28"/>
-              </g>
-
-              <!-- BOTTOM center chip -->
-              <g transform="translate(480,400) rotate(12)">
-                <polygon fill="url(#glassB)" stroke="#ffffff" stroke-opacity="0.5" stroke-width="0.8"
-                  points="0,0 45,-14 58,16 12,24"/>
-              </g>
-
-              <!-- MICRO debris near breakout (right of letters) -->
-              <g transform="translate(610,200) rotate(70)">
-                <polygon fill="url(#glassA)" stroke="#ffffff" stroke-opacity="0.7" stroke-width="0.6"
-                  points="0,0 28,-8 32,6"/>
-              </g>
-              <g transform="translate(630,240) rotate(-50)">
-                <polygon fill="url(#glassC)" stroke="#ffffff" stroke-opacity="0.65" stroke-width="0.6"
-                  points="0,1 34,-5 36,7"/>
-              </g>
-              <g transform="translate(590,160) rotate(25)">
-                <polygon fill="url(#glassB)" stroke="#ffffff" stroke-opacity="0.6" stroke-width="0.6"
-                  points="0,0 22,-10 40,2 8,12"/>
-              </g>
-              <g transform="translate(700,380) rotate(8)">
-                <polygon fill="url(#glassA)" stroke="#ffffff" stroke-opacity="0.55" stroke-width="0.7"
-                  points="0,0 40,-12 48,8 4,14"/>
-              </g>
-              <g transform="translate(880,220) rotate(-18)">
-                <polygon fill="url(#glassB)" stroke="#ffffff" stroke-opacity="0.6" stroke-width="0.6"
-                  points="0,2 36,-4 38,6"/>
-              </g>
-              <g transform="translate(340,50) rotate(33)">
-                <polygon fill="url(#glassC)" stroke="#ffffff" stroke-opacity="0.5" stroke-width="0.7"
-                  points="0,0 30,-12 46,4 10,14"/>
-              </g>
-            </svg>
-          </div>
+          <h2 class="name-eyebrow">
+            FULL-STACK SOFTWARE ENGINEER
+          </h2>
 
           <h1 class="name-3d">
             <span class="word word-1">
@@ -193,29 +52,33 @@ import { Component } from '@angular/core';
   styles: [`
     .name-stage {
       position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       width: min(96vw, 920px);
-      aspect-ratio: 900 / 500;
       perspective: 900px;
       perspective-origin: 30% 50%;
     }
 
-    .shatter-pane {
-      position: absolute;
-      inset: -4% -6%;
-      z-index: 1;
-      pointer-events: none;
+    .name-eyebrow {
+      margin: 0 0 0.75rem;
+      text-align: center;
+      font-size: 0.875rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-text-secondary);
     }
 
-    .shatter-svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-      overflow: visible;
+    @media (min-width: 768px) {
+      .name-eyebrow {
+        margin-bottom: 1rem;
+        font-size: 1rem;
+      }
     }
 
     .name-3d {
-      position: absolute;
-      inset: 0;
+      position: relative;
       z-index: 2;
       display: flex;
       flex-direction: column;
