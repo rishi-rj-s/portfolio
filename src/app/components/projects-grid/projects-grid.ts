@@ -1,10 +1,12 @@
-import { Component, ElementRef, OnDestroy, PLATFORM_ID, inject, viewChild, viewChildren, afterNextRender, signal, NgZone } from '@angular/core';
+import { Component, ElementRef, OnDestroy, PLATFORM_ID, inject, viewChild, viewChildren, afterNextRender, NgZone } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { ScrollService } from '../../services/scroll';
+import { projects } from '../../data/projects';
 
 @Component({
   selector: 'app-projects-grid',
-  imports: [],
+  imports: [RouterLink],
   template: `
     <section id="projects" class="projects-wrapper relative h-[100dvh] overflow-hidden flex flex-col pt-28 md:pt-36 pb-28 md:pb-12 bg-transparent">
       
@@ -154,11 +156,18 @@ import { ScrollService } from '../../services/scroll';
                        }
                     </div>
 
-                    <div class="flex items-center gap-3 z-20">
+                    <div class="flex flex-wrap items-center gap-3 z-20">
+                       @if (project.caseStudySlug) {
+                          <a [routerLink]="['/work', project.caseStudySlug]"
+                             (click)="$event.stopPropagation()"
+                             class="text-[10px] font-bold tracking-widest uppercase text-[var(--color-primary)] hover:underline underline-offset-4">
+                             Case study
+                          </a>
+                       }
                        @if (project.links.live) {
                           <a [href]="project.links.live" target="_blank" rel="noopener noreferrer"
                              (click)="$event.stopPropagation()"
-                             class="text-[10px] font-bold tracking-widest uppercase text-[var(--color-primary)] hover:underline underline-offset-4">
+                             class="text-[10px] font-bold tracking-widest uppercase text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:underline underline-offset-4">
                              Live Demo
                           </a>
                        }
@@ -198,57 +207,7 @@ export class ProjectsGrid implements OnDestroy {
   private ngZone = inject(NgZone);
   private interactionListeners: {el: HTMLElement, type: string, listener: any}[] = [];
 
-  projects = [
-    {
-      title: 'Green Power India',
-      type: 'Client Contract',
-      year: '2026',
-      outcome: 'Delivered a live corporate platform end-to-end for a sustainable energy client — owned frontend, schema, API, and handoff.',
-      description: 'Client needed a production marketing and content platform with reliable media handling. Built and shipped a Next.js 15 App Router site on Vercel with a Supabase/PostgreSQL backend and structured bucket storage. Owned both the bento-style UI (Tailwind CSS, Framer Motion) and the backend schema/API layer through delivery.',
-      stack: ['Next.js 15', 'React 19', 'Supabase', 'PostgreSQL', 'Tailwind CSS', 'Framer Motion'],
-      links: {
-        live: 'https://greenpowerindia.com/'
-      },
-      demoLabel: 'LIVE'
-    },
-    {
-      title: 'Tagtics',
-      type: 'SaaS',
-      year: '2025',
-      outcome: 'Multi-tenant UI feedback SaaS with PostgreSQL RLS so each tenant only sees its own data — frontend live in production.',
-      description: 'Users click any element on a target web app and submit contextual feedback without changing that app\'s code. Designed tenant isolation with PostgreSQL Row-Level Security (RLS) at the database layer. React frontend is live; Supabase-backed API work continues alongside the shipped UI.',
-      stack: ['React', 'Supabase', 'PostgreSQL', 'RLS', 'TypeScript'],
-      links: {
-        source: 'https://github.com/tagtics/tagtics-frontend',
-        live: 'https://www.tagtics.online'
-      },
-      demoLabel: 'LIVE'
-    },
-    {
-      title: 'Fashion Studio',
-      type: 'E-Commerce',
-      year: '2024',
-      outcome: 'Production e-commerce backend on self-managed AWS — catalogue, auth, orders, and verified Razorpay payments.',
-      description: 'Ran payments and order processing in production on AWS EC2 with Nginx as a reverse proxy. Integrated Razorpay with webhook signature verification for tamper-proof transactions, plus product catalogue management and user auth on Node.js, Express, and MongoDB.',
-      stack: ['Node.js', 'Express', 'MongoDB', 'AWS EC2', 'Nginx'],
-      links: {
-        source: 'https://github.com/rishi-rj-s/RSBackend'
-      }
-    },
-    {
-      title: 'Ever-Gauzy',
-      type: 'Open Source',
-      year: '2025',
-      outcome: 'Improved authentication UI in a 100k+ line NestJS/Angular ERP used by real organisations.',
-      description: 'Contributed auth UI work inside a large Nx monorepo (NestJS + Angular). Worked in a live enterprise codebase that uses CQRS, Event Sourcing, and Hexagonal Architecture patterns — exposure to those patterns, with the concrete deliverable being authentication UI improvements.',
-      stack: ['NestJS', 'Angular', 'TypeScript', 'Nx', 'CQRS'],
-      links: {
-        source: 'https://github.com/ever-co/ever-gauzy',
-        live: 'https://app.gauzy.co/#/auth/login'
-      },
-      demoLabel: 'LIVE'
-    }
-  ];
+  readonly projects = projects;
 
   getInitials(title: string): string {
     if (!title) return '';

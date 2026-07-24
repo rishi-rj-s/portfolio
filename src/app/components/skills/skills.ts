@@ -1,54 +1,45 @@
 import { Component, signal, viewChild, ElementRef, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-
-interface SkillItem {
-  name: string;
-  logo: string;
-  invertDark?: boolean;
-}
-
-interface SkillCategory {
-  category: string;
-  color: string;
-  items: SkillItem[];
-}
+import { skillCategories, SkillCategory } from '../../data/skills';
 
 @Component({
   selector: 'app-skills',
   template: `
     <section id="skills" class="relative min-h-screen py-20 px-6 md:px-28 flex flex-col justify-center">
-      
+
       <div class="max-w-7xl mx-auto w-full">
-         <!-- Header -->
          <div class="mb-12" #header>
             <h2 class="text-3xl md:text-6xl lg:text-8xl font-black tracking-tighter text-[var(--color-text)] mb-4 leading-[0.8]">
-              TECHNICAL<br>
-              <span class="text-[var(--color-text-muted)] opacity-50">ARSENAL</span>
+              SHIPPED<br>
+              <span class="text-[var(--color-text-muted)] opacity-50">SKILLS</span>
             </h2>
+            <p class="mt-4 max-w-xl text-sm md:text-base text-[var(--color-text-muted)] leading-relaxed">
+              Not a technology dump — each item is tied to something I have actually built or operated.
+            </p>
          </div>
 
-         <!-- Skills List (Minimal) -->
          <div class="space-y-10" #grid>
             @for (category of skills(); track category.category) {
               <div class="border-t border-[var(--color-border)] pt-6 group cursor-default">
-                 
-                 <div class="flex flex-col md:flex-row md:items-baseline gap-6 md:gap-12">
-                    <!-- Category Name -->
-                    <h3 class="text-xl md:text-2xl font-bold text-[var(--color-text)] tracking-tight w-full md:w-1/4 shrink-0 flex items-center gap-3">
+
+                 <div class="flex flex-col md:flex-row md:items-start gap-6 md:gap-12">
+                    <h3 class="text-xl md:text-2xl font-bold text-[var(--color-text)] tracking-tight w-full md:w-1/4 shrink-0 flex items-center gap-3 pt-1">
                        <span class="w-2 h-2 rounded-full transition-transform duration-500 group-hover:scale-150" [style.backgroundColor]="category.color"></span>
                        {{category.category}}
                     </h3>
 
-                    <!-- Skills Items -->
-                    <div class="flex flex-wrap gap-x-6 gap-y-3">
+                    <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
                        @for (item of category.items; track item.name) {
-                         <div class="flex items-center gap-3 group/item cursor-pointer">
-                            <div class="w-10 h-10 md:w-12 md:h-12 bg-[var(--color-card)] rounded-full flex items-center justify-center border border-[var(--color-border)] group-hover/item:border-[var(--color-primary)] transition-all duration-500 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] group-hover/item:scale-110 group-hover/item:-translate-y-1.5 group-hover/item:shadow-[0_15px_30px_-10px_var(--color-primary)]">
-                               <img [src]="item.logo" [alt]="item.name" [class.theme-inverse]="item.invertDark" 
-                                    class="w-5 h-5 md:w-6 md:h-6 object-contain transition-all duration-500 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] group-hover/item:scale-110" 
+                         <div class="flex items-start gap-3 group/item">
+                            <div class="w-10 h-10 md:w-12 md:h-12 shrink-0 bg-[var(--color-card)] rounded-full flex items-center justify-center border border-[var(--color-border)] group-hover/item:border-[var(--color-primary)] transition-all duration-500 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] group-hover/item:scale-110 group-hover/item:-translate-y-1 group-hover/item:shadow-[0_15px_30px_-10px_var(--color-primary)]">
+                               <img [src]="item.logo" [alt]="item.name" [class.theme-inverse]="item.invertDark"
+                                    class="w-5 h-5 md:w-6 md:h-6 object-contain transition-all duration-500"
                                     loading="lazy" decoding="async" width="24" height="24">
                             </div>
-                            <span class="text-base md:text-lg font-medium text-[var(--color-text-secondary)] group-hover/item:text-[var(--color-primary)] group-hover/item:translate-x-2 transition-all duration-500 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)]">{{item.name}}</span>
+                            <div class="min-w-0 pt-0.5">
+                               <span class="block text-base md:text-lg font-medium text-[var(--color-text)] group-hover/item:text-[var(--color-primary)] transition-colors">{{item.name}}</span>
+                               <span class="block text-xs md:text-sm text-[var(--color-text-muted)] leading-snug mt-0.5">{{item.proof}}</span>
+                            </div>
                          </div>
                        }
                     </div>
@@ -63,64 +54,11 @@ interface SkillCategory {
   `
 })
 export class Skills {
-  // v20 signal-based queries
   header = viewChild<ElementRef<HTMLElement>>('header');
   grid = viewChild<ElementRef<HTMLElement>>('grid');
 
-  // v20 inject() instead of constructor DI
   private platformId = inject(PLATFORM_ID);
   readonly isBrowser = isPlatformBrowser(this.platformId);
 
-  skills = signal<SkillCategory[]>([
-    {
-      category: 'Backend & Architecture',
-      color: '#10b981',
-      items: [
-        { name: 'NestJS', logo: 'assets/icons/nestjs.svg' },
-        { name: 'Node.js', logo: 'assets/icons/node-js.svg' },
-        { name: 'Express', logo: 'assets/icons/express.svg', invertDark: true },
-        { name: 'REST APIs', logo: 'assets/icons/nestjs.svg' },
-      ],
-    },
-    {
-      category: 'Database & Security',
-      color: '#8b5cf6',
-      items: [
-        { name: 'PostgreSQL', logo: 'assets/icons/postgresql.svg' },
-        { name: 'MongoDB', logo: 'assets/icons/mongodb.svg' },
-        { name: 'Redis', logo: 'assets/icons/redis.svg' },
-        { name: 'Supabase', logo: 'assets/icons/supabase.svg' },
-      ],
-    },
-    {
-      category: 'DevOps & Cloud',
-      color: '#f59e0b',
-      items: [
-        { name: 'Docker', logo: 'assets/icons/docker.svg' },
-        { name: 'AWS (EC2/S3)', logo: 'assets/icons/aws-ec2-s3.svg', invertDark: true },
-        { name: 'CI/CD Pipelines', logo: 'assets/icons/github-actions.svg', invertDark: true },
-        { name: 'Vercel', logo: 'assets/icons/vercel.svg', invertDark: true },
-      ],
-    },
-    {
-      category: 'Realtime (shipped)',
-      color: '#ef4444',
-      items: [
-        { name: 'WebSockets', logo: 'assets/icons/socket-io.svg', invertDark: true },
-        { name: 'Redis Pub/Sub', logo: 'assets/icons/redis-pub-sub.svg' },
-      ],
-    },
-
-    {
-      category: 'Frontend Engineering',
-      color: '#3b82f6',
-      items: [
-        { name: 'Angular v20', logo: 'assets/icons/angular.svg' },
-        { name: 'React', logo: 'assets/icons/react.svg' },
-        { name: 'Next.js', logo: 'assets/icons/nextjs.svg', invertDark: true },
-        { name: 'Tailwind CSS', logo: 'assets/icons/tailwind-css.svg' },
-        { name: 'TypeScript', logo: 'assets/icons/typescript.svg' },
-      ],
-    },
-  ]);
+  skills = signal<SkillCategory[]>(skillCategories);
 }

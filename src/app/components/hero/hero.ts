@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HeroBootVisual } from '../hero-boot-visual/hero-boot-visual';
+import { profile } from '../../data/profile';
+import { ScrollService } from '../../services/scroll';
 
 @Component({
   selector: 'app-hero',
@@ -13,7 +16,7 @@ import { HeroBootVisual } from '../hero-boot-visual/hero-boot-visual';
       <div class="relative z-10 w-full max-w-6xl mx-auto px-4 md:px-8 flex flex-col items-center justify-center">
         <div class="name-stage select-none">
           <h2 class="name-eyebrow">
-            FULL-STACK SOFTWARE ENGINEER
+            {{ profile.eyebrow }}
           </h2>
 
           <h1 class="name-3d">
@@ -32,13 +35,23 @@ import { HeroBootVisual } from '../hero-boot-visual/hero-boot-visual';
           </h1>
         </div>
 
-        <div class="mt-10 md:mt-14 max-w-2xl mx-auto space-y-3 text-center px-2">
-          <p class="text-lg md:text-xl text-[var(--color-text-muted)]">
-            Angular, NestJS, React &amp; Next.js — production SaaS and cloud systems.
+        <div class="mt-10 md:mt-14 max-w-2xl mx-auto space-y-4 text-center px-2">
+          <p class="text-lg md:text-xl text-[var(--color-text-muted)] leading-relaxed">
+            {{ profile.subhead }}
           </p>
           <p class="text-sm md:text-base text-[var(--color-text-secondary)]">
-            Angular Developer at Axolon. Always open to interesting offers and news.
+            {{ profile.currentTitle }}. {{ profile.availability }}
           </p>
+          <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <a href="#projects" (click)="scrollTo($event, '#projects')"
+               class="px-5 py-2.5 rounded-full bg-[var(--color-text)] text-[var(--color-background)] text-xs font-bold tracking-widest uppercase hover:bg-[var(--color-primary)] transition-colors">
+              View work
+            </a>
+            <a href="#contact" (click)="scrollTo($event, '#contact')"
+               class="px-5 py-2.5 rounded-full border border-[var(--color-border)] bg-[var(--color-card)]/40 backdrop-blur-md text-xs font-bold tracking-widest uppercase text-[var(--color-text)] hover:border-[var(--color-primary)] transition-colors">
+              Get in touch
+            </a>
+          </div>
         </div>
       </div>
 
@@ -165,6 +178,17 @@ import { HeroBootVisual } from '../hero-boot-visual/hero-boot-visual';
   `]
 })
 export class Hero {
+  readonly profile = profile;
+  private scrollService = inject(ScrollService);
+  private platformId = inject(PLATFORM_ID);
+
   /** Stacked Z layers give the letters physical depth (length on the Z axis). */
   readonly depthLayers = Array.from({ length: 20 }, (_, i) => i + 1);
+
+  scrollTo(e: Event, id: string) {
+    e.preventDefault();
+    if (isPlatformBrowser(this.platformId)) {
+      this.scrollService.scrollTo(id);
+    }
+  }
 }

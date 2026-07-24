@@ -20,8 +20,8 @@ Portfolio site for **Rishiraj Sajeev**, Full Stack Engineer and Angular Develope
 
 ## Featured projects
 
-- **Green Power India** — Client contract; end-to-end corporate platform (Next.js, Supabase, PostgreSQL)
-- **Tagtics** — Multi-tenant UI feedback SaaS with PostgreSQL RLS (React, Supabase)
+- **Green Power India** — Client contract; end-to-end corporate platform (Next.js, Supabase, PostgreSQL) — case study at `/work/green-power-india`
+- **Tagtics** — Multi-tenant UI feedback SaaS with PostgreSQL RLS (React, Supabase) — case study at `/work/tagtics`
 - **Fashion Studio** — Production e-commerce backend on AWS EC2 (Node.js, Express, MongoDB, Razorpay)
 - **Ever-Gauzy** — Open-source NestJS/Angular ERP contribution (auth UI)
 
