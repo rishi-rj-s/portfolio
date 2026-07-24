@@ -1,24 +1,20 @@
-import { Component, PLATFORM_ID, afterNextRender, inject, signal } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  PLATFORM_ID,
+  afterNextRender,
+  inject,
+  signal,
+} from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { HeroBootVisual } from '../hero-boot-visual/hero-boot-visual';
 import { profile } from '../../data/profile';
 import { ScrollService } from '../../services/scroll';
-import { shouldLoadHeavyGraphics } from '../../utils/connection';
 
 @Component({
   selector: 'app-hero',
-  imports: [HeroBootVisual],
   template: `
-    <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-x-clip overflow-y-hidden">
-      <div class="absolute inset-0 z-[1] pointer-events-none overflow-hidden" aria-hidden="true">
-        @if (enableBootVisual()) {
-          @defer (on idle; on timer(400ms)) {
-            <app-hero-boot-visual />
-          }
-        }
-      </div>
-
-      <div class="relative z-10 w-full max-w-7xl mx-auto px-3 sm:px-6 flex flex-col items-center justify-center">
+    <section id="hero" class="hero-section">
+      <div class="hero-main">
         <div class="hero-identity select-none">
           <h2 class="name-eyebrow">
             <span class="lg:hidden">{{ profile.role }}</span>
@@ -43,7 +39,7 @@ import { shouldLoadHeavyGraphics } from '../../utils/connection';
           </div>
         </div>
 
-        <div class="mt-8 md:mt-10 lg:mt-14 max-w-2xl mx-auto text-center px-2">
+        <div class="hero-copy max-w-2xl mx-auto text-center px-2">
           <div class="lg:hidden space-y-2">
             <p class="text-[10px] sm:text-xs font-bold tracking-[0.22em] uppercase text-[var(--color-text-secondary)]">
               Angular · NestJS · SaaS
@@ -53,8 +49,8 @@ import { shouldLoadHeavyGraphics } from '../../utils/connection';
             </p>
           </div>
 
-          <div class="hidden lg:block space-y-4">
-            <p class="text-lg xl:text-xl text-[var(--color-text-muted)] leading-relaxed">
+          <div class="hidden lg:block space-y-3 xl:space-y-4">
+            <p class="text-base xl:text-xl text-[var(--color-text-muted)] leading-relaxed">
               {{ profile.subhead }}
             </p>
             <p class="text-sm md:text-base text-[var(--color-text-secondary)]">
@@ -62,7 +58,7 @@ import { shouldLoadHeavyGraphics } from '../../utils/connection';
             </p>
           </div>
 
-          <div class="flex flex-wrap items-center justify-center gap-3 pt-5 lg:pt-6">
+          <div class="hero-ctas flex flex-wrap items-center justify-center gap-3">
             <a href="#projects" (click)="scrollTo($event, '#projects')"
                class="px-5 py-2.5 rounded-full bg-[var(--color-text)] text-[var(--color-background)] text-xs font-bold tracking-widest uppercase hover:bg-[var(--color-primary)] transition-colors">
               View work
@@ -75,14 +71,70 @@ import { shouldLoadHeavyGraphics } from '../../utils/connection';
         </div>
       </div>
 
-      <div class="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-40 pointer-events-none">
-        <svg class="w-6 h-6 text-[var(--color-text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+      <div class="hero-scroll-hint" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
         </svg>
       </div>
     </section>
   `,
   styles: [`
+    /* Hard one-viewport lock — no page growth from this section */
+    :host {
+      display: block;
+      box-sizing: border-box;
+      height: 100svh;
+      height: 100dvh;
+      max-height: 100svh;
+      max-height: 100dvh;
+      overflow: hidden;
+    }
+
+    .hero-section {
+      box-sizing: border-box;
+      height: 100%;
+      max-height: 100%;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      padding-top: clamp(5rem, 9vh, 7rem);
+      padding-inline: 0.75rem;
+      padding-bottom: 0.15rem;
+    }
+
+    @media (min-width: 640px) {
+      .hero-section {
+        padding-inline: 1.5rem;
+      }
+    }
+
+    /* Fills space above the scroll hint; content stays large and centered */
+    .hero-main {
+      flex: 1 1 auto;
+      min-height: 0;
+      width: 100%;
+      max-width: 80rem;
+      margin-inline: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(1.25rem, 3.5vh, 2.75rem);
+      overflow: hidden;
+    }
+
+    .hero-scroll-hint {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 2rem;
+      color: var(--color-text);
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
     .hero-identity {
       display: flex;
       flex-direction: column;
@@ -91,15 +143,21 @@ import { shouldLoadHeavyGraphics } from '../../utils/connection';
       max-width: min(100%, 1100px);
     }
 
+    .hero-copy {
+      margin-top: 0;
+    }
+
+    .hero-ctas {
+      padding-top: clamp(0.75rem, 2vh, 1.35rem);
+    }
+
     .name-stage {
       position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
       width: 100%;
-      /* Room for stroke + extrusion so letters aren't clipped */
-      padding: 0 0 0;
-      /* Shorter perspective = stronger “coming at you” foreshortening on small screens */
+      padding: 0;
       perspective: 520px;
       perspective-origin: 22% 45%;
       box-sizing: border-box;
@@ -120,14 +178,13 @@ import { shouldLoadHeavyGraphics } from '../../utils/connection';
       }
     }
 
-    /* Match gap below the name (mt-8 / md:mt-10 / lg:mt-14) */
     .name-eyebrow {
       position: relative;
       z-index: 3;
-      margin: 0 0 2rem; /* = mt-8 */
+      margin: 0 0 clamp(1rem, 2.5vh, 2rem);
       padding: 0.35rem 0.85rem;
       text-align: center;
-      font-size: clamp(0.85rem, 2.6vw, 1.1rem);
+      font-size: clamp(0.8rem, 2.2vw, 1.05rem);
       font-weight: 700;
       letter-spacing: 0.2em;
       text-transform: uppercase;
@@ -137,21 +194,13 @@ import { shouldLoadHeavyGraphics } from '../../utils/connection';
       white-space: normal;
     }
 
-    @media (min-width: 768px) {
-      .name-eyebrow {
-        margin-bottom: 2.5rem; /* = md:mt-10 */
-        letter-spacing: 0.22em;
-      }
-    }
-
     @media (min-width: 1024px) {
       .name-eyebrow {
-        margin-bottom: 3.5rem; /* = lg:mt-14 */
-        font-size: clamp(0.75rem, 1.35vw, 1rem);
         letter-spacing: 0.18em;
         color: var(--color-text-secondary);
         opacity: 1;
         padding-inline: 0.5rem;
+        font-size: clamp(0.75rem, 1.35vw, 1rem);
       }
     }
 
@@ -165,12 +214,11 @@ import { shouldLoadHeavyGraphics } from '../../utils/connection';
       gap: 0.02em;
       margin: 0;
       width: 100%;
-      /* Aggressive mobile tilt + forward push so extrusion reads as popping out */
       transform: rotateY(-32deg) rotateX(16deg) rotateZ(-2deg) translate3d(-2%, 2%, 48px);
       transform-style: preserve-3d;
       font-family: ui-sans-serif, system-ui, sans-serif;
       font-weight: 900;
-      /* Size to dominate the hero — "RISHIRAJ" is 8 letters, ~0.72em wide each */
+      /* Restored large type — width-driven, not over-capped by dvh */
       font-size: clamp(3.6rem, 15.5vw, 7.25rem);
       line-height: 0.88;
       letter-spacing: -0.06em;
@@ -194,6 +242,33 @@ import { shouldLoadHeavyGraphics } from '../../utils/connection';
     @media (min-width: 1400px) {
       .name-3d {
         font-size: clamp(8rem, 11vw, 13rem);
+      }
+    }
+
+    /* Short viewports only — trim a little without nuking desktop scale */
+    @media (max-height: 740px) {
+      .name-3d {
+        font-size: clamp(3rem, 12vw, 5.5rem);
+      }
+
+      .hero-main {
+        gap: 1rem;
+      }
+
+      .name-eyebrow {
+        margin-bottom: 0.85rem;
+      }
+    }
+
+    @media (min-width: 768px) and (max-height: 740px) {
+      .name-3d {
+        font-size: clamp(3.75rem, 10vw, 6.5rem);
+      }
+    }
+
+    @media (min-width: 1024px) and (max-height: 800px) {
+      .name-3d {
+        font-size: clamp(4.5rem, 9.5vw, 8rem);
       }
     }
 
@@ -258,7 +333,6 @@ import { shouldLoadHeavyGraphics } from '../../utils/connection';
     .extrude[data-z='11'] { transform: translateZ(-22px); opacity: 0.18; }
     .extrude[data-z='12'] { transform: translateZ(-24px); opacity: 0.12; }
 
-    /* Mobile: thicker extrusion + stronger face lift so the slab reads in perspective */
     @media (max-width: 767px) {
       .face {
         -webkit-text-stroke: 2.5px var(--color-text);
@@ -277,35 +351,45 @@ import { shouldLoadHeavyGraphics } from '../../utils/connection';
     }
   `]
 })
-export class Hero {
+export class Hero implements OnDestroy {
   readonly profile = profile;
   private scrollService = inject(ScrollService);
   private platformId = inject(PLATFORM_ID);
-  readonly enableBootVisual = signal(true);
+  private isBrowser = isPlatformBrowser(this.platformId);
 
   /** Depth layers — restored for desktop; lighter on small screens */
   readonly depthLayers = signal<number[]>([1, 2, 3, 4, 5, 6]);
 
+  private readonly onWindowResize = () => this.updateDepthLayers();
+
   constructor() {
     afterNextRender(() => {
-      if (!isPlatformBrowser(this.platformId)) return;
-      this.enableBootVisual.set(shouldLoadHeavyGraphics());
-
-      const w = window.innerWidth;
-      if (w >= 1024) {
-        this.depthLayers.set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
-      } else if (w >= 768) {
-        this.depthLayers.set([1, 2, 3, 4, 5, 6, 7, 8]);
-      } else {
-        // Thicker mobile extrusion needs more layers for a solid slab
-        this.depthLayers.set([1, 2, 3, 4, 5, 6, 7, 8]);
-      }
+      if (!this.isBrowser) return;
+      this.updateDepthLayers();
+      window.addEventListener('resize', this.onWindowResize, { passive: true });
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.isBrowser) {
+      window.removeEventListener('resize', this.onWindowResize);
+    }
+  }
+
+  private updateDepthLayers(): void {
+    const w = window.innerWidth;
+    if (w >= 1024) {
+      this.depthLayers.set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+    } else if (w >= 768) {
+      this.depthLayers.set([1, 2, 3, 4, 5, 6, 7, 8]);
+    } else {
+      this.depthLayers.set([1, 2, 3, 4, 5, 6, 7, 8]);
+    }
   }
 
   scrollTo(e: Event, id: string) {
     e.preventDefault();
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.isBrowser) {
       this.scrollService.scrollTo(id);
     }
   }

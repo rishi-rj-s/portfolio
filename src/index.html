@@ -73,10 +73,10 @@
       try {
         var d = document.documentElement;
         var saved = localStorage.getItem('theme');
-        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        var theme = saved || (prefersDark ? 'dark' : 'light');
+        // Default: Pure Void (dark) when nothing is saved
+        var theme = saved || 'dark';
         if (theme !== 'light') d.classList.add('dark');
-        if (['ocean','sunset','cyberpunk','forest'].includes(saved)) d.classList.add('theme-' + saved);
+        if (['ocean','sunset','cyberpunk','forest'].includes(theme)) d.classList.add('theme-' + theme);
         var bgMap = {dark:'#000',ocean:'#0d1b32',sunset:'#2b0a0a',cyberpunk:'#09090b',forest:'#052e16',light:'#fff'};
         d.style.backgroundColor = bgMap[theme] || '#000';
       } catch (e) {}

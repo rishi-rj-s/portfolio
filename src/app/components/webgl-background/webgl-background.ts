@@ -63,9 +63,9 @@ export class WebglBackgroundComponent implements OnDestroy {
     afterNextRender(() => {
       if (!this.isBrowser) return;
 
-      // If user previously picked "None", fall back to aurora so the site isn't blank
+      // If user previously picked "None", fall back to terrain so the site isn't blank
       if (this.background.currentBackground() === 'none') {
-        this.background.setBackground('aurora');
+        this.background.setBackground('terrain');
       }
 
       this.initWorker();

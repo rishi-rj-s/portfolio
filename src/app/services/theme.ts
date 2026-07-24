@@ -24,7 +24,7 @@ export class Theme {
     { id: 'cyberpunk', name: 'Cyberpunk', background: '#09090b', primary: '#d946ef' },
   ];
 
-  currentTheme = signal<ThemeOption>('light');
+  currentTheme = signal<ThemeOption>('dark');
   
   isDark = computed(() => {
     const theme = this.currentTheme();
@@ -41,8 +41,8 @@ export class Theme {
       if (saved && this.isValidTheme(saved)) {
         this.currentTheme.set(saved);
       } else {
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        this.currentTheme.set(prefersDark ? 'dark' : 'light');
+        // Default: Pure Void
+        this.currentTheme.set('dark');
       }
 
       this.applyTheme();

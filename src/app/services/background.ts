@@ -37,12 +37,12 @@ export class Background {
   );
 
   private loadSavedBackground(): BackgroundStyle {
-    if (!this.isBrowser) return 'aurora';
+    if (!this.isBrowser) return 'terrain';
     const saved = localStorage.getItem('portfolio-background');
     if (saved && this.availableBackgrounds.some(b => b.id === saved)) {
       return saved as BackgroundStyle;
     }
-    return 'aurora'; // Default
+    return 'terrain'; // Default
   }
 
   setBackground(style: BackgroundStyle) {
