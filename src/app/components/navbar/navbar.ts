@@ -225,20 +225,28 @@ export class Navbar implements OnDestroy {
 
   async handleNavClick(e: Event, id: string) {
     e.preventDefault();
-    if (isPlatformBrowser(this.platformId)) {
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    const fragment = id.replace(/^#/, '');
+    const onHome = this.router.url === '/' || this.router.url.startsWith('/#');
+
+    if (onHome) {
       this.scrollService.scrollTo(id);
+      return;
     }
+
+    await this.router.navigate(['/'], { fragment });
+    // Wait for home to render, then scroll (Lenis may not catch the fragment alone)
+    setTimeout(() => this.scrollService.scrollTo(id), 100);
   }
 
   handleLogoClick(e: Event) {
     e.preventDefault();
     if (!isPlatformBrowser(this.platformId)) return;
 
-    if (this.router.url === '/') {
-      // Already on home — smooth scroll to top
+    if (this.router.url === '/' || this.router.url.startsWith('/#')) {
       this.smoothScrollToTop();
     } else {
-      // On 404 or other page — navigate home via Angular router
       this.router.navigateByUrl('/');
     }
   }

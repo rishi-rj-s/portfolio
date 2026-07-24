@@ -89,18 +89,6 @@ html, body {
   animation: slideInDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.app-loaded section#hero {
-  animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
-}
-
-.app-loaded .hero-title .line:nth-child(1) {
-  animation: slideInUpMask 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
-}
-
-.app-loaded .hero-title .line:nth-child(2) {
-  animation: slideInUpMask 1s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
-}
-
 /* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

@@ -1,6 +1,6 @@
 # Rishiraj Sajeev
 
-> Full Stack Engineer and Angular Developer at Axolon. Builds SaaS and production systems with NestJS, Node.js, Angular, React, Next.js, PostgreSQL, and AWS. Always open to interesting offers and news.
+> Full Stack Engineer and Angular Developer at Axolon. Builds enterprise-style Angular frontends and production SaaS backends with NestJS, React, Next.js, and PostgreSQL. Always open to interesting offers and news.
 
 ## Identity
 
@@ -11,6 +11,7 @@
 - LinkedIn: https://www.linkedin.com/in/rishiraj-sajeev
 - GitHub: https://github.com/rishi-rj-s
 - Resume: https://www.rishiraj-sajeev.space/assets/resumes/RISHIRAJ_SAJEEV_RESUME.pdf
+- Best suited for: Angular, NestJS, Full-stack SaaS, API / backend
 
 ## Core stack
 
@@ -22,8 +23,8 @@
 
 ## Selected work
 
-- [Green Power India](https://greenpowerindia.com/): Client contract — end-to-end corporate platform (Next.js, Supabase, PostgreSQL)
-- [Tagtics](https://www.tagtics.online): Multi-tenant UI feedback SaaS with PostgreSQL RLS (React, Supabase)
+- [Green Power India](https://greenpowerindia.com/) — Client contract; end-to-end corporate platform. Case study: https://www.rishiraj-sajeev.space/work/green-power-india
+- [Tagtics](https://www.tagtics.online) — Multi-tenant UI feedback SaaS with PostgreSQL RLS. Case study: https://www.rishiraj-sajeev.space/work/tagtics
 - Fashion Studio: Production e-commerce backend on AWS EC2 (Node.js, Express, MongoDB, Razorpay)
 - [Ever-Gauzy](https://github.com/ever-co/ever-gauzy): Open-source NestJS/Angular ERP — authentication UI contribution
 

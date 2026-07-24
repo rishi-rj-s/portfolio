@@ -1,10 +1,12 @@
-import { Component, ElementRef, OnDestroy, PLATFORM_ID, inject, viewChild, viewChildren, afterNextRender, signal, NgZone } from '@angular/core';
+import { Component, ElementRef, OnDestroy, PLATFORM_ID, inject, viewChild, viewChildren, afterNextRender, NgZone } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { ScrollService } from '../../services/scroll';
+import { projects } from '../../data/projects';
 
 @Component({
   selector: 'app-projects-grid',
-  imports: [],
+  imports: [RouterLink],
   template: `
     <section id="projects" class="projects-wrapper relative h-[100dvh] overflow-hidden flex flex-col pt-28 md:pt-36 pb-28 md:pb-12 bg-transparent">
       
@@ -130,41 +132,50 @@ import { ScrollService } from '../../services/scroll';
                     </div>
                  </div>
 
-                 <!-- Project Info Footer with Action Buttons -->
-                 <div class="flex items-center justify-between gap-4 border-b border-[var(--color-border)] pb-4 group-hover:border-[var(--color-primary)] transition-colors duration-500">
-                    <div class="flex-1 min-w-0">
-                       <div class="text-[9px] font-mono text-[var(--color-text-secondary)] uppercase tracking-[0.2em] mb-1 opacity-60">
-                          {{project.year}} &mdash; {{project.stack.slice(0, 3).join(' / ')}}
+                 <!-- Project Info Footer — outcome, stack, and links visible without flip -->
+                 <div class="flex flex-col gap-3 border-b border-[var(--color-border)] pb-4 group-hover:border-[var(--color-primary)] transition-colors duration-500">
+                    <div class="flex items-start justify-between gap-4">
+                       <div class="flex-1 min-w-0">
+                          <div class="text-[9px] font-mono text-[var(--color-text-secondary)] uppercase tracking-[0.2em] mb-1 opacity-60">
+                             {{project.year}} &mdash; {{project.type}}
+                          </div>
+                          <h3 class="text-lg md:text-2xl font-bold tracking-tight text-[var(--color-text)] uppercase leading-none transition-transform duration-500 group-hover:translate-x-1">
+                             {{project.title}}
+                          </h3>
+                          <p class="mt-2 text-xs md:text-sm text-[var(--color-text-muted)] leading-relaxed">
+                             {{project.outcome}}
+                          </p>
                        </div>
-                       <h3 class="text-lg md:text-2xl font-bold tracking-tight text-[var(--color-text)] uppercase leading-none transition-transform duration-500 group-hover:translate-x-1">
-                          {{project.title}}
-                       </h3>
-                       <p class="mt-2 text-xs md:text-sm text-[var(--color-text-muted)] leading-relaxed line-clamp-2">
-                          {{project.outcome}}
-                       </p>
                     </div>
-                    
-                    <div class="flex items-center gap-2 shrink-0 z-20">
-                       @if (project.links.source) {
-                          <a [href]="project.links.source" target="_blank" rel="noopener noreferrer" 
+
+                    <div class="flex flex-wrap gap-1.5">
+                       @for (tech of project.stack; track tech) {
+                          <span class="text-[9px] md:text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded border border-[var(--color-border)] text-[var(--color-text-secondary)]">
+                             {{tech}}
+                          </span>
+                       }
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-3 z-20">
+                       @if (project.caseStudySlug) {
+                          <a [routerLink]="['/work', project.caseStudySlug]"
                              (click)="$event.stopPropagation()"
-                             class="w-8 h-8 rounded-full border border-[var(--color-border)] flex items-center justify-center hover:bg-[var(--color-text)] hover:text-[var(--color-background)] hover:border-[var(--color-text)] transition-all duration-500 group/btn" 
-                             aria-label="View Source Code">
-                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:scale-110 transition-transform">
-                                <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/>
-                                <path d="M9 18c-4.51 2-5-2-7-2"/>
-                             </svg>
+                             class="text-[10px] font-bold tracking-widest uppercase text-[var(--color-primary)] hover:underline underline-offset-4">
+                             Case study
                           </a>
                        }
                        @if (project.links.live) {
-                          <a [href]="project.links.live" target="_blank" rel="noopener noreferrer" 
+                          <a [href]="project.links.live" target="_blank" rel="noopener noreferrer"
                              (click)="$event.stopPropagation()"
-                             class="w-8 h-8 md:w-10 md:h-10 rounded-full border border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--color-background)] flex items-center justify-center hover:bg-transparent hover:text-[var(--color-text)] hover:border-[var(--color-primary)] transition-all duration-500 group/btn" 
-                             aria-label="View Live Project">
-                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
-                                  class="group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-0.5 transition-transform">
-                                <path d="M7 7h10v10M7 17 17 7"/>
-                             </svg>
+                             class="text-[10px] font-bold tracking-widest uppercase text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:underline underline-offset-4">
+                             Live Demo
+                          </a>
+                       }
+                       @if (project.links.source) {
+                          <a [href]="project.links.source" target="_blank" rel="noopener noreferrer"
+                             (click)="$event.stopPropagation()"
+                             class="text-[10px] font-bold tracking-widest uppercase text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:underline underline-offset-4">
+                             GitHub
                           </a>
                        }
                     </div>
@@ -196,57 +207,7 @@ export class ProjectsGrid implements OnDestroy {
   private ngZone = inject(NgZone);
   private interactionListeners: {el: HTMLElement, type: string, listener: any}[] = [];
 
-  projects = [
-    {
-      title: 'Green Power India',
-      type: 'Client Contract',
-      year: '2026',
-      outcome: 'Delivered a live corporate platform end-to-end for a sustainable energy client — owned frontend, schema, API, and handoff.',
-      description: 'Client needed a production marketing and content platform with reliable media handling. Built and shipped a Next.js 15 App Router site on Vercel with a Supabase/PostgreSQL backend and structured bucket storage. Owned both the bento-style UI (Tailwind CSS, Framer Motion) and the backend schema/API layer through delivery.',
-      stack: ['Next.js 15', 'React 19', 'Supabase', 'PostgreSQL', 'Tailwind CSS', 'Framer Motion'],
-      links: {
-        live: 'https://greenpowerindia.com/'
-      },
-      demoLabel: 'LIVE'
-    },
-    {
-      title: 'Tagtics',
-      type: 'SaaS',
-      year: '2025',
-      outcome: 'Multi-tenant UI feedback SaaS with PostgreSQL RLS so each tenant only sees its own data — frontend live in production.',
-      description: 'Users click any element on a target web app and submit contextual feedback without changing that app\'s code. Designed tenant isolation with PostgreSQL Row-Level Security (RLS) at the database layer. React frontend is live; Supabase-backed API work continues alongside the shipped UI.',
-      stack: ['React', 'Supabase', 'PostgreSQL', 'RLS', 'TypeScript'],
-      links: {
-        source: 'https://github.com/tagtics/tagtics-frontend',
-        live: 'https://www.tagtics.online'
-      },
-      demoLabel: 'LIVE'
-    },
-    {
-      title: 'Fashion Studio',
-      type: 'E-Commerce',
-      year: '2024',
-      outcome: 'Production e-commerce backend on self-managed AWS — catalogue, auth, orders, and verified Razorpay payments.',
-      description: 'Ran payments and order processing in production on AWS EC2 with Nginx as a reverse proxy. Integrated Razorpay with webhook signature verification for tamper-proof transactions, plus product catalogue management and user auth on Node.js, Express, and MongoDB.',
-      stack: ['Node.js', 'Express', 'MongoDB', 'AWS EC2', 'Nginx'],
-      links: {
-        source: 'https://github.com/rishi-rj-s/RSBackend'
-      }
-    },
-    {
-      title: 'Ever-Gauzy',
-      type: 'Open Source',
-      year: '2025',
-      outcome: 'Improved authentication UI in a 100k+ line NestJS/Angular ERP used by real organisations.',
-      description: 'Contributed auth UI work inside a large Nx monorepo (NestJS + Angular). Worked in a live enterprise codebase that uses CQRS, Event Sourcing, and Hexagonal Architecture patterns — exposure to those patterns, with the concrete deliverable being authentication UI improvements.',
-      stack: ['NestJS', 'Angular', 'TypeScript', 'Nx', 'CQRS'],
-      links: {
-        source: 'https://github.com/ever-co/ever-gauzy',
-        live: 'https://app.gauzy.co/#/auth/login'
-      },
-      demoLabel: 'LIVE'
-    }
-  ];
+  readonly projects = projects;
 
   getInitials(title: string): string {
     if (!title) return '';

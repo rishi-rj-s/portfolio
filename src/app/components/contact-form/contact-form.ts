@@ -4,6 +4,7 @@ import { NgHcaptchaModule } from 'ng-hcaptcha';
 import { ContactMail } from '../../services/contact';
 import { environment } from '../../../environments/environment';
 import { isPlatformBrowser } from '@angular/common';
+import { profile } from '../../data/profile';
 
 @Component({
   selector: 'app-contact-form',
@@ -16,9 +17,19 @@ import { isPlatformBrowser } from '@angular/common';
          @if (!isSubmitted()) {
             <div class="animate-fade-in-up">
               <h2 class="text-4xl md:text-6xl font-black mb-4 text-[var(--color-text)] tracking-tight">LET'S TALK</h2>
-              <p class="text-sm md:text-base text-[var(--color-text-muted)] mb-2 leading-relaxed">
-                Angular Developer at Axolon — always open to interesting offers, collaborations, and news. I typically reply within 48 hours.
+              <p class="text-sm md:text-base text-[var(--color-text-muted)] mb-3 leading-relaxed">
+                {{ profile.currentTitle }} — {{ profile.availability }} {{ profile.replySla }}
               </p>
+              <p class="text-xs md:text-sm text-[var(--color-text-secondary)] mb-3">
+                Best suited for
+              </p>
+              <div class="flex flex-wrap gap-2 mb-6">
+                @for (chip of profile.suitedFor; track chip) {
+                  <span class="text-[10px] font-bold tracking-widest uppercase px-3 py-1.5 rounded-full border border-[var(--color-border)] text-[var(--color-text-secondary)]">
+                    {{ chip }}
+                  </span>
+                }
+              </div>
               <p class="mb-8">
                 <a href="mailto:rishirajsajeev@gmail.com"
                    class="text-sm font-medium text-[var(--color-text)] underline underline-offset-4 decoration-[var(--color-border)] hover:decoration-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors">
@@ -112,7 +123,7 @@ import { isPlatformBrowser } from '@angular/common';
   `
 })
 export class ContactForm {
-  // v20 inject() instead of constructor DI
+  readonly profile = profile;
   private fb = inject(FormBuilder);
   private contactService = inject(ContactMail);
   private platformId = inject(PLATFORM_ID);

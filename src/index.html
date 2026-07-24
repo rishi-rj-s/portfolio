@@ -11,7 +11,7 @@
        =================================== -->
   <title>Rishiraj Sajeev - Full Stack Engineer | NestJS, Angular, React, Next.js</title>
   <meta name="title" content="Rishiraj Sajeev - Full Stack Engineer | NestJS, Angular, React, Next.js">
-  <meta name="description" content="Full Stack Engineer and Angular Developer at Axolon. Builds SaaS and production systems with NestJS, Node.js, Angular, React, Next.js, PostgreSQL, MongoDB, Redis, Docker, and AWS. Always open to interesting offers and news.">
+  <meta name="description" content="Full Stack Engineer and Angular Developer at Axolon. Builds enterprise-style Angular frontends and production SaaS backends with NestJS, React, Next.js, and PostgreSQL. Always open to interesting offers and news.">
   <meta name="keywords" content="Full Stack Engineer, Angular, React, Next.js, NestJS, Node.js, Express, PostgreSQL, MongoDB, Redis, Docker, AWS, SaaS">
   <meta name="author" content="Rishiraj Sajeev">
   <meta name="robots" content="index, follow">
@@ -20,14 +20,14 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.rishiraj-sajeev.space/">
   <meta property="og:title" content="Rishiraj Sajeev - Full Stack Engineer">
-  <meta property="og:description" content="Full Stack Engineer at Axolon. NestJS, Angular, React, Next.js, Node.js, PostgreSQL. Always open to interesting offers and news.">
+  <meta property="og:description" content="Full Stack Engineer at Axolon. Enterprise Angular and production SaaS with NestJS, React, Next.js, PostgreSQL. Always open to interesting offers and news.">
   <meta property="og:image" content="assets/seo/og-image.jpeg">
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://www.rishiraj-sajeev.space/">
   <meta property="twitter:title" content="Rishiraj Sajeev - Full Stack Engineer">
-  <meta property="twitter:description" content="Full Stack Engineer at Axolon. NestJS, Angular, React, Next.js, Node.js, PostgreSQL. Always open to interesting offers and news.">
+  <meta property="twitter:description" content="Full Stack Engineer at Axolon. Enterprise Angular and production SaaS with NestJS, React, Next.js, PostgreSQL. Always open to interesting offers and news.">
   <meta property="twitter:image" content="assets/seo/og-image.jpeg">
 
   <!-- Canonical URL -->
@@ -56,7 +56,7 @@
         "name": "Axolon",
         "url": "https://www.linkedin.com/company/axolonerp"
       },
-      "description": "Full Stack Engineer and Angular Developer at Axolon. Builds SaaS and production systems with NestJS, Node.js, Angular, React, Next.js, PostgreSQL, and AWS. Always open to interesting offers and news."
+      "description": "Full Stack Engineer and Angular Developer at Axolon. Builds enterprise-style Angular frontends and production SaaS backends with NestJS, React, Next.js, and PostgreSQL. Always open to interesting offers and news."
     }
   </script>
 
@@ -229,21 +229,24 @@
 </head>
 
 <body>
-  <!-- Precision Cyber-Optic Loader -->
-  <div id="app-loader" aria-label="System Initializing">
+  <!-- App content first so crawlers/scrapers read real portfolio text before the overlay loader -->
+  <app-root></app-root>
+
+  <!-- Visual boot overlay only (fixed); aria-hidden so it is not treated as page content -->
+  <div id="app-loader" aria-hidden="true">
     <div class="loader-grid"></div>
     <div class="loader-content">
       <div class="l-optic">
         <div class="l-ring"></div>
         <div class="l-ring-active"></div>
         <div class="l-scan"></div>
-        <svg width="40" height="40" viewBox="0 0 40 40" style="position:relative;z-index:5">
+        <svg width="40" height="40" viewBox="0 0 40 40" style="position:relative;z-index:5" aria-hidden="true">
           <path d="M20 5V35M5 20H35" stroke="#6366f1" stroke-width="1" stroke-dasharray="2 2" />
           <circle cx="20" cy="20" r="3" fill="#6366f1" />
         </svg>
       </div>
 
-      <div class="l-brand">RISHIRAJ.S</div>
+      <div class="l-brand" aria-hidden="true"></div>
 
       <div class="l-bar-track">
         <div class="l-bar-fill"></div>
@@ -251,20 +254,18 @@
 
       <div class="l-status">
         <div class="l-dot"></div>
-        <span id="loader-status">INITIALIZING SYSTEM</span>
+        <span id="loader-status"></span>
       </div>
     </div>
   </div>
 
-  <app-root></app-root>
-
   <noscript>
     <div style="max-width:640px;margin:0 auto;padding:48px 24px;color:#fff;background:#000;min-height:100vh;font-family:system-ui,sans-serif;line-height:1.6;">
-      <p style="letter-spacing:0.2em;font-size:12px;opacity:0.7;margin:0 0 12px;">FULL STACK ENGINEER</p>
+      <p style="letter-spacing:0.2em;font-size:12px;opacity:0.7;margin:0 0 12px;">FULL-STACK ENGINEER · ANGULAR &amp; NESTJS</p>
       <h1 style="letter-spacing:2px;margin:0 0 16px;font-size:28px;">RISHIRAJ SAJEEV</h1>
-      <p style="opacity:0.85;margin:0 0 12px;">Angular Developer at Axolon. Full stack engineer building SaaS and production systems — always open to interesting offers and news.</p>
+      <p style="opacity:0.85;margin:0 0 12px;">Angular Developer at Axolon. Builds enterprise-style Angular frontends and production SaaS backends — always open to interesting offers and news.</p>
       <p style="opacity:0.7;margin:0 0 24px;font-size:14px;">Core stack: NestJS, Node.js, Express, Angular, React, Next.js, TypeScript, PostgreSQL, MongoDB, Redis, Docker, AWS.</p>
-      <p style="opacity:0.7;margin:0 0 8px;font-size:14px;"><strong style="opacity:1;">Selected work:</strong> Green Power India (client contract), Tagtics, Ever-Gauzy, Fashion Studio.</p>
+      <p style="opacity:0.7;margin:0 0 8px;font-size:14px;"><strong style="opacity:1;">Selected work:</strong> Green Power India (case study), Tagtics (case study), Ever-Gauzy, Fashion Studio.</p>
       <div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:28px;font-family:ui-monospace,monospace;font-size:13px;">
         <a href="https://github.com/rishi-rj-s" style="color:#6366f1;text-decoration:none">GITHUB</a>
         <a href="https://www.linkedin.com/in/rishiraj-sajeev" style="color:#6366f1;text-decoration:none">LINKEDIN</a>
