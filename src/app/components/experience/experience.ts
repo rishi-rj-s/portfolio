@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
         <span class="text-5xl text-[var(--color-text)]">01</span> EXPERIENCE
       </h2>
       <p class="text-sm md:text-base text-[var(--color-text-muted)] mb-8 max-w-xl">
-        Angular Developer at Axolon (present) — employed and selectively exploring full stack or backend roles with real system complexity.
+        Angular Developer at Axolon. Full stack background across NestJS, Angular, React, and Next.js — always open to interesting offers and news.
       </p>
 
       <div class="relative pl-8 border-l border-[var(--color-border)] space-y-12">

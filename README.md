@@ -1,6 +1,6 @@
 # Portfolio - Rishiraj Sajeev
 
-Portfolio site for **Rishiraj Sajeev**, Full Stack Engineer (currently Angular Developer at Axolon; selectively exploring full stack or backend roles). Built with **Angular 21**, **Tailwind CSS v4**, and static prerender for crawlable HTML.
+Portfolio site for **Rishiraj Sajeev**, Full Stack Engineer and Angular Developer at Axolon. Built with **Angular 21**, **Tailwind CSS v4**, and static prerender for crawlable HTML.
 
 ## Tech Stack
 

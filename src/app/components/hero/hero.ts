@@ -25,10 +25,10 @@ import { Component, ElementRef, afterNextRender, viewChild, OnDestroy, NgZone, i
 
         <div class="mt-8 max-w-2xl mx-auto space-y-3 px-4">
           <p class="text-lg md:text-xl text-[var(--color-text-muted)]">
-            Seeking a <span class="text-[var(--color-text)] font-semibold">full stack or backend</span> role with real system complexity — SaaS &amp; production systems.
+            Building production-grade <span class="text-[var(--color-text)] font-semibold">SaaS</span> &amp; systems — NestJS, Angular, React, Next.js.
           </p>
           <p class="text-sm md:text-base text-[var(--color-text-secondary)]">
-            Currently Angular Developer at Axolon — employed and selectively exploring.
+            Angular Developer at Axolon. Always open to interesting offers and news.
           </p>
           <div class="flex flex-wrap items-center justify-center gap-3 pt-4">
             <a href="/assets/resumes/RISHIRAJ_SAJEEV_RESUME.pdf"

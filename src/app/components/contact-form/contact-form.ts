@@ -17,7 +17,7 @@ import { isPlatformBrowser } from '@angular/common';
             <div class="animate-fade-in-up">
               <h2 class="text-4xl md:text-6xl font-black mb-4 text-[var(--color-text)] tracking-tight">LET'S TALK</h2>
               <p class="text-sm md:text-base text-[var(--color-text-muted)] mb-2 leading-relaxed">
-                Employed at Axolon and selectively exploring — open to full stack or backend roles with real system complexity. I typically reply within 48 hours.
+                Angular Developer at Axolon — always open to interesting offers, collaborations, and news. I typically reply within 48 hours.
               </p>
               <p class="mb-8">
                 <a href="mailto:rishirajsajeev@gmail.com"
