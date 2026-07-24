@@ -1,8 +1,38 @@
 {
+  "buildCommand": "pnpm run build",
+  "outputDirectory": "dist/rishiraj-portfolio/browser",
+  "headers": [
+    {
+      "source": "/(robots\\.txt|llms\\.txt|llms-full\\.txt)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        },
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/sitemap.xml",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        },
+        {
+          "key": "Content-Type",
+          "value": "application/xml; charset=utf-8"
+        }
+      ]
+    }
+  ],
   "rewrites": [
     {
-      "source": "/(.*)",
-      "destination": "/"
+      "source": "/((?!robots\\.txt$|sitemap\\.xml$|llms\\.txt$|llms-full\\.txt$).*)",
+      "destination": "/index.html"
     }
   ]
 }

@@ -179,13 +179,6 @@ export class App {
         console.error('Boot error:', err);
         dismissLoader();
       });
-      
-      // Secondary deferrals
-      setTimeout(() => {
-        import('tagtics-client').then(({ default: Tagtics }) => {
-          Tagtics.init({ apiKey: 'none', testingMode: true });
-        });
-      }, 3000);
     });
   }
 

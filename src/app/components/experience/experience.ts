@@ -4,9 +4,12 @@ import { Component } from '@angular/core';
   selector: 'app-experience',
   template: `
     <div class="h-full flex flex-col justify-center">
-      <h2 class="text-3xl font-bold text-[var(--color-text)] mb-8 flex items-center gap-3">
+      <h2 class="text-3xl font-bold text-[var(--color-text)] mb-4 flex items-center gap-3">
         <span class="text-5xl text-[var(--color-text)]">01</span> EXPERIENCE
       </h2>
+      <p class="text-sm md:text-base text-[var(--color-text-muted)] mb-8 max-w-xl">
+        Angular Developer at Axolon. Full stack background across NestJS, Angular, React, and Next.js — always open to interesting offers and news.
+      </p>
 
       <div class="relative pl-8 border-l border-[var(--color-border)] space-y-12">
         <!-- Axolon Experience -->
@@ -50,11 +53,11 @@ import { Component } from '@angular/core';
             </div>
           </div>
           
-          <h4 class="text-base text-[var(--color-text-secondary)] mb-4 italic">Remote Engineering Sabbatical</h4>
+          <h4 class="text-base text-[var(--color-text-secondary)] mb-4">Independent / Freelance Full Stack</h4>
           
           <ul class="text-[var(--color-text-muted)] space-y-2 list-disc list-outside ml-4">
-            <li>Specialization: System Design, Microservices, and Cloud Deployment (AWS).</li>
-            <li>Architecting scalable solutions using NestJS, Angular, Next.js and React ecosystems.</li>
+            <li>Built and shipped SaaS and production systems with NestJS, Angular, Next.js, and React.</li>
+            <li>Cloud deployment and ops on AWS (EC2), plus PostgreSQL, MongoDB, Redis, and Docker.</li>
           </ul>
         </div>
 

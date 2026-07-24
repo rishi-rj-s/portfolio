@@ -112,7 +112,10 @@ import { ScrollService } from '../../services/scroll';
                             style="backface-visibility: hidden; transform: rotateY(180deg); transform-style: preserve-3d;">
                             
                             <div class="flex-1 flex flex-col justify-center gap-2">
-                               <p class="text-xs md:text-sm text-[var(--color-text)] opacity-90 leading-relaxed max-h-[14dvh] overflow-y-auto pr-1 scrollbar-none font-sans">
+                               <p class="text-xs md:text-sm font-semibold text-[var(--color-text)] leading-relaxed">
+                                  {{project.outcome}}
+                               </p>
+                               <p class="text-xs md:text-sm text-[var(--color-text)] opacity-80 leading-relaxed max-h-[10dvh] overflow-y-auto pr-1 scrollbar-none font-sans">
                                   {{project.description}}
                                </p>
                             </div>
@@ -129,13 +132,16 @@ import { ScrollService } from '../../services/scroll';
 
                  <!-- Project Info Footer with Action Buttons -->
                  <div class="flex items-center justify-between gap-4 border-b border-[var(--color-border)] pb-4 group-hover:border-[var(--color-primary)] transition-colors duration-500">
-                    <div class="flex-1">
+                    <div class="flex-1 min-w-0">
                        <div class="text-[9px] font-mono text-[var(--color-text-secondary)] uppercase tracking-[0.2em] mb-1 opacity-60">
                           {{project.year}} &mdash; {{project.stack.slice(0, 3).join(' / ')}}
                        </div>
                        <h3 class="text-lg md:text-2xl font-bold tracking-tight text-[var(--color-text)] uppercase leading-none transition-transform duration-500 group-hover:translate-x-1">
                           {{project.title}}
                        </h3>
+                       <p class="mt-2 text-xs md:text-sm text-[var(--color-text-muted)] leading-relaxed line-clamp-2">
+                          {{project.outcome}}
+                       </p>
                     </div>
                     
                     <div class="flex items-center gap-2 shrink-0 z-20">
@@ -192,10 +198,23 @@ export class ProjectsGrid implements OnDestroy {
 
   projects = [
     {
+      title: 'Green Power India',
+      type: 'Client Contract',
+      year: '2026',
+      outcome: 'Delivered a live corporate platform end-to-end for a sustainable energy client — owned frontend, schema, API, and handoff.',
+      description: 'Client needed a production marketing and content platform with reliable media handling. Built and shipped a Next.js 15 App Router site on Vercel with a Supabase/PostgreSQL backend and structured bucket storage. Owned both the bento-style UI (Tailwind CSS, Framer Motion) and the backend schema/API layer through delivery.',
+      stack: ['Next.js 15', 'React 19', 'Supabase', 'PostgreSQL', 'Tailwind CSS', 'Framer Motion'],
+      links: {
+        live: 'https://greenpowerindia.com/'
+      },
+      demoLabel: 'LIVE'
+    },
+    {
       title: 'Tagtics',
       type: 'SaaS',
       year: '2025',
-      description: 'A multi-tenant UI feedback SaaS. Users click any element on any web app and submit contextual feedback — no changes needed to the target app\'s code. Designed with PostgreSQL Row-Level Security (RLS) enforcing strict data isolation at the database layer per tenant. Frontend is live; backend integration with Supabase Edge Functions is in active development.',
+      outcome: 'Multi-tenant UI feedback SaaS with PostgreSQL RLS so each tenant only sees its own data — frontend live in production.',
+      description: 'Users click any element on a target web app and submit contextual feedback without changing that app\'s code. Designed tenant isolation with PostgreSQL Row-Level Security (RLS) at the database layer. React frontend is live; Supabase-backed API work continues alongside the shipped UI.',
       stack: ['React', 'Supabase', 'PostgreSQL', 'RLS', 'TypeScript'],
       links: {
         source: 'https://github.com/tagtics/tagtics-frontend',
@@ -204,37 +223,28 @@ export class ProjectsGrid implements OnDestroy {
       demoLabel: 'LIVE'
     },
     {
-      title: 'Green Power India',
-      type: 'Client Contract',
-      year: '2026',
-      description: 'Delivered end-to-end for a sustainable energy company — full stack corporate platform built with Next.js 15 App Router, deployed on Vercel. Designed and implemented a Supabase and PostgreSQL backend with structured bucket storage for dynamic media assets. Owned both the frontend (bento-style UI with Tailwind CSS and Framer Motion) and the backend schema and API layer.',
-      stack: ['Next.js 15', 'React 19', 'Supabase', 'PostgreSQL', 'Tailwind CSS', 'Framer Motion'],
+      title: 'Fashion Studio',
+      type: 'E-Commerce',
+      year: '2024',
+      outcome: 'Production e-commerce backend on self-managed AWS — catalogue, auth, orders, and verified Razorpay payments.',
+      description: 'Ran payments and order processing in production on AWS EC2 with Nginx as a reverse proxy. Integrated Razorpay with webhook signature verification for tamper-proof transactions, plus product catalogue management and user auth on Node.js, Express, and MongoDB.',
+      stack: ['Node.js', 'Express', 'MongoDB', 'AWS EC2', 'Nginx'],
       links: {
-        live: 'https://greenpowerindia.com/'
-      },
-      demoLabel: 'LIVE'
+        source: 'https://github.com/rishi-rj-s/RSBackend'
+      }
     },
     {
       title: 'Ever-Gauzy',
       type: 'Open Source',
       year: '2025',
-      description: 'Contributed to a 100,000+ line enterprise ERP built on NestJS and Angular. Navigated a large Nx monorepo to improve the authentication UI — gaining direct exposure to production-grade enterprise patterns including CQRS, Event Sourcing, and Hexagonal Architecture in a live system used by real organisations.',
+      outcome: 'Improved authentication UI in a 100k+ line NestJS/Angular ERP used by real organisations.',
+      description: 'Contributed auth UI work inside a large Nx monorepo (NestJS + Angular). Worked in a live enterprise codebase that uses CQRS, Event Sourcing, and Hexagonal Architecture patterns — exposure to those patterns, with the concrete deliverable being authentication UI improvements.',
       stack: ['NestJS', 'Angular', 'TypeScript', 'Nx', 'CQRS'],
       links: {
         source: 'https://github.com/ever-co/ever-gauzy',
         live: 'https://app.gauzy.co/#/auth/login'
       },
       demoLabel: 'LIVE'
-    },
-    {
-      title: 'Fashion Studio',
-      type: 'E-Commerce',
-      year: '2024',
-      description: 'Production e-commerce backend deployed on a self-managed AWS EC2 instance with Nginx configured as a reverse proxy. Integrated Razorpay payment gateway with webhook signature verification for tamper-proof transaction handling. Covers product catalogue management, user auth, and order processing.',
-      stack: ['Node.js', 'Express', 'MongoDB', 'AWS EC2', 'Nginx'],
-      links: {
-        source: 'https://github.com/rishi-rj-s/RSBackend'
-      }
     }
   ];
 

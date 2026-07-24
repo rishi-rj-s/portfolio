@@ -103,13 +103,14 @@ export class Skills {
       ],
     },
     {
-      category: 'Realtime Systems',
+      category: 'Realtime (shipped)',
       color: '#ef4444',
       items: [
         { name: 'WebSockets', logo: 'assets/icons/socket-io.svg', invertDark: true },
         { name: 'Redis Pub/Sub', logo: 'assets/icons/redis-pub-sub.svg' },
       ],
     },
+
     {
       category: 'Frontend Engineering',
       color: '#3b82f6',
