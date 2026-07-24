@@ -47,9 +47,6 @@ importers:
       rxjs:
         specifier: ~7.8.0
         version: 7.8.2
-      tagtics-client:
-        specifier: ^1.4.1
-        version: 1.4.1
       three:
         specifier: ^0.182.0
         version: 0.182.0
@@ -3077,9 +3074,6 @@ packages:
   supports-color@7.2.0:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
     engines: {node: '>=8'}
-
-  tagtics-client@1.4.1:
-    resolution: {integrity: sha512-KteaOl9SMdW8gwZniGbLm56yg4QksagzVEUQxr7YsnuSk2ekLpRs6aKY5m9k3oW1pZo5AHeuLRpDep0Uz4QU+g==}
 
   tailwindcss@4.0.0:
     resolution: {integrity: sha512-ULRPI3A+e39T7pSaf1xoi58AqqJxVCLg8F/uM5A3FadUbnyDTgltVnXJvdkTjwCOGA6NazqHVcwPJC5h2vRYVQ==}
@@ -6399,8 +6393,6 @@ snapshots:
   supports-color@7.2.0:
     dependencies:
       has-flag: 4.0.0
-
-  tagtics-client@1.4.1: {}
 
   tailwindcss@4.0.0: {}
 
