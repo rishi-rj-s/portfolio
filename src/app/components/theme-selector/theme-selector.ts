@@ -7,14 +7,14 @@ import { Background, BackgroundStyle } from "../../services/background";
   imports: [],
   template: `
     <div 
-      class="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in" 
+      class="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md" 
       (click)="close.emit()"
       tabindex="-1"
     >
       <!-- Modal Box -->
       <div 
         #modalBox
-        class="bg-[var(--color-card)] border border-[var(--color-border)] rounded-3xl shadow-2xl max-w-2xl w-full animate-scale-in relative overflow-hidden flex flex-col max-h-[90vh]"
+        class="bg-[var(--color-card)] border border-[var(--color-border)] rounded-3xl shadow-2xl max-w-2xl w-full relative overflow-hidden flex flex-col max-h-[90vh]"
         (click)="$event.stopPropagation()"
         data-lenis-prevent
       >

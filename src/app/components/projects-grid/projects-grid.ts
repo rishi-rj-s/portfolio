@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, PLATFORM_ID, inject, viewChild, viewChildren, afterNextRender, NgZone } from '@angular/core';
+import { Component, ElementRef, OnDestroy, PLATFORM_ID, inject, viewChild, afterNextRender, NgZone } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ScrollService } from '../../services/scroll';
@@ -325,7 +325,6 @@ import { projects } from '../../data/projects';
 })
 export class ProjectsGrid implements OnDestroy {
   track = viewChild<ElementRef<HTMLElement>>('track');
-  contentBodies = viewChildren<ElementRef<HTMLElement>>('contentBody');
   private scrollService = inject(ScrollService);
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);

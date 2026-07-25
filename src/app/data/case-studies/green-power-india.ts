@@ -56,23 +56,6 @@ export const greenPowerIndiaCaseStudy: CaseStudy = {
       { from: 'client', to: 'api', label: 'Content updates' },
       { from: 'next', to: 'visitor', label: 'SSR / static UI' },
     ],
-    mermaid: `graph TD
-    Visitor([Site Visitor])
-    subgraph Frontend [Vercel]
-        Next[Next.js 15 App Router]
-    end
-    subgraph Backend [Supabase]
-        API[Schema / API]
-        DB[(PostgreSQL)]
-        Storage[Media Buckets]
-    end
-    ClientOps[Client ops after handoff]
-    Visitor -->|Browses| Next
-    Next -->|Content / forms| API
-    API --> DB
-    API --> Storage
-    ClientOps -->|Updates content| API
-    Next -->|Rendered UI| Visitor`,
   },
   decisions: [
     {

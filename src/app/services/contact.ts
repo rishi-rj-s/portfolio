@@ -3,14 +3,14 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Observable, throwError, timeout, retry, catchError } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-export interface ContactFormPayload {
+interface ContactFormPayload {
   name: string;
   email: string;
   subject: string;
   message: string;
 }
 
-export interface Web3FormsResponse {
+interface Web3FormsResponse {
   success: boolean;
   message?: string;
 }

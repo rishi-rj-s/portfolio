@@ -11,15 +11,12 @@ let renderer: WebGLRenderer;
 let scene: Scene;
 let camera: PerspectiveCamera;
 let currentEffect: WebGLEffect | null = null;
-let currentStyle: string = 'aurora';
 let currentTheme: string = 'light';
 
 let mouseX = 0;
 let mouseY = 0;
 let targetMouseX = 0;
 let targetMouseY = 0;
-let scrollY = 0;
-let targetScrollY = 0;
 
 let width = 0;
 let height = 0;
@@ -47,9 +44,6 @@ addEventListener('message', async ({ data }) => {
       targetMouseX = data.x;
       targetMouseY = data.y;
       break;
-    case 'scroll':
-      targetScrollY = data.y;
-      break;
   }
 });
 
@@ -64,7 +58,6 @@ async function init(
   width = w;
   height = h;
   currentTheme = theme;
-  currentStyle = style;
 
   scene = new Scene();
   camera = new PerspectiveCamera(75, width / height, 0.1, 1000);
@@ -111,7 +104,6 @@ async function switchEffect(style: string) {
     currentEffect.dispose();
     scene.clear();
   }
-  currentStyle = style;
   await loadEffect(style);
 }
 
@@ -165,12 +157,11 @@ function animate() {
   // Smooth interpolation
   mouseX += (targetMouseX - mouseX) * 0.05;
   mouseY += (targetMouseY - mouseY) * 0.05;
-  scrollY += (targetScrollY - scrollY) * 0.05;
 
   const time = now * 0.001;
 
   if (currentEffect) {
-    currentEffect.animate(time, mouseX, mouseY, scrollY);
+    currentEffect.animate(time, mouseX, mouseY);
   }
 
   renderer.render(scene, camera);

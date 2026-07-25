@@ -1,5 +1,4 @@
-import { Component, signal, viewChild, ElementRef, PLATFORM_ID, inject } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component, signal } from '@angular/core';
 import { skillCategories, SkillCategory } from '../../data/skills';
 
 @Component({
@@ -8,7 +7,7 @@ import { skillCategories, SkillCategory } from '../../data/skills';
     <section id="skills" class="relative min-h-screen py-20 px-6 md:px-28 flex flex-col justify-center">
 
       <div class="max-w-7xl mx-auto w-full">
-         <div class="mb-12" #header>
+         <div class="mb-12">
             <h2 class="text-3xl md:text-6xl lg:text-8xl font-black tracking-tighter text-[var(--color-text)] mb-4 leading-[0.8]">
               SHIPPED<br>
               <span class="text-[var(--color-text-muted)] opacity-50">SKILLS</span>
@@ -18,7 +17,7 @@ import { skillCategories, SkillCategory } from '../../data/skills';
             </p>
          </div>
 
-         <div class="space-y-10" #grid>
+         <div class="space-y-10">
             @for (category of skills(); track category.category) {
               <div class="border-t border-[var(--color-border)] pt-6 group cursor-default">
 
@@ -54,11 +53,5 @@ import { skillCategories, SkillCategory } from '../../data/skills';
   `
 })
 export class Skills {
-  header = viewChild<ElementRef<HTMLElement>>('header');
-  grid = viewChild<ElementRef<HTMLElement>>('grid');
-
-  private platformId = inject(PLATFORM_ID);
-  readonly isBrowser = isPlatformBrowser(this.platformId);
-
   skills = signal<SkillCategory[]>(skillCategories);
 }

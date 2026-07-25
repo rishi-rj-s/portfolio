@@ -67,7 +67,7 @@ import { ScrollService } from '../../services/scroll';
       <!-- Mobile Menu Dropdown -->
       @if (mobileMenuOpen()) {
         <div 
-          class="absolute top-full left-0 right-0 mt-4 p-4 rounded-2xl flex flex-col gap-4 md:hidden animate-fade-in-up origin-top shadow-xl border border-white/10 glass-bg"
+          class="absolute top-full left-0 right-0 mt-4 p-4 rounded-2xl flex flex-col gap-4 md:hidden origin-top shadow-xl border border-white/10 glass-bg"
         >
           <a href="#info" (click)="closeMobileMenu(); handleNavClick($event, '#info')" class="p-3 text-[var(--color-text)] hover:bg-[var(--color-card-hover)] rounded-xl font-bold">Info</a>
           <a href="#skills" (click)="closeMobileMenu(); handleNavClick($event, '#skills')" class="p-3 text-[var(--color-text)] hover:bg-[var(--color-card-hover)] rounded-xl font-bold">Skills</a>

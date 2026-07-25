@@ -61,8 +61,7 @@ import { profile } from '../../data/profile';
         </div>
       </div>
     </div>
-  `,
-  styles: []
+  `
 })
 export class Experience {
   readonly profile = profile;

@@ -10,7 +10,6 @@ import {
   Group,
   PointLight,
   AmbientLight,
-  Light,
   OctahedronGeometry,
   TetrahedronGeometry,
   IcosahedronGeometry,
@@ -28,7 +27,7 @@ import {
 // Base interface for all effects
 export interface WebGLEffect {
   init(scene: Scene, camera: PerspectiveCamera, renderer: WebGLRenderer): void;
-  animate(time: number, mouseX: number, mouseY: number, scrollY: number): void;
+  animate(time: number, mouseX: number, mouseY: number): void;
   updateColors(theme: string): void;
   dispose(): void;
 }
@@ -156,7 +155,7 @@ export class AuroraEffect implements WebGLEffect {
     }
   }
 
-  animate(time: number, mouseX: number, _mouseY: number, _scrollY: number) {
+  animate(time: number, mouseX: number, _mouseY: number) {
     this.materials.forEach((mat) => {
       mat.uniforms['uTime'].value = time;
     });
@@ -194,7 +193,6 @@ export class CrystalEffect implements WebGLEffect {
   private group!: Group;
   private crystals: Mesh[] = [];
   private materials: MeshPhysicalMaterial[] = [];
-  private lights: Light[] = [];
 
   init(scene: Scene) {
     this.group = new Group();
@@ -202,16 +200,13 @@ export class CrystalEffect implements WebGLEffect {
     const light1 = new PointLight(0xffffff, 2, 200);
     light1.position.set(40, 40, 40);
     this.group.add(light1);
-    this.lights.push(light1);
     
     const light2 = new PointLight(0x8888ff, 1, 200);
     light2.position.set(-40, -40, 20);
     this.group.add(light2);
-    this.lights.push(light2);
 
     const ambientLight = new AmbientLight(0x404040, 1);
     this.group.add(ambientLight);
-    this.lights.push(ambientLight);
 
     const crystalConfigs = [
       { geo: new OctahedronGeometry(10, 0), pos: { x: 0, y: 0, z: -10 } },
@@ -251,7 +246,7 @@ export class CrystalEffect implements WebGLEffect {
     scene.add(this.group);
   }
 
-  animate(time: number, mouseX: number, mouseY: number, _scrollY: number) {
+  animate(time: number, mouseX: number, mouseY: number) {
     // Smooth constant rotation
     this.group.rotation.y = time * 0.03 + mouseX * 0.0001;
     this.group.rotation.x = Math.sin(time * 0.1) * 0.1 + mouseY * 0.00005;
@@ -332,7 +327,7 @@ export class WavesEffect implements WebGLEffect {
     scene.add(this.group);
   }
 
-  animate(time: number, mouseX: number, _mouseY: number, _scrollY: number) {
+  animate(time: number, mouseX: number, _mouseY: number) {
     this.lines.forEach((line, idx) => {
       const phase = line.userData['phase'];
       const speed = line.userData['speed'];
@@ -449,8 +444,7 @@ export class BlobsEffect implements WebGLEffect {
     scene.add(this.group);
   }
 
-  animate(time: number, _mouseX: number, _mouseY: number, _scrollY: number) {
-    // Simple time-based animation - no scroll effects
+  animate(time: number, _mouseX: number, _mouseY: number) {
     this.materials.forEach(mat => {
       mat.uniforms['uTime'].value = time;
     });
@@ -534,7 +528,7 @@ export class TerrainEffect implements WebGLEffect {
     scene.add(this.points);
   }
 
-  animate(time: number, _mouseX: number, _mouseY: number, _scrollY: number) {
+  animate(time: number, _mouseX: number, _mouseY: number) {
     const posAttr = this.geometry.attributes['position'] as BufferAttribute;
     
     for (let i = 0; i < this.count; i++) {
@@ -616,7 +610,7 @@ export class GalaxyEffect implements WebGLEffect {
     scene.add(this.points);
   }
 
-  animate(time: number, mouseX: number, mouseY: number, _scrollY: number) {
+  animate(time: number, mouseX: number, mouseY: number) {
     // Smooth overall rotation
     this.points.rotation.y = time * 0.05;
     this.points.rotation.x = 0.8 + mouseY * 0.00003;

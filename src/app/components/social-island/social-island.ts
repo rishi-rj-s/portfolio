@@ -14,7 +14,6 @@ import { isPlatformBrowser } from '@angular/common';
 
 type WheelItem = {
   id: string;
-  kind: 'resume' | 'social';
   name: string;
   subtitle?: string;
   url: string;
@@ -45,7 +44,6 @@ type WheelItem = {
       (focusin)="onIslandEnter()"
       (focusout)="onIslandFocusOut($event)"
       style="bottom: 32px"
-      #islandContainer
     >
       <div class="hover-bridge" aria-hidden="true"></div>
 
@@ -664,7 +662,6 @@ export class SocialIsland implements OnDestroy {
   socialLinks: WheelItem[] = [
     {
       id: 'github',
-      kind: 'social',
       name: 'GitHub',
       subtitle: 'Code & experiments',
       url: 'https://github.com/rishi-rj-s',
@@ -675,7 +672,6 @@ export class SocialIsland implements OnDestroy {
     },
     {
       id: 'linkedin',
-      kind: 'social',
       name: 'LinkedIn',
       subtitle: 'Professional profile',
       url: 'https://linkedin.com/in/rishiraj-sajeev',
@@ -686,7 +682,6 @@ export class SocialIsland implements OnDestroy {
     },
     {
       id: 'email',
-      kind: 'social',
       name: 'Email',
       subtitle: 'Say hello',
       url: 'mailto:rishirajsajeev@gmail.com',
@@ -700,7 +695,6 @@ export class SocialIsland implements OnDestroy {
   resumeItems: WheelItem[] = [
     {
       id: 'resume-en',
-      kind: 'resume',
       name: 'English (Global)',
       subtitle: 'PDF • 180KB',
       url: '/assets/resumes/RISHIRAJ_SAJEEV_RESUME.pdf',
@@ -712,7 +706,6 @@ export class SocialIsland implements OnDestroy {
     },
     {
       id: 'resume-rirekisho',
-      kind: 'resume',
       name: 'Rirekisho (履歴書)',
       subtitle: 'Standard Japanese format',
       url: '/assets/resumes/Rishiraj_Sajeev_Rirekisho.pdf',
@@ -724,7 +717,6 @@ export class SocialIsland implements OnDestroy {
     },
     {
       id: 'resume-shokumu',
-      kind: 'resume',
       name: 'Shokumu Keirekisho',
       subtitle: 'Work history (Japanese)',
       url: '/assets/resumes/Rishiraj_Sajeev_Shokumu_Keirekisho.pdf',

@@ -1,5 +1,4 @@
 export const profile = {
-  name: 'Rishiraj Sajeev',
   eyebrow: 'Full-Stack Engineer · Angular & NestJS',
   role: 'Full Stack Engineer',
   currentTitle: 'Angular Developer at Axolon',
@@ -8,7 +7,6 @@ export const profile = {
   availability: 'Always open to interesting offers and news.',
   suitedFor: ['Angular', 'NestJS', 'Full-stack SaaS', 'API / backend'],
   replySla: 'I typically reply within 48 hours.',
-  email: 'rishirajsajeev@gmail.com',
   whyMe: {
     headline: 'Why companies hire me',
     support:
