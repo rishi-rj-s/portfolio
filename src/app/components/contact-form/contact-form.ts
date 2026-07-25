@@ -15,7 +15,7 @@ import { profile } from '../../data/profile';
       <!-- Content Container -->
       <div class="w-full max-w-xl relative z-10">
          @if (!isSubmitted()) {
-            <div class="animate-fade-in-up">
+            <div>
               <h2 class="text-4xl md:text-6xl font-black mb-4 text-[var(--color-text)] tracking-tight">LET'S TALK</h2>
               <p class="text-sm md:text-base text-[var(--color-text-muted)] mb-3 leading-relaxed">
                 {{ profile.currentTitle }} — {{ profile.availability }} {{ profile.replySla }}
@@ -109,7 +109,7 @@ import { profile } from '../../data/profile';
             </div>
          } @else {
             <!-- Success Message -->
-            <div class="flex flex-col items-center justify-center animate-scale-in py-20">
+            <div class="flex flex-col items-center justify-center py-20">
                <h3 class="text-4xl md:text-6xl font-black mb-6 text-[var(--color-text)] text-center">MESSAGE RECEIVED</h3>
                <p class="text-xl text-[var(--color-text-muted)] mb-12 text-center">I'll get back to you shortly.</p>
                <button (click)="resetForm()" class="text-sm font-bold uppercase tracking-widest border-b border-[var(--color-text)] pb-1 hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] transition-colors">

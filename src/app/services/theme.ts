@@ -1,10 +1,10 @@
-import { Injectable, PLATFORM_ID, signal, effect, computed, inject } from '@angular/core';
+import { Injectable, PLATFORM_ID, signal, effect, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { printAsciiArt } from '../utils/console-art';
 
 export type ThemeOption = 'light' | 'dark' | 'ocean' | 'sunset' | 'cyberpunk' | 'forest';
 
-export interface ThemeDef { 
+interface ThemeDef { 
   id: ThemeOption; 
   name: string; 
   background: string; 
@@ -25,11 +25,6 @@ export class Theme {
   ];
 
   currentTheme = signal<ThemeOption>('dark');
-  
-  isDark = computed(() => {
-    const theme = this.currentTheme();
-    return theme !== 'light';
-  });
   public isSelectorOpen = signal(false);
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
@@ -93,17 +88,6 @@ export class Theme {
         }
       );
     });
-  }
-
-  toggleTheme(event?: MouseEvent) {
-    // Simple toggle between light and dark if using the main toggle button
-    // Or we could make this cycle, but for now let's keep it simple (or just redirect to selector)
-    const newTheme = this.isDark() ? 'light' : 'dark';
-    this.setTheme(newTheme, event);
-  }
-  
-  openSelector() {
-    this.isSelectorOpen.set(true);
   }
 
   closeSelector() {

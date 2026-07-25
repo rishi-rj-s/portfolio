@@ -1,13 +1,13 @@
-import { Injectable, signal, computed, PLATFORM_ID, inject } from '@angular/core';
+import { Injectable, signal, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 export type BackgroundStyle = 'aurora' | 'crystal' | 'waves' | 'blobs' | 'terrain' | 'galaxy' | 'none';
 
-export interface BackgroundOption {
+interface BackgroundOption {
   id: BackgroundStyle;
   name: string;
   description: string;
-  icon: string; // Emoji for quick visual
+  icon: string;
 }
 
 @Injectable({
@@ -30,11 +30,6 @@ export class Background {
   private _currentBackground = signal<BackgroundStyle>(this.loadSavedBackground());
   
   readonly currentBackground = this._currentBackground.asReadonly();
-  
-  readonly currentBackgroundInfo = computed(() => 
-    this.availableBackgrounds.find(b => b.id === this._currentBackground()) 
-    ?? this.availableBackgrounds[0]
-  );
 
   private loadSavedBackground(): BackgroundStyle {
     if (!this.isBrowser) return 'terrain';
@@ -42,7 +37,7 @@ export class Background {
     if (saved && this.availableBackgrounds.some(b => b.id === saved)) {
       return saved as BackgroundStyle;
     }
-    return 'terrain'; // Default
+    return 'terrain';
   }
 
   setBackground(style: BackgroundStyle) {
@@ -50,13 +45,5 @@ export class Background {
     if (this.isBrowser) {
       localStorage.setItem('portfolio-background', style);
     }
-  }
-
-  nextBackground() {
-    const currentIndex = this.availableBackgrounds.findIndex(
-      b => b.id === this._currentBackground()
-    );
-    const nextIndex = (currentIndex + 1) % this.availableBackgrounds.length;
-    this.setBackground(this.availableBackgrounds[nextIndex].id);
   }
 }

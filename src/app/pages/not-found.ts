@@ -6,9 +6,6 @@ import { RouterLink } from '@angular/router';
   imports: [RouterLink],
   template: `
     <div class="min-h-screen flex flex-col items-center justify-center text-[var(--color-text)] p-6 text-center select-none overflow-hidden relative">
-       
-       <!-- Background Noise -->
-       <div class="absolute inset-0 pointer-events-none opacity-20 bg-[url('/assets/noise.svg')]"></div>
 
        <!-- Glow behind content -->
        <div class="absolute w-[500px] h-[500px] rounded-full opacity-20 blur-[120px] pointer-events-none"
@@ -19,7 +16,7 @@ import { RouterLink } from '@angular/router';
        <h1 class="text-[12rem] md:text-[20rem] font-black leading-none tracking-tighter absolute select-none"
            style="color: var(--color-primary); opacity: 0.08;">404</h1>
        
-       <div class="relative z-10 animate-fade-in-up">
+       <div class="relative z-10">
           <div class="text-6xl md:text-8xl mb-4">🤨</div>
           <h2 class="text-4xl md:text-6xl font-black tracking-tight mb-2">
             Why you do <span style="color: var(--color-primary);">that</span>?

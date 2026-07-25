@@ -69,26 +69,6 @@ export const tagticsCaseStudy: CaseStudy = {
       { from: 'db', to: 'edge', label: 'DB webhooks' },
       { from: 'edge', to: 'db', label: 'AI / integrations (roadmap)' },
     ],
-    mermaid: `graph TD
-    Client([Client Review Browser])
-    subgraph Frontend [Vercel Hosting]
-        Widget[Tagtics Embed Widget]
-        Dashboard[Admin Dashboard React App]
-    end
-    subgraph Backend [Supabase Cloud]
-        Auth[Supabase Auth]
-        DB[(PostgreSQL Database)]
-        Storage[Object Storage]
-        Edge[Deno Edge Functions]
-    end
-    Client -->|Loads Widget| Widget
-    Client -->|Manages Feedback| Dashboard
-    Widget -.->|Submits Feedback| DB
-    Widget -.->|Uploads Screenshots| Storage
-    Dashboard -.->|Authenticates| Auth
-    Dashboard -.->|Reads Data| DB
-    DB -->|Database Webhooks| Edge
-    Edge -->|AI Processing/Integrations| DB`,
   },
   decisions: [
     {

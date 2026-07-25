@@ -8,7 +8,6 @@ export class LoaderService {
   readonly webglReady = this._webglReady.asReadonly();
 
   setWebglReady() {
-    console.log('LoaderService: WebGL ready signal received');
     this._webglReady.set(true);
     this.updateStatus('CORE SYSTEMS ONLINE');
   }
@@ -20,6 +19,5 @@ export class LoaderService {
         statusEl.textContent = message;
       }
     }
-    console.log(`Loader Status: ${message}`);
   }
 }

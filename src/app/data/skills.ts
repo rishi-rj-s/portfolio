@@ -1,4 +1,4 @@
-export interface SkillItem {
+interface SkillItem {
   name: string;
   logo: string;
   invertDark?: boolean;

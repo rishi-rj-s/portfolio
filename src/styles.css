@@ -43,9 +43,6 @@
   --color-text-secondary: #334155;
   --color-primary: #4f46e5; /* Slightly darker indigo for contrast */
   --color-accent: #7c3aed;
-  --color-success: #059669;
-  --glow-primary: rgba(99, 102, 241, 0.1);
-  --glow-accent: rgba(139, 92, 246, 0.05);
   --navbar-height: 64px;
   --font-sans: 'Clash Display', 'Clash Display Fallback', system-ui, sans-serif;
   --font-serif: 'Playfair Display', serif;
@@ -62,9 +59,6 @@
   --color-text-secondary: #ffffff;
   --color-primary: #ffffff; /* Stark White for contrast */
   --color-accent: #333333;
-  --color-success: #34d399;
-  --glow-primary: rgba(255, 255, 255, 0.15);
-  --glow-accent: rgba(255, 255, 255, 0.05);
 }
 
 /* --- Curated Themes --- */
@@ -80,9 +74,6 @@
   --color-text-secondary: #e2e8f0;
   --color-primary: #38bdf8; /* Sky Blue */
   --color-accent: #0ea5e9;
-  --color-success: #2dd4bf;
-  --glow-primary: rgba(56, 189, 248, 0.2);
-  --glow-accent: rgba(14, 165, 233, 0.1);
 }
 
 /* Sunset */
@@ -96,9 +87,6 @@
   --color-text-secondary: #ffe4e6;
   --color-primary: #fb7185; /* Rose */
   --color-accent: #f43f5e;
-  --color-success: #34d399;
-  --glow-primary: rgba(251, 113, 133, 0.2);
-  --glow-accent: rgba(244, 63, 94, 0.1);
 }
 
 /* Cyberpunk */
@@ -112,9 +100,6 @@
   --color-text-secondary: #e4e4e7;
   --color-primary: #d946ef; /* Fuchsia */
   --color-accent: #8b5cf6; /* Violet */
-  --color-success: #00dac6;
-  --glow-primary: rgba(217, 70, 239, 0.3);
-  --glow-accent: rgba(139, 92, 246, 0.2);
 }
 
 /* Forest */
@@ -128,9 +113,6 @@
   --color-text-secondary: #ecfdf5;
   --color-primary: #34d399;
   --color-accent: #10b981;
-  --color-success: #4ade80;
-  --glow-primary: rgba(52, 211, 153, 0.2);
-  --glow-accent: rgba(16, 185, 129, 0.1);
 }
 
 html {
@@ -167,18 +149,6 @@ section {
   scroll-margin-top: var(--navbar-height);
 }
 
-/* Special handling for hero section - full viewport */
-section#about {
-  scroll-margin-top: 0;
-  min-height: 100vh;
-}
-
-/* All other sections account for navbar */
-section:not(#about) {
-  /* Compensate for navbar in min-height calculations */
-  position: relative;
-}
-
 @media (max-width: 768px) {
   :root {
     --navbar-height: 56px;
@@ -201,13 +171,7 @@ html.lenis body {
   overscroll-behavior: contain;
 }
 
-.lenis.lenis-stopped {
-  overflow: hidden;
-}
-
-.lenis.lenis-scrolling iframe {
-  pointer-events: none;
-}:root.dark .theme-inverse,
+:root.dark .theme-inverse,
 :root.theme-ocean .theme-inverse,
 :root.theme-sunset .theme-inverse,
 :root.theme-cyberpunk .theme-inverse,

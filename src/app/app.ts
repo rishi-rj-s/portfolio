@@ -4,11 +4,9 @@ import { isPlatformBrowser } from '@angular/common';
 import { Navbar } from './components/navbar/navbar';
 import { ThemeSelectorComponent } from './components/theme-selector/theme-selector';
 import { Theme } from './services/theme';
-
 import { Footer } from './components/footer/footer';
 import { WebglBackgroundComponent } from './components/webgl-background/webgl-background';
 import { LoaderService } from './services/loader';
-import { printAsciiArt } from './utils/console-art';
 import { ScrollService } from './services/scroll';
 import { scheduleIdle } from './utils/connection';
 
@@ -122,7 +120,6 @@ export class App implements OnDestroy {
             path.style.strokeDashoffset = String(-progress * this.pathLen * 4);
           });
         });
-        printAsciiArt();
       }, 2000);
 
       this.bootLoader();

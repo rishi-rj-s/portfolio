@@ -47,20 +47,6 @@
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
-/* Custom Scrollbar - Completely Hidden globally */
-::-webkit-scrollbar {
-  display: none !important;
-  width: 0 !important;
-  background: transparent !important;
-}
-*::-webkit-scrollbar {
-  display: none !important;
-}
-html, body {
-  -ms-overflow-style: none !important;
-  scrollbar-width: none !important;
-}
-
 /* Selection */
 ::selection {
   background-color: #3b82f6;
@@ -78,42 +64,6 @@ html, body {
   outline-offset: 2px;
 }
 
-/* Base Animations */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideInUpMask {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-    clip-path: inset(100% 0 0 0);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    clip-path: inset(0% 0 0 0);
-  }
-}
-
 /* Reduced Motion — only kill looping/decorative animations.
    Do NOT zero transition-duration globally (it breaks intentional UI like card flips). */
 @media (prefers-reduced-motion: reduce) {
@@ -121,9 +71,3 @@ html, body {
     animation-iteration-count: 1 !important;
   }
 }
-
-/* Theme Icon Visibility */
-.theme-icon-light { display: block; }
-.theme-icon-dark { display: none; }
-:root.dark .theme-icon-light { display: none; }
-:root.dark .theme-icon-dark { display: block; }

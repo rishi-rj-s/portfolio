@@ -43,7 +43,6 @@ import { Component } from '@angular/core';
         </div>
       </div>
     </div>
-  `,
-  styles: []
+  `
 })
 export class Education {}

@@ -10,18 +10,18 @@ export interface ArchitectureEdge {
   label?: string;
 }
 
-export interface CaseStudySection {
+interface CaseStudySection {
   title: string;
   paragraphs: string[];
   bullets?: string[];
 }
 
-export interface CaseStudyDecision {
+interface CaseStudyDecision {
   question: string;
   answer: string;
 }
 
-export interface CaseStudyLink {
+interface CaseStudyLink {
   label: string;
   href: string;
 }
@@ -40,8 +40,6 @@ export interface CaseStudy {
     summary: string;
     nodes: ArchitectureNode[];
     edges: ArchitectureEdge[];
-    /** Mermaid source kept for reference / future tooling */
-    mermaid: string;
   };
   decisions: CaseStudyDecision[];
   shipped: CaseStudySection;

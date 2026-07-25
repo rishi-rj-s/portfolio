@@ -22,8 +22,6 @@
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              "src/loader.css",
-              "src/theme-init.js",
               {
                 "glob": "**/*",
                 "input": "public"

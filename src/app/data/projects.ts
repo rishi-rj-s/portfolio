@@ -1,10 +1,9 @@
-export interface ProjectLinks {
+interface ProjectLinks {
   live?: string;
   source?: string;
-  docs?: string;
 }
 
-export interface Project {
+interface Project {
   title: string;
   type: string;
   year: string;
@@ -43,7 +42,6 @@ export const projects: Project[] = [
     links: {
       source: 'https://github.com/tagtics/tagtics-frontend',
       live: 'https://www.tagtics.online',
-      docs: 'https://tagtics.online/docs',
     },
     caseStudySlug: 'tagtics',
   },

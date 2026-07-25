@@ -9,7 +9,6 @@ import { LoaderService } from '../../services/loader';
   template: `
     <!-- z-0 (not -z-10): negative z sits behind opaque html background and never shows -->
     <div
-      #canvasContainer
       class="fixed inset-0 z-0 pointer-events-none transition-opacity duration-700"
       [class.opacity-0]="!visible()"
       [class.opacity-100]="visible()"
@@ -24,7 +23,6 @@ import { LoaderService } from '../../services/loader';
   `]
 })
 export class WebglBackgroundComponent implements OnDestroy {
-  canvasContainer = viewChild<ElementRef<HTMLDivElement>>('canvasContainer');
   canvasRef = viewChild<ElementRef<HTMLCanvasElement>>('canvas');
 
   private worker: Worker | null = null;
@@ -34,12 +32,11 @@ export class WebglBackgroundComponent implements OnDestroy {
   private loaderService = inject(LoaderService);
   private ngZone = inject(NgZone);
 
-  isBrowser = isPlatformBrowser(this.platformId);
+  private isBrowser = isPlatformBrowser(this.platformId);
   visible = signal(false);
 
-  // Performance: Throttle mouse/scroll messages to worker
+  // Performance: Throttle mouse messages to worker
   private lastMouseMsgTime = 0;
-  private lastScrollMsgTime = 0;
   private static readonly MSG_THROTTLE_MS = 50; // ~20 msgs/sec instead of 60+
   private resizeTimeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -72,7 +69,6 @@ export class WebglBackgroundComponent implements OnDestroy {
 
       this.ngZone.runOutsideAngular(() => {
         window.addEventListener('mousemove', this.onMouseMove, { passive: true });
-        window.addEventListener('scroll', this.onScroll, { passive: true });
         window.addEventListener('resize', this.onWindowResize);
       });
     });
@@ -81,7 +77,6 @@ export class WebglBackgroundComponent implements OnDestroy {
   ngOnDestroy() {
     if (this.isBrowser) {
       window.removeEventListener('mousemove', this.onMouseMove);
-      window.removeEventListener('scroll', this.onScroll);
       window.removeEventListener('resize', this.onWindowResize);
       
       if (this.resizeTimeout) clearTimeout(this.resizeTimeout);
@@ -159,19 +154,6 @@ export class WebglBackgroundComponent implements OnDestroy {
       type: 'mouse',
       x: event.clientX - window.innerWidth / 2,
       y: event.clientY - window.innerHeight / 2
-    });
-  };
-  
-  // Performance: Throttle scroll messages to worker (Lenis updates window.scrollY)
-  private onScroll = () => {
-    if (!this.worker) return;
-    const now = performance.now();
-    if (now - this.lastScrollMsgTime < WebglBackgroundComponent.MSG_THROTTLE_MS) return;
-    this.lastScrollMsgTime = now;
-
-    this.worker.postMessage({
-      type: 'scroll',
-      y: window.scrollY || document.documentElement.scrollTop || 0
     });
   };
 }

@@ -1,7 +1,7 @@
 import { Injectable, PLATFORM_ID, inject, afterNextRender, NgZone } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
-type ScrollListener = (payload: { progress: number; scroll: number }) => void;
+type ScrollListener = (payload: { progress: number }) => void;
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,6 @@ export class ScrollService {
   private resolveReady: (() => void) | null = null;
   private listeners = new Set<ScrollListener>();
   private scrollTriggerUpdate: (() => void) | null = null;
-  private rafId = 0;
 
   constructor() {
     if (this.isBrowser) {
@@ -56,21 +55,19 @@ export class ScrollService {
           autoRaf: false,
         });
 
-        document.documentElement.classList.add('lenis');
-
-        this.lenis.on('scroll', (instance: { progress: number; scroll: number }) => {
+        this.lenis.on('scroll', (instance: { progress: number }) => {
           // Keep GSAP pin/scrub in lockstep with Lenis
           this.scrollTriggerUpdate?.();
           for (const listener of this.listeners) {
-            listener({ progress: instance.progress, scroll: instance.scroll });
+            listener({ progress: instance.progress });
           }
         });
 
         const raf = (time: number) => {
           this.lenis?.raf(time);
-          this.rafId = requestAnimationFrame(raf);
+          requestAnimationFrame(raf);
         };
-        this.rafId = requestAnimationFrame(raf);
+        requestAnimationFrame(raf);
       });
     } catch (error) {
       console.error('Failed to initialize Lenis:', error);
@@ -92,10 +89,6 @@ export class ScrollService {
   onScroll(listener: ScrollListener): () => void {
     this.listeners.add(listener);
     return () => this.listeners.delete(listener);
-  }
-
-  public getLenis() {
-    return this.lenis;
   }
 
   public scrollTo(target: string | HTMLElement | number, options?: any) {
@@ -122,24 +115,5 @@ export class ScrollService {
         el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });
-  }
-
-  public stop() {
-    this.lenis?.stop();
-  }
-
-  public start() {
-    this.lenis?.start();
-  }
-
-  public destroy() {
-    if (this.rafId) cancelAnimationFrame(this.rafId);
-    this.lenis?.destroy();
-    this.lenis = null;
-    this.scrollTriggerUpdate = null;
-    this.listeners.clear();
-    if (this.isBrowser) {
-      document.documentElement.classList.remove('lenis');
-    }
   }
 }
