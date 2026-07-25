@@ -368,24 +368,10 @@ type WheelItem = {
         height: 1.45rem;
       }
 
-      .island-divider {
-        width: 1.25rem;
-        height: 1px;
-      }
-
+      /* Desktop uses the hover semicircle for links — hub alone is enough at rest */
+      .island-divider,
       .island-collapsed-links {
-        flex-direction: column;
-        gap: 0.75rem;
-      }
-
-      .island-node {
-        width: 2.75rem;
-        height: 2.75rem;
-      }
-
-      .island-node__icon {
-        width: 1.5rem;
-        height: 1.5rem;
+        display: none;
       }
 
       .wheel-plate {
@@ -615,18 +601,6 @@ type WheelItem = {
         box-shadow:
           0 18px 40px color-mix(in oklab, #020617 36%, transparent),
           0 0 0 1px color-mix(in oklab, var(--color-primary) 16%, transparent);
-      }
-
-      .social-island--expanded .island-divider,
-      .social-island--expanded .island-collapsed-links {
-        position: absolute;
-        width: 0;
-        height: 0;
-        margin: 0;
-        padding: 0;
-        opacity: 0;
-        overflow: hidden;
-        pointer-events: none;
       }
     }
   `,
