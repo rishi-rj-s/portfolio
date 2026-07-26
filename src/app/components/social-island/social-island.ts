@@ -108,7 +108,7 @@ type WheelItem = {
             class="wheel-item"
             role="menuitem"
             [href]="item.url"
-            [attr.download]="item.download ? true : null"
+            [attr.download]="item.download ? '' : null"
             [target]="item.url.startsWith('mailto') || item.download ? '_self' : '_blank'"
             [attr.aria-label]="item.name + (item.subtitle ? ', ' + item.subtitle : '')"
             [class.wheel-item--active]="activeItem()?.id === item.id"
