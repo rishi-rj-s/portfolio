@@ -20,7 +20,7 @@ import { Component } from '@angular/core';
            <a href="mailto:rishirajsajeev@gmail.com" class="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors">
               Email
            </a>
-           <a href="/assets/resumes/RISHIRAJ_SAJEEV_RESUME.pdf" download="Rishiraj_Resume.pdf" class="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors font-bold">
+           <a href="/assets/resumes/RISHIRAJ_SAJEEV_RESUME.pdf" download class="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors font-bold">
               Resume
            </a>
         </div>
