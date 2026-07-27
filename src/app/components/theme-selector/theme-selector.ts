@@ -1,9 +1,10 @@
-import { Component, output, inject, signal, viewChild, ElementRef, afterNextRender, computed, NgZone, OnDestroy } from "@angular/core";
+import { Component, output, inject, signal, viewChild, ElementRef, afterNextRender, computed, NgZone, OnDestroy, ChangeDetectionStrategy } from "@angular/core";
 import { ThemeOption, Theme } from "../../services/theme";
 import { Background, BackgroundStyle } from "../../services/background";
 
 @Component({
   selector: 'app-theme-selector',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   template: `
     <div 

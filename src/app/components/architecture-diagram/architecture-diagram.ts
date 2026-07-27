@@ -1,8 +1,9 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 import { ArchitectureEdge, ArchitectureNode } from '../../data/case-studies/types';
 
 @Component({
   selector: 'app-architecture-diagram',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="architecture-diagram rounded-lg border border-[var(--color-border)] bg-[var(--color-card)]/30 p-4 md:p-6 overflow-x-auto">
       <p class="text-sm text-[var(--color-text-muted)] mb-6 leading-relaxed">{{ summary() }}</p>

@@ -1,4 +1,4 @@
-import { Component, PLATFORM_ID, afterNextRender, inject } from '@angular/core';
+import { Component, PLATFORM_ID, afterNextRender, inject, ChangeDetectionStrategy } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Hero } from '../components/hero/hero';
@@ -13,6 +13,7 @@ import { ScrollService } from '../services/scroll';
 
 @Component({
   selector: 'app-home',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     Hero,
     WhyMe,

@@ -5,6 +5,7 @@ import {
   afterNextRender,
   inject,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { profile } from '../../data/profile';
@@ -12,6 +13,7 @@ import { ScrollService } from '../../services/scroll';
 
 @Component({
   selector: 'app-hero',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section id="hero" class="hero-section">
       <div class="hero-main">
@@ -181,7 +183,7 @@ import { ScrollService } from '../../services/scroll';
     .name-eyebrow {
       position: relative;
       z-index: 3;
-      margin: 0 0 clamp(1rem, 2.5vh, 2rem);
+      margin: 0 0 clamp(1.75rem, 4.5vh, 2.75rem);
       padding: 0.35rem 0.85rem;
       text-align: center;
       font-size: clamp(0.8rem, 2.2vw, 1.05rem);
@@ -192,6 +194,12 @@ import { ScrollService } from '../../services/scroll';
       opacity: 0.78;
       max-width: 100%;
       white-space: normal;
+    }
+
+    @media (max-width: 767px) {
+      .name-eyebrow {
+        margin-bottom: 2.25rem;
+      }
     }
 
     @media (min-width: 1024px) {
@@ -256,7 +264,7 @@ import { ScrollService } from '../../services/scroll';
       }
 
       .name-eyebrow {
-        margin-bottom: 0.85rem;
+        margin-bottom: 1.75rem;
       }
     }
 
@@ -357,8 +365,8 @@ export class Hero implements OnDestroy {
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
 
-  /** Depth layers — restored for desktop; lighter on small screens */
-  readonly depthLayers = signal<number[]>([1, 2, 3, 4, 5, 6]);
+  /** Depth layers — lightweight 3D extrusion to protect GPU fill-rate */
+  readonly depthLayers = signal<number[]>([1, 2]);
 
   private readonly onWindowResize = () => this.updateDepthLayers();
 
@@ -378,9 +386,11 @@ export class Hero implements OnDestroy {
 
   private updateDepthLayers(): void {
     if (window.innerWidth >= 1024) {
-      this.depthLayers.set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+      this.depthLayers.set([1, 2, 3, 4]);
+    } else if (window.innerWidth >= 768) {
+      this.depthLayers.set([1, 2, 3]);
     } else {
-      this.depthLayers.set([1, 2, 3, 4, 5, 6, 7, 8]);
+      this.depthLayers.set([1, 2]);
     }
   }
 

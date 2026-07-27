@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { profile } from '../../data/profile';
 
 @Component({
   selector: 'app-why-me',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section id="why-me" class="relative py-20 md:py-28 px-6 md:px-28">
       <div class="max-w-7xl mx-auto w-full">

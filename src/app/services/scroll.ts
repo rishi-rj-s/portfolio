@@ -40,6 +40,23 @@ export class ScrollService {
     this.initStarted = true;
 
     try {
+      const isTouchOrMobile = window.innerWidth < 768 || ('ontouchstart' in window && window.innerWidth < 1024);
+
+      // On mobile / touch devices, disable Lenis touch interception to rely on native hardware scroller
+      if (isTouchOrMobile) {
+        this.ngZone.runOutsideAngular(() => {
+          window.addEventListener('scroll', () => {
+            const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = totalScroll > 0 ? window.scrollY / totalScroll : 0;
+            this.scrollTriggerUpdate?.();
+            for (const listener of this.listeners) {
+              listener({ progress });
+            }
+          }, { passive: true });
+        });
+        return;
+      }
+
       const { default: Lenis } = await import('lenis');
 
       this.ngZone.runOutsideAngular(() => {
@@ -50,7 +67,7 @@ export class ScrollService {
           gestureOrientation: 'vertical',
           smoothWheel: true,
           wheelMultiplier: 0.9,
-          touchMultiplier: 1.4,
+          touchMultiplier: 0,
           infinite: false,
           autoRaf: false,
         });

@@ -9,6 +9,7 @@ import {
   NgZone,
   signal,
   effect,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
@@ -26,6 +27,7 @@ type WheelItem = {
 
 @Component({
   selector: 'app-social-island',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
       class="island-mask"
@@ -990,6 +992,14 @@ export class SocialIsland implements OnDestroy {
         (document.querySelector('footer') as HTMLElement);
     }
     if (!this.footerEl) {
+      asideEl.style.bottom = '32px';
+      return;
+    }
+
+    // Performance: Only query bounding rect if scroll position is near the page bottom
+    const scrollBottom = window.scrollY + window.innerHeight;
+    const docHeight = document.documentElement.scrollHeight;
+    if (scrollBottom < docHeight - 500) {
       asideEl.style.bottom = '32px';
       return;
     }

@@ -1,4 +1,4 @@
-import { Component, PLATFORM_ID, inject, afterNextRender, signal, computed, viewChild, ElementRef, NgZone, OnDestroy } from '@angular/core';
+import { Component, PLATFORM_ID, inject, afterNextRender, signal, computed, viewChild, ElementRef, NgZone, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { Navbar } from './components/navbar/navbar';
@@ -12,6 +12,7 @@ import { scheduleIdle } from './utils/connection';
 
 @Component({
   selector: 'app-root',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     RouterOutlet,
     Navbar,

@@ -1,4 +1,4 @@
-import { Component, ElementRef, viewChildren, signal, inject, PLATFORM_ID, NgZone, afterNextRender, viewChild, OnDestroy } from '@angular/core';
+import { Component, ElementRef, viewChildren, signal, inject, PLATFORM_ID, NgZone, afterNextRender, viewChild, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Theme } from '../../services/theme';
 import { Router } from '@angular/router';
@@ -6,6 +6,7 @@ import { ScrollService } from '../../services/scroll';
 
 @Component({
   selector: 'app-navbar',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300">
       <div 

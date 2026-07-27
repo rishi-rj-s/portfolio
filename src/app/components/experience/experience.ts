@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { profile } from '../../data/profile';
 
 @Component({
   selector: 'app-experience',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="h-full flex flex-col justify-center">
       <h2 class="text-3xl font-bold text-[var(--color-text)] mb-4 flex items-center gap-3">

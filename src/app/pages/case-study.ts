@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
@@ -7,6 +7,7 @@ import { ArchitectureDiagram } from '../components/architecture-diagram/architec
 
 @Component({
   selector: 'app-case-study',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, ArchitectureDiagram],
   template: `
     @if (study(); as s) {
