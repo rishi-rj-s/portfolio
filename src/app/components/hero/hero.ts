@@ -183,7 +183,7 @@ import { ScrollService } from '../../services/scroll';
     .name-eyebrow {
       position: relative;
       z-index: 3;
-      margin: 0 0 clamp(1rem, 2.5vh, 2rem);
+      margin: 0 0 clamp(1.75rem, 4.5vh, 2.75rem);
       padding: 0.35rem 0.85rem;
       text-align: center;
       font-size: clamp(0.8rem, 2.2vw, 1.05rem);
@@ -194,6 +194,12 @@ import { ScrollService } from '../../services/scroll';
       opacity: 0.78;
       max-width: 100%;
       white-space: normal;
+    }
+
+    @media (max-width: 767px) {
+      .name-eyebrow {
+        margin-bottom: 2.25rem;
+      }
     }
 
     @media (min-width: 1024px) {
@@ -258,7 +264,7 @@ import { ScrollService } from '../../services/scroll';
       }
 
       .name-eyebrow {
-        margin-bottom: 0.85rem;
+        margin-bottom: 1.75rem;
       }
     }
 
