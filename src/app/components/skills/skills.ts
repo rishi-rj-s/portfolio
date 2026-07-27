@@ -1,8 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { skillCategories, SkillCategory } from '../../data/skills';
 
 @Component({
   selector: 'app-skills',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section id="skills" class="relative min-h-screen py-20 px-6 md:px-28 flex flex-col justify-center">
 

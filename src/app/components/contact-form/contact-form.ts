@@ -1,4 +1,4 @@
-import { Component, signal, computed, inject, PLATFORM_ID } from '@angular/core';
+import { Component, signal, computed, inject, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgHcaptchaModule } from 'ng-hcaptcha';
 import { ContactMail } from '../../services/contact';
@@ -8,6 +8,7 @@ import { profile } from '../../data/profile';
 
 @Component({
   selector: 'app-contact-form',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, NgHcaptchaModule],
   template: `
     <section id="contact" class="flex flex-col justify-center items-center px-6 min-h-screen relative overflow-hidden">

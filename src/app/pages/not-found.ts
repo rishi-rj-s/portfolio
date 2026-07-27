@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-not-found',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink],
   template: `
     <div class="min-h-screen flex flex-col items-center justify-center text-[var(--color-text)] p-6 text-center select-none overflow-hidden relative">

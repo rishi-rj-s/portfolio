@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-education',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="h-full flex flex-col justify-center">
       <h2 class="text-3xl font-bold text-[var(--color-text)] mb-8 flex items-center gap-3">

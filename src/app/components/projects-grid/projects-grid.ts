@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, PLATFORM_ID, inject, viewChild, afterNextRender, NgZone } from '@angular/core';
+import { Component, ElementRef, OnDestroy, PLATFORM_ID, inject, viewChild, afterNextRender, NgZone, ChangeDetectionStrategy } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ScrollService } from '../../services/scroll';
@@ -6,6 +6,7 @@ import { projects } from '../../data/projects';
 
 @Component({
   selector: 'app-projects-grid',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink],
   template: `
     <section id="projects" class="projects-wrapper relative h-[100dvh] overflow-hidden flex flex-col pt-28 md:pt-36 pb-28 md:pb-12 bg-transparent">

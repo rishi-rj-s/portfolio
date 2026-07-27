@@ -21,9 +21,9 @@ let targetMouseY = 0;
 let width = 0;
 let height = 0;
 
-// Performance: Target 30 FPS instead of uncapped 60
-const TARGET_FPS = 30;
-const FRAME_INTERVAL = 1000 / TARGET_FPS;
+// Performance: Target 30 FPS on desktop, 24 FPS on mobile to save GPU resources
+let targetFps = 30;
+let frameInterval = 1000 / targetFps;
 let lastFrameTime = 0;
 
 addEventListener('message', async ({ data }) => {
@@ -59,18 +59,23 @@ async function init(
   height = h;
   currentTheme = theme;
 
+  // On mobile screens (<768px), cap at 24 FPS and 1.0 DPR for lightweight rendering
+  const isMobile = width < 768;
+  targetFps = isMobile ? 24 : 30;
+  frameInterval = 1000 / targetFps;
+
   scene = new Scene();
   camera = new PerspectiveCamera(75, width / height, 0.1, 1000);
   camera.position.z = 50;
 
-  // Performance: Cap pixel ratio more aggressively for low-end devices
-  const effectivePixelRatio = Math.min(pixelRatio, 1.25);
+  // Performance: Cap pixel ratio strictly to 1.0 on mobile, 1.25 on desktop
+  const effectivePixelRatio = isMobile ? Math.min(pixelRatio, 1.0) : Math.min(pixelRatio, 1.25);
 
   renderer = new WebGLRenderer({
     canvas: canvas,
     alpha: true,
     antialias: false, // Performance: Disable antialiasing — saves significant GPU fill-rate
-    powerPreference: 'default', // Let the device choose a balanced GPU mode
+    powerPreference: 'low-power', // Save GPU power on mobile/laptop
     context: canvas.getContext('webgl2') as WebGL2RenderingContext
   });
   
@@ -148,11 +153,11 @@ async function loadEffect(style: string) {
 function animate() {
   requestAnimationFrame(animate);
 
-  // Performance: Frame-rate limiter — skip frames to stay at TARGET_FPS
+  // Performance: Frame-rate limiter — skip frames to stay at targetFps
   const now = self.performance.now();
   const elapsed = now - lastFrameTime;
-  if (elapsed < FRAME_INTERVAL) return;
-  lastFrameTime = now - (elapsed % FRAME_INTERVAL);
+  if (elapsed < frameInterval) return;
+  lastFrameTime = now - (elapsed % frameInterval);
 
   // Smooth interpolation
   mouseX += (targetMouseX - mouseX) * 0.05;

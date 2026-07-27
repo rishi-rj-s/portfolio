@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, PLATFORM_ID, effect, afterNextRender, viewChild, inject, NgZone, signal } from '@angular/core';
+import { Component, ElementRef, OnDestroy, PLATFORM_ID, effect, afterNextRender, viewChild, inject, NgZone, signal, ChangeDetectionStrategy } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Theme } from '../../services/theme';
 import { Background } from '../../services/background';
@@ -6,6 +6,7 @@ import { LoaderService } from '../../services/loader';
 
 @Component({
   selector: 'app-webgl-background',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <!-- z-0 (not -z-10): negative z sits behind opaque html background and never shows -->
     <div

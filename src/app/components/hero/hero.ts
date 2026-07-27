@@ -5,6 +5,7 @@ import {
   afterNextRender,
   inject,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { profile } from '../../data/profile';
@@ -12,6 +13,7 @@ import { ScrollService } from '../../services/scroll';
 
 @Component({
   selector: 'app-hero',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section id="hero" class="hero-section">
       <div class="hero-main">
@@ -357,8 +359,8 @@ export class Hero implements OnDestroy {
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
 
-  /** Depth layers — restored for desktop; lighter on small screens */
-  readonly depthLayers = signal<number[]>([1, 2, 3, 4, 5, 6]);
+  /** Depth layers — lightweight 3D extrusion to protect GPU fill-rate */
+  readonly depthLayers = signal<number[]>([1, 2]);
 
   private readonly onWindowResize = () => this.updateDepthLayers();
 
@@ -378,9 +380,11 @@ export class Hero implements OnDestroy {
 
   private updateDepthLayers(): void {
     if (window.innerWidth >= 1024) {
-      this.depthLayers.set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+      this.depthLayers.set([1, 2, 3, 4]);
+    } else if (window.innerWidth >= 768) {
+      this.depthLayers.set([1, 2, 3]);
     } else {
-      this.depthLayers.set([1, 2, 3, 4, 5, 6, 7, 8]);
+      this.depthLayers.set([1, 2]);
     }
   }
 
